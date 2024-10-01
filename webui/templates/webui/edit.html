@@ -1,0 +1,100 @@
+{% extends 'webui/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+   <div class="col-4">
+      <div class="sticky-top">
+         <div>
+            <a href="{% url 'webui:index' %}" class="link-primary"><i class="bi bi-arrow-left"></i> Transcript List</a>
+         </div>
+
+         <div class="row mt-4">
+            <{{ properties.type }} controls id="media" class="w-100">
+               <source src="{% static properties.file %}" />
+            </{{ properties.type }}>
+         </div>
+
+         <div class="row mt-4">
+            <div class="form-check m-3">
+               <input type="checkbox" class="form-check-input" id="autoplay" name="autoplay" value="" checked />
+               <label class="form-check-label" for="autoplay">Autoplay Segments</label>
+            </div>
+         </div>
+
+         <div class="row mt-4">
+            <div class="col-2">
+               <label class="col-form-label" for="title">Title</label>
+            </div>
+            <div class="col">
+               <input class="form-control" id="title" name="title" value="{{ properties.title }}" placeholder="" />
+            </div>
+         </div>
+
+         {% if properties.speakers %}
+         <form action="{% url 'webui:edit' properties.id %}" method="post">
+            {% csrf_token %}
+            <div class="row mt-4">
+               <div class="col">
+                  <select class="form-select" name="speaker-old">
+                     <option selected value="" disabled>Update Speaker</option>
+                     {% for speaker in properties.speakers %}
+                     <option value="{{ speaker }}">{{ speaker }}</option>
+                     {% endfor %}
+                  </select>
+               </div>
+
+               <div class="col">
+                  <input type="text" class="form-control" name="speaker-new" value="" placeholder="New Name" />
+               </div>
+            </div>
+
+            <input class="btn btn-primary mt-4" type="submit" value="Update Speaker" />
+         </form>
+         {% endif %}
+      </div>
+   </div>
+
+   <div class="col-8">
+      {% csrf_token %}
+      {% for segment in segments %}
+      <div class="segment">
+         <div class="row mb-3">
+            <div class="col-3">
+               <div class="form-floating">
+                  <input type="text" class="segment-part form-control border-0" id="speaker-{{ segment.id }}" name="speaker-{{ segment.id }}" value="{{ segment.speaker }}" placeholder="" />
+                  <label for="speaker-{{ segment.id }}">Speaker</label>
+               </div>
+            </div>
+
+            <div class="col-2">
+               <div class="form-floating">
+                  <input type="text" class="segment-part form-control border-0" id="start-{{ segment.id }}" name="start-{{ segment.id }}" value="{{ segment.start|floatformat:3 }}" placeholder="" />
+                  <label for="start-{{ segment.id }}">Start</label>
+               </div>
+            </div>
+
+            <div class="col-2">
+               <div class="form-floating">
+                  <input type="text" class="segment-part form-control border-0" id="end-{{ segment.id }}" name="end-{{ segment.id }}" value="{{ segment.end|floatformat:3 }}" placeholder="" />
+                  <label for="end-{{ segment.id }}">End</label>
+               </div>
+            </div>
+
+            <div class="col-1 ms-auto">
+               <button class="btn btn-outline-secondary border-0 segment-delete" data-index="{{ segment.id }}" title="Delete Segment"><i class="bi bi-x-circle"></i></button>
+            </div>
+         </div>
+
+         <div class="row mb-5">
+            <textarea class="segment-part form-control" id="text-{{ segment.id }}" name="text-{{ segment.id }}">{{ segment.text }}</textarea>
+         </div>
+      </div>
+      {% endfor %}
+   </div>
+</div>
+{% endblock content %}
+
+{% block body-end %}
+<script src="{% static 'webui/js/edit.js' %}"></script>
+{% endblock body-end %}

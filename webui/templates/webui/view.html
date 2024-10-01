@@ -1,0 +1,11 @@
+{% extends 'webui/base.html' %}
+
+{% block content %}
+<div class="row">
+   <p>
+      {% for segment in segments %}
+      {{ segment.text }}
+      {% endfor %}
+   </p>
+</div>
+{% endblock content %}

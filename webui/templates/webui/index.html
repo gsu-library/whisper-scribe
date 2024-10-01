@@ -1,0 +1,65 @@
+{% extends 'webui/base.html' %}
+
+{% block content %}
+<div class="row">
+   <div class="col">
+      <form action="{% url 'webui:index' %}" method="post" enctype="multipart/form-data">
+         {% csrf_token %}
+         {% for field in form %}
+         <div class="mb-3">
+            {% if field.field.widget.input_type == 'checkbox' %}
+               <div class="form-check form-switch">
+                  {{ field }}
+                  <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+               </div>
+            {% else %}
+               <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+               {{ field }}
+            {% endif %}
+            {% for error in field.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+         </div>
+         {% endfor %}
+         <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+   </div>
+   <div class="col">
+      more form
+   </div>
+</div>
+
+<div class="row mt-3">
+   <div class="col">
+      <ul class="list-group">
+         {% if transcriptions %}
+            {% for transcription in transcriptions %}
+            <li class="list-group-item">{{ transcription.title }} <small class="text-body-secondary">model: {{ transcription.model }}</small>
+               <div class="float-end">
+
+                  <a href="{% url 'webui:download_text' transcription.id %}"><button class="btn btn-link" type="button" title="Download txt File"><i class="bi bi-file-arrow-down"></i></button></a>
+
+                  <a href="{% url 'webui:download_text_blob' transcription.id %}"><button class="btn btn-link" type="button" title="Download txt_blob File"><i class="bi bi-file-arrow-down"></i></button></a>
+
+                  <a href="{% url 'webui:download_srt' transcription.id %}"><button class="btn btn-link" type="button" title="Download srt File"><i class="bi bi-file-arrow-down"></i></button></a>
+
+                  <a href="{% url 'webui:download_vtt' transcription.id %}"><button class="btn btn-link" type="button" title="Download vtt File"><i class="bi bi-file-arrow-down"></i></button></a>
+
+                  <a href="{% url 'webui:download_json' transcription.id %}"><button class="btn btn-link" type="button" title="Download json File"><i class="bi bi-file-arrow-down"></i></button></a>
+
+                  <a href="{% url 'webui:edit' transcription.id %}"><button class="btn btn-link" type="button" title="Edit Transcription"><i class="bi bi-pencil"></i></button></a>
+
+                  <a href="{% url 'webui:view' transcription.id %}"><button class="btn btn-link" type="button" title="View Transcription"><i class="bi bi-eye" arai-hidden="true"></i></button></a>
+
+                  <form class="float-end" action="{% url 'webui:delete' transcription.id %}" method="post">
+                     {% csrf_token %}
+                     <button class="btn btn-link" type="submit" title="Delete Transcription"><i class="bi bi-x-circle" aria-hidden="true"></i></button>
+                  </form>
+               </div>
+            </li>
+            {% endfor %}
+         {% else %}
+         <p>Nothing to see here.</p>
+         {% endif %}
+      </ul>
+   </div>
+</div>
+{% endblock content %}

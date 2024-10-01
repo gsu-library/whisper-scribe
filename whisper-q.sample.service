@@ -1,0 +1,16 @@
+[Unit]
+Description=Whisper WebUI Q
+PartOf=whisper.service
+After=whisper.service
+
+[Service]
+Type=simple
+Restart=no
+User=whisper
+Group=whisper
+WorkingDirectory=/opt/whisper/
+Environment="LD_LIBRARY_PATH=/opt/whisper/.venv/lib/python3.10/site-packages/nvidia/cublas/lib:/opt/whisper/.venv/lib/python3.10/site-packages/nvidia/cudnn/lib"
+ExecStart=/opt/whisper/.venv/bin/python manage.py qcluster
+
+[Install]
+WantedBy=whisper.service

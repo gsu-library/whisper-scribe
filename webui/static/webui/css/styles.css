@@ -1,0 +1,4 @@
+/* Show Bootstrap validation errors. */
+.invalid-feedback {
+   display: inherit;
+}

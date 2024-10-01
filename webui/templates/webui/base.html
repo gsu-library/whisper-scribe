@@ -1,0 +1,41 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>{% block title %}WhisperScribe{% endblock title %}</title>
+
+   <link rel="shortcut icon" type="image/png" href="{% static 'webui/images/favicon.ico' %}"/>
+
+   <link href="{% static 'webui/css/bootstrap.min.css' %}" rel="stylesheet">
+   <link href="{% static 'webui/css/bootstrap-icons/bootstrap-icons.min.css' %}" rel="stylesheet">
+   <link href="{% static 'webui/css/styles.css' %}" rel="stylesheet">
+
+   <script src="{% static 'webui/js/bootstrap.bundle.min.js' %}"></script>
+</head>
+<body>
+   <div class="container">
+      <header class="my-3 text-center"><h1>{% block header %}WhisperScribe{% endblock header %}</h1></header>
+
+      <main class="my-5 p-3 border">
+         {% if messages %}
+         <div class="messages">
+            {% for message in messages %}
+               {# error tag -> danger alert #}
+               {% if message.tags == 'error' %}
+               <div class="alert alert-danger" role="alert">{{ message }}</div>
+               {% else %}
+               <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+               {% endif %}
+            {% endfor %}
+         </div>
+         {% endif %}
+         <div class="content">{% block content %}{% endblock content %}</div>
+      </main>
+
+      <footer class="my-3 text-center"><a href="#">GitHub Repository</a> | <a href="#">Submit an Issue</a> | <a href="#">GSU Library</a></footer>
+   </div>
+
+   {% block body-end %}{% endblock body-end %}
+</body>
+</html>

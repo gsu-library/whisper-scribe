@@ -94,25 +94,6 @@
                   console.log('you should never see this');
             }
          });
-
-         // Segment deletes
-         // let deleteButtons = document.querySelectorAll('.segment-delete');
-         // deleteButtons.forEach(button => {
-         //    button.addEventListener('click', async () => {
-         //       const id = button.dataset.index;
-         //       const data = { method: 'DELETE' };
-         //       let response = await callApi('/api/segments/' + id, data, 'POST');
-         //       console.log(`delete segment ${id} response: ${response.status}`);
-
-         //       if(response.status == 204) {
-         //          // Todo: fade out and/or display toast?
-         //          button.closest('.segment').remove();
-         //       }
-         //       else {
-         //          // TODO: display some error
-         //       }
-         //    });
-         // });
       });
    }
 
@@ -150,9 +131,15 @@
       if(response.status == 200) {
          const json = await response.json();
          let segment = newSegment(json.id, json.start, json.end);
+         segment = segment.childNodes[0];
+         // TODO: should not have to select child node here
 
-         if(where < 0) {  }
+         if(where < 0) { clickedSegment.before(segment);  }
          else if( where > 0) { clickedSegment.after(segment); }
+         setupSegment(segment);
+      }
+      else {
+         // show some error
       }
    }
 

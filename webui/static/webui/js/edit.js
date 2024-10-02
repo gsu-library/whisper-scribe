@@ -2,6 +2,7 @@
    // TODO: use more data attributes?
    // TODO: check event listener objects
    'use strict';
+   // TODO: save autoplay to local storage and load it from there
    const autoplay = document.querySelector('#autoplay');
    const mediaPlayer = document.querySelector('#media');
    const transcriptionId = window.location.pathname.split('/').pop();
@@ -9,59 +10,137 @@
 
    // Title update
    title.addEventListener('change', obj => {
-      let data = { value: obj.target.value };
+      const data = { value: obj.target.value };
       callApi('/api/transcriptions/' + transcriptionId, data, 'POST');
    });
 
-   // Segment events
-   let segments = document.querySelectorAll('.segment-part');
-   segments.forEach(segment => {
-      const field = segment.name.split('-')[0];
-      const segmentId = segment.name.split('-')[1];
+   // todo: get rid of transcripion id as it is above
 
-      // Play video on textarea click
-      segment.addEventListener('focus', () => {
-         if(segment.name.startsWith('text')) {
-            let start = document.querySelector('#start-'+segmentId);
-            let end = document.querySelector('#end-'+segmentId);
+   // Setup all segment events
+   let segments = document.querySelectorAll('.segment');
+   segments.forEach(setupSegment);
 
+
+   // Function: setupSegment
+   // Adds events to segments
+   function setupSegment(segment) {
+      const segmentId = segment.dataset.index;
+      let inputs = segment.querySelectorAll('input');
+      let textareas =  segment.querySelectorAll('textarea');
+      let buttons = segment.querySelectorAll('button');
+      let startTime = document.querySelector('#start-' + segmentId);
+
+      // Update input fields on change
+      inputs.forEach(input => {
+         input.addEventListener('change', async obj => {
+            const data = {
+               field: obj.target.dataset.field,
+               value: obj.target.value
+            };
+            let result = await callApi('/api/segments/' + segmentId, data, 'POST');
+            // TODO: show result
+         });
+      });
+
+      // Update textarea on change and add autoplay
+      textareas.forEach(textarea => {
+         // Autoplay
+         textarea.addEventListener('focus', obj => {
             if(autoplay.checked) {
-               mediaPlayer.currentTime = start.value;
+               mediaPlayer.currentTime = startTime.value;
                mediaPlayer.play();
             }
-         }
+         });
+
+         // Update
+         textarea.addEventListener('change', async obj => {
+            const data = {
+               field: obj.target.dataset.field,
+               value: obj.target.value
+            };
+            let result = await callApi('/api/segments/' + segmentId, data, 'POST');
+            // TODO: show result
+         });
       });
 
-      // Update field
-      segment.addEventListener('change', async obj => {
-         let data = {
-            field: field,
-            value: obj.target.value,
-         };
+      // Add listeners to all buttons
+      buttons.forEach(button => {
+         const buttonType = button.dataset.type;
 
-         data = await callApi('/api/segments/' + segmentId, data, 'POST');
-         console.log(data);
+         button.addEventListener('click', () => {
+            switch (buttonType) {
+               case 'play':
+                  mediaPlayer.currentTime = startTime.value;
+                  mediaPlayer.play();
+                  break;
+               case 'pause':
+                  mediaPlayer.pause();
+                  break;
+               case 'rewind':
+                  let currentTime = mediaPlayer.currentTime;
+                  mediaPlayer.currentTime = currentTime - 1.0;
+                  // TODO: check to see if negative time breaks any browsers
+                  break;
+               case 'add-before':
+                  createSegment(segmentId);
+                  break;
+               case 'add-after':
+                  createSegment(segmentId);
+                  break;
+               case 'delete':
+                  deleteSegment(segmentId);
+                  break;
+               default:
+                  console.log('you should not see this');
+            }
+         });
+
+         // Segment deletes
+         // let deleteButtons = document.querySelectorAll('.segment-delete');
+         // deleteButtons.forEach(button => {
+         //    button.addEventListener('click', async () => {
+         //       const id = button.dataset.index;
+         //       const data = { method: 'DELETE' };
+         //       let response = await callApi('/api/segments/' + id, data, 'POST');
+         //       console.log(`delete segment ${id} response: ${response.status}`);
+
+         //       if(response.status == 204) {
+         //          // Todo: fade out and/or display toast?
+         //          button.closest('.segment').remove();
+         //       }
+         //       else {
+         //          // TODO: display some error
+         //       }
+         //    });
+         // });
       });
-   });
+   }
 
-   // Segment deletes
-   let deleteButtons = document.querySelectorAll('.segment-delete');
-   deleteButtons.forEach(button => {
-      button.addEventListener('click', async () => {
-         const id = button.dataset.index;
+
+   // Function: createSegment
+   function createSegment(stuff) {
+
+   }
+
+
+   // Function: deleteSegment
+   async function deleteSegment(segmentId) {
+      let segment;
+
+      // segmentId should never be 0 due to autoincrement - if it ever is this will not work on segment 0
+      if(segmentId && (segment = document.querySelector(`.segment[data-index='${segmentId}']`))) {
          const data = { method: 'DELETE' };
-         let response = await callApi('/api/segments/' + id, data, 'POST');
-         console.log(`delete segment ${id} response: ${response.status}`);
+         let response = await callApi('/api/segments/' + segmentId, data, 'POST');
 
          if(response.status == 204) {
             // Todo: fade out and/or display toast?
-            button.closest('.segment').remove();
+            segment.remove();
          }
          else {
             // TODO: display some error
          }
-      });
-   });
+      }
+   }
 
 
    // Function: callApi

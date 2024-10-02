@@ -20,3 +20,6 @@ class Segment(models.Model):
    text = models.TextField()
    speaker = models.CharField(max_length=255, default='')
    probability = models.FloatField(null=True, default=None)
+
+   class Meta:
+      ordering = ['start', 'end']

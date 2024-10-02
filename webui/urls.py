@@ -21,4 +21,5 @@ urlpatterns = [
    # API routes
    path('api/transcriptions/<int:transcription_id>', api.api_transcriptions_id, name='api_transcriptions_id'),
    path('api/segments/<int:segment_id>', api.api_segments_id, name='api_segments_id'),
+   path('api/segments/', api.api_segments, name='api_segments'),
 ]

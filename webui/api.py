@@ -37,6 +37,70 @@ def api_transcriptions_id(request, transcription_id):
    return JsonResponse({'message': 'bad request'}, satus=400)
 
 
+# Function: api_segments
+def api_segments(request):
+   if 'X-Requested-With' not in request.headers or request.headers['X-Requested-With'] != 'XMLHttpRequest':
+      return JsonResponse({'message': 'malformed header'}, status=400)
+
+   # Create new segment
+   if(request.method == 'POST'):
+      data = json.loads(request.body)
+      clicked_id = data.get('segmentId')
+      other_id = int(data.get('otherId', -1))
+      where = int(data.get('where', 0))
+      other_segment = None
+
+      try:
+         clicked_segment = Segment.objects.get(pk=clicked_id)
+      except Segment.DoesNotExist:
+         return JsonResponse({'message': f'segment {clicked_id} not found'}, status=404)
+
+      if other_id > 0:
+         try:
+            other_segment = Segment.objects.get(pk=other_id)
+         except Segment.DoesNotExist:
+            return JsonResponse({'message': f'segment {other_id} not found'}, status=404)
+
+      # If the new segment is before
+      if where < 0:
+         if other_segment:
+            new_start = other_segment.end
+         else:
+            new_start = clicked_segment.start
+
+         new_end = clicked_segment.start
+      # If the new segment is after
+      elif where > 0:
+         new_start = clicked_segment.end
+
+         if other_segment:
+            new_end = other_segment.start
+         else:
+            new_end = clicked_segment.end
+
+      new_segment = Segment(
+         transcription = clicked_segment.transcription,
+         start = new_start,
+         end = new_end,
+         text = ' ',
+      )
+
+      new_segment.save()
+      data = {
+         'message': 'success',
+         'id': new_segment.id,
+         'start': new_start,
+         'end': new_end,
+      }
+      return JsonResponse(data, status=200)
+
+   else:
+      # Return segment list if ever implemented
+      pass
+
+   return JsonResponse({'message': 'bad request'}, status=400)
+
+
 # Function: api_segments_id
 def api_segments_id(request, segment_id):
    if 'X-Requested-With' not in request.headers or request.headers['X-Requested-With'] != 'XMLHttpRequest':

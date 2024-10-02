@@ -82,16 +82,16 @@
                   // TODO: check to see if negative time breaks any browsers
                   break;
                case 'add-before':
-                  createSegment(segmentId);
+                  createSegment(segmentId, -1);
                   break;
                case 'add-after':
-                  createSegment(segmentId);
+                  createSegment(segmentId, 1);
                   break;
                case 'delete':
                   deleteSegment(segmentId);
                   break;
                default:
-                  console.log('you should not see this');
+                  console.log('you should never see this');
             }
          });
 
@@ -118,8 +118,34 @@
 
 
    // Function: createSegment
-   function createSegment(stuff) {
+   async function createSegment(segmentId, where) {
+      let otherSegment;
+      let otherId = -1;
+      const clickedSegment = document.querySelector(`.segment[data-index='${segmentId}']`);
 
+      if(where < 0) {
+         otherSegment = clickedSegment.previousElementSibling;
+      }
+      else if(where > 0) {
+         otherSegment = clickedSegment.nextElementSibling;
+      }
+      else {
+         // TODO: display segment creation error
+         console.log('segment creation failed');
+         return;
+      }
+
+      if(otherSegment && otherSegment.classList.contains('segment')) {
+         otherId = otherSegment.dataset.index;
+      }
+
+      const data = {
+         segmentId: segmentId,
+         otherId: otherId,
+         where: where
+      };
+
+      let response = await callApi('/api/segments/', data, 'POST');
    }
 
 

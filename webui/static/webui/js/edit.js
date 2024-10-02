@@ -146,6 +146,14 @@
       };
 
       let response = await callApi('/api/segments/', data, 'POST');
+
+      if(response.status == 200) {
+         const json = await response.json();
+         let segment = newSegment(json.id, json.start, json.end);
+
+         if(where < 0) {  }
+         else if( where > 0) { clickedSegment.after(segment); }
+      }
    }
 
 
@@ -191,5 +199,58 @@
       // const responseData = await response.json();
       // return response.json();
       return response;
+   }
+
+
+   // Function newSegment
+   // Creates and returns segment code
+   function newSegment(segmentId, start, end) {
+      let segmentCode = `<div class="segment mb-5" data-index="${segmentId}">
+         <div class="row mb-3">
+            <div class="col-3">
+               <div class="form-floating">
+                  <input type="text" class="form-control border-0" id="speaker-${segmentId}" name="speaker-${segmentId}" value="" placeholder="" data-field="speaker" />
+                  <label for="speaker-${segmentId}" >Speaker</label>
+               </div>
+            </div>
+
+            <div class="col-2">
+               <div class="form-floating">
+                  <input type="text" class="form-control border-0" id="start-${segmentId}" name="start-${segmentId}" value="${start.toFixed(3)}" placeholder="" data-field="start" />
+                  <label for="start-${segmentId}">Start</label>
+               </div>
+            </div>
+
+            <div class="col-2">
+               <div class="form-floating">
+                  <input type="text" class="form-control border-0" id="end-${segmentId}" name="end-${segmentId}" value="${end.toFixed(3)}" placeholder="" data-field="end" />
+                  <label for="end-${segmentId}">End</label>
+               </div>
+            </div>
+         </div>
+
+         <div class="row mb-3">
+            <textarea class="form-control" id="text-${segmentId}" name="text-${segmentId}" data-field="text"></textarea>
+         </div>
+
+         <div>
+            <div class="btn-group" role="group">
+               <button type="button" class="btn btn-outline-secondary" title="Play" aria-label="Play" data-type="play"><i class="bi bi-play-fill"></i></button>
+               <button type="button" class="btn btn-outline-secondary" title="Pause" aria-label="Pause" data-type="pause"><i class="bi bi-pause-fill"></i></button>
+               <button type="button" class="btn btn-outline-secondary" title="Quick Rewind" aria-label="Quick Rewind" data-type="rewind"><i class="bi bi-arrow-counterclockwise"></i></button>
+               <button type="button" class="btn btn-outline-secondary" title="Add Segment Before" aria-label="Add Segment Before" data-type="add-before"><i class="bi bi-arrow-bar-up"></i></button>
+               <button type="button" class="btn btn-outline-secondary" title="Add Segment After" aria-label="Add Segment After" data-type="add-after"><i class="bi bi-arrow-bar-down"></i></button>
+            </div>
+
+            <div class="float-end" role="group">
+               <button class="btn btn-outline-danger border-0 segment-delete" title="Delete Segment" aria-label="Delete Segment" data-type="delete"><i class="bi bi-x-lg"></i></button>
+            </div>
+         </div>
+      </div>`;
+
+      let temp = document.createElement('div');
+      temp.innerHTML = segmentCode;
+      return temp;
+      // TODO: this returns a div wrapped around the segment code - do not need the extra div although probably doesn't hurt
    }
 })();

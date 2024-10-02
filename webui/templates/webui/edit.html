@@ -58,7 +58,7 @@
    <div class="col-8">
       {% csrf_token %}
       {% for segment in segments %}
-      <div class="segment">
+      <div class="segment mb-5">
          <div class="row mb-3">
             <div class="col-3">
                <div class="form-floating">
@@ -80,14 +80,24 @@
                   <label for="end-{{ segment.id }}">End</label>
                </div>
             </div>
-
-            <div class="col-1 ms-auto">
-               <button class="btn btn-outline-secondary border-0 segment-delete" data-index="{{ segment.id }}" title="Delete Segment"><i class="bi bi-x-circle"></i></button>
-            </div>
          </div>
 
-         <div class="row mb-5">
+         <div class="row mb-3">
             <textarea class="segment-part form-control" id="text-{{ segment.id }}" name="text-{{ segment.id }}">{{ segment.text }}</textarea>
+         </div>
+
+         <div class="">
+            <div class="btn-group" role="group">
+               <button type="button" class="btn btn-outline-secondary" data-index="{{ segment.id }}" title="Play Segment" aria-label="Play Segment"><i class="bi bi-play-fill"></i></button>
+               <button type="button" class="btn btn-outline-secondary" data-index="{{ segment.id }}" title="Stop Audio" aria-label="Stop Audio"><i class="bi bi-stop-fill"></i></button>
+               <button type="button" class="btn btn-outline-secondary" data-index="{{ segment.id }}" title="Quick Rewind" aria-label="Quick Rewind"><i class="bi bi-arrow-counterclockwise"></i></button>
+               <button type="button" class="btn btn-outline-secondary" data-index="{{ segment.id }}" title="Add Segment Before" aria-label="Add Segment Before"><i class="bi bi-arrow-bar-up"></i></button>
+               <button type="button" class="btn btn-outline-secondary" data-index="{{ segment.id }}" title="Add Segment After" aria-label="Add Segment After"><i class="bi bi-arrow-bar-down"></i></button>
+            </div>
+
+            <div class="btn-group float-end" role="group">
+               <button class="btn btn-outline-secondary border-0 segment-delete" data-index="{{ segment.id }}" title="Delete Segment" aria-label="Delete Segment"><i class="bi bi-x-lg"></i></button>
+            </div>
          </div>
       </div>
       {% endfor %}

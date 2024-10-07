@@ -195,7 +195,31 @@ def transcribe_file(transcription):
    transcription.save(update_fields=['base_segments'])
 
 
+# Function: resegment_words
+# might require speaker key even if empty
+def resegment_word_list(word_list):
+   MAX_TIME = 7
+   MIN_TIME = 1
+   MAX_CHARACTERS = 28
+   MIN_CHARACTERS = 1
+   segments = []
+
+   if not word_list:
+      return segments
+
+   # Make sure word list is sorted by start time
+   word_list = sorted(word_list, key=lambda x: x['start'])
+   previous_speaker = word_list[0].get('speaker')
+
+   # go through all words
+   for word in word_list:
+      pass
+
+   return segments
+
+
 # Function: diarize_separate_overlaps
+# TODO: rework this function
 def diarize_separate_overlaps(diarization):
    # Sort the speaker ranges by their start time
    diarization = sorted(diarization, key=lambda x: x['start'])
@@ -243,6 +267,43 @@ def diarize_separate_overlaps(diarization):
                      final_segments.append(non_overlap)
 
    return final_segments
+
+
+# Function: diarize_assign_speakers
+def diarize_assign_speakers(transcription):
+   word_list = []
+   if not transcription: return word_list
+   speaker_buckets = diarize_separate_overlaps(transcription.diarization)
+   transcription.refresh_from_db()
+
+   # Create word_list and sort it
+   for segment in transcription.base_segments:
+      for words in segment['words']:
+         word_list.append(words)
+
+   word_list = sorted(word_list, key=lambda x: x['start'])
+   bucket_iter = iter(speaker_buckets)
+   speaker_bucket = next(bucket_iter, None)
+   last_speaker = speaker_bucket.get('speaker', '') if speaker_bucket else ''
+   word_index = 0
+
+   # Assign speakers to words in the word_list
+   while word_index < len(word_list):
+      word = word_list[word_index]
+
+      # Words are left after buckets are exhausted
+      if not speaker_bucket:
+         word['speaker'] = last_speaker
+      elif word['start'] < speaker_bucket['end']:
+         word['speaker'] = speaker_bucket['speaker']
+      else:
+         last_speaker = speaker_bucket['speaker']
+         speaker_bucket = next(bucket_iter)
+         continue
+
+      word_index += 1
+
+   return word_list
 
 
 # Function diarize_word_list

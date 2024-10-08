@@ -6,6 +6,7 @@
 !/webui/files/models/.gitkeep
 /whisper.service
 /whisper-q.service
+/activate.sh
 
 # NPM
 /node_modules/

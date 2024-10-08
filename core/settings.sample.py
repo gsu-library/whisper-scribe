@@ -48,12 +48,12 @@ Q_CLUSTER = {
     'orm': 'default'
 }
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
-#         "LOCATION": "django_cache",
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
+    }
+}
 
 
 # Application definition

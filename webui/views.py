@@ -196,25 +196,42 @@ def transcribe_file(transcription):
 
 
 # Function: resegment_words
-# might require speaker key even if empty
 def resegment_word_list(word_list):
-   MAX_TIME = 7
-   MIN_TIME = 1
-   MAX_CHARACTERS = 28
-   MIN_CHARACTERS = 1
+   MAX_TIME = 7.0
+   MAX_CHARACTERS = 42
    segments = []
+   segment = None
 
-   if not word_list:
-      return segments
-
-   # Make sure word list is sorted by start time
+   if not word_list: return segments
    word_list = sorted(word_list, key=lambda x: x['start'])
-   previous_speaker = word_list[0].get('speaker')
+   word_list_index = 0
 
-   # go through all words
-   for word in word_list:
-      pass
+   # Process word list
+   while word_list_index < len(word_list):
+      word = word_list[word_list_index]
 
+      if not segment:
+         segment = {
+            'start': word['start'],
+            'end': word['end'],
+            'text': word['word'],
+            'speaker': word['speaker'],
+            'probability': word['probability']
+         }
+      elif word['speaker'] == segment['speaker'] and \
+         len(word['word']) + len(segment['text']) <= MAX_CHARACTERS and \
+         word['end'] - segment['start'] <= MAX_TIME:
+         segment['text'] += word['word']
+         segment['end'] = word['end']
+         segment['probability'] = min(segment['probability'], word['probability'])
+      else:
+         segments.append(segment)
+         segment = None
+         continue
+
+      word_list_index += 1
+
+   segments.append(segment)
    return segments
 
 
@@ -276,7 +293,6 @@ def diarize_assign_speakers(transcription):
    speaker_buckets = diarize_separate_overlaps(transcription.diarization)
    transcription.refresh_from_db()
 
-   # Create word_list and sort it
    for segment in transcription.base_segments:
       for words in segment['words']:
          word_list.append(words)
@@ -285,11 +301,11 @@ def diarize_assign_speakers(transcription):
    bucket_iter = iter(speaker_buckets)
    speaker_bucket = next(bucket_iter, None)
    last_speaker = speaker_bucket.get('speaker', '') if speaker_bucket else ''
-   word_index = 0
+   word_list_index = 0
 
    # Assign speakers to words in the word_list
-   while word_index < len(word_list):
-      word = word_list[word_index]
+   while word_list_index < len(word_list):
+      word = word_list[word_list_index]
 
       # Words are left after buckets are exhausted
       if not speaker_bucket:
@@ -301,7 +317,7 @@ def diarize_assign_speakers(transcription):
          speaker_bucket = next(bucket_iter)
          continue
 
-      word_index += 1
+      word_list_index += 1
 
    return word_list
 
@@ -390,7 +406,9 @@ def diarize_file(transcription):
    transcription.diarization = result
    transcription.save(update_fields=['diarization'])
 
-   diarized_segments = diarize_word_list(transcription)
+   # diarized_segments = diarize_word_list(transcription)
+   word_list = diarize_assign_speakers(transcription)
+   diarized_segments = resegment_word_list(word_list)
    # Remove all related segments from transcription.
    # TODO: if diarization is selected on initial form maybe don't store segments
    # would be helpful to have if the diarizer fails though

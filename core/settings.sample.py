@@ -30,6 +30,9 @@ DEBUG = False
 
 ALLOWED_HOSTS = []
 
+# Should speaker names be uppercase in file downloads?
+UPPERCASE_SPEAKER_NAMES = True
+
 # Enable/disable Django-Q.
 USE_DJANGO_Q = True
 

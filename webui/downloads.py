@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 
 from .models import Transcription
+from core.settings import UPPERCASE_SPEAKER_NAMES
 
 import json, re
 from pprint import pp # todo: remove
@@ -37,7 +38,6 @@ def format_filename(name):
 
 # Function: download_text
 def download_text(request, transcription_id):
-   UPPERCASE = True
    transcription = get_object_or_404(Transcription, pk=transcription_id)
    segments = transcription.segment_set.all()
    output = ''
@@ -45,7 +45,7 @@ def download_text(request, transcription_id):
    # TODO: diarized segments?
    for segment in segments:
       if segment.speaker:
-         if UPPERCASE:
+         if UPPERCASE_SPEAKER_NAMES:
             output += segment.speaker.upper()
          else:
             output += segment.speaker
@@ -77,7 +77,6 @@ def download_text_blob(request, transcription_id):
 
 # Function: download_srt
 def download_srt(request, transcription_id):
-   UPPERCASE = True
    transcription = get_object_or_404(Transcription, pk=transcription_id)
    segments = transcription.segment_set.all()
    output = ''
@@ -88,7 +87,7 @@ def download_srt(request, transcription_id):
       output += f'{format_timestamp(segment.start, True, ",")} --> {format_timestamp(segment.end, True, ",")}\n'
 
       if segment.speaker:
-         if UPPERCASE:
+         if UPPERCASE_SPEAKER_NAMES:
             output += segment.speaker.upper()
          else:
             output += segment.speaker
@@ -106,7 +105,6 @@ def download_srt(request, transcription_id):
 
 # Function: download_vtt
 def download_vtt(request, transcription_id):
-   UPPERCASE = True
    transcription = get_object_or_404(Transcription, pk=transcription_id)
    segments = transcription.segment_set.all()
    output = 'WEBVTT\n\n'
@@ -115,7 +113,7 @@ def download_vtt(request, transcription_id):
       output += f'{format_timestamp(segment.start)} --> {format_timestamp(segment.end)}\n'
 
       if segment.speaker:
-         if UPPERCASE:
+         if UPPERCASE_SPEAKER_NAMES:
             output += segment.speaker.upper()
          else:
             output += segment.speaker

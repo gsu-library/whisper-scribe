@@ -17,6 +17,12 @@ In the core folder rename settings.sample.py to settings.py and fill out the fol
 * DATABASES - if using a database other than sqlite...
 * TIME_ZONE - to your current time zone
 
+pip install  
+migrate DB  
+create superuser  
+create cachetable  
+maybe collectstatic  
+
 ### Systemd Service Files
 Copy sample files to whisper.service and whisper-q.service.  
 Update WorkingDirectory, ExecStart, and Environment paths in whisper.service and whisper-q.service.  
@@ -28,6 +34,9 @@ nginx - client_max_body_size
 
 ### Nvidia Drivers
 nvidia-driver-535-server
+
+### MySQL
+https://pypi.org/project/mysqlclient/
 
 ## Usage
 `python manage.py qcluster`  

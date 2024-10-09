@@ -1,5 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
+
+from core.settings import MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME
 # TODO: check https://docs.djangoproject.com/en/5.0/topics/forms/#working-with-form-templates
 
 
@@ -22,6 +24,18 @@ class TranscriptionForm(forms.Form):
       initial='base',
    )
    diarize = forms.BooleanField(required=False)
+   hotwords = forms.CharField(
+      required=False,
+      help_text='Hotwords/hint phrases to provide the model with.',
+   )
+   vad_filter = forms.BooleanField(
+      required=False,
+      label='VAD filter',
+      help_text='Enable the voice activity detection (VAD) to filter out parts of the audio without speech.',
+   )
+   max_segment_length = forms.IntegerField(required=False, initial=MAX_SEGMENT_LENGTH)
+   max_segment_time = forms.IntegerField(required=False, initial=MAX_SEGMENT_TIME)
+
 
 
    # Add form-control class to form fields.

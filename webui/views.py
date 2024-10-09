@@ -17,6 +17,7 @@ from pprint import pp
 import torch
 import mimetypes
 # TODO: fix multiple Path instances
+# TODO: move form model listing to settings
 
 
 FILE_UPLOAD_PATH = Path(__file__).resolve().parent.joinpath('files/uploads')

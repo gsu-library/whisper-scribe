@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+#TODO: set defaults on added constants where used to avoid python crashing
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,6 +32,12 @@ ALLOWED_HOSTS = []
 
 # Should speaker names be uppercase in file downloads?
 UPPERCASE_SPEAKER_NAMES = True
+
+# Default max number of characters per segment.
+MAX_SEGMENT_LENGTH = 42
+
+# Default max length of segments in seconds.
+MAX_SEGMENT_TIME = 7
 
 # Enable/disable Django-Q.
 USE_DJANGO_Q = True

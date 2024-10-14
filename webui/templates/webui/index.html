@@ -35,7 +35,7 @@
       <ul class="list-group">
          {% if transcriptions %}
             {% for transcription in transcriptions %}
-            <li class="list-group-item">{{ transcription.title }} <small class="text-body-secondary">model: {{ transcription.model }}</small>
+            <li class="list-group-item">{{ transcription.title }} <small class="text-body-secondary">model: {{ transcription.meta.model }}</small>
                <div class="float-end">
 
                   <a href="{% url 'webui:download_text' transcription.id %}"><button class="btn btn-link" type="button" title="Download txt File"><i class="bi bi-file-arrow-down"></i></button></a>

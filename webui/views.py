@@ -41,8 +41,8 @@ def index(request):
             # TODO: check file type against valid array?
             saved_transcription = Transcription(
                title = Path(request.FILES['upload_file'].name).stem,
-               model = form.cleaned_data['model'],
                upload_file = form.cleaned_data['upload_file'],
+               meta = {'model': form.cleaned_data['model']}
             )
             saved_transcription.save()
          elif form.cleaned_data['upload_url']:
@@ -139,8 +139,8 @@ def handle_url_upload(form):
 
    transcription = Transcription(
       title = info['title'],
-      model = form.cleaned_data['model'],
       upload_file = str(file_path),
+      meta = {'model': form.cleaned_data['model']},
    )
    transcription.save()
 
@@ -150,13 +150,14 @@ def handle_url_upload(form):
 # Function: transcribe_file
 def transcribe_file(transcription):
    word_list = []
+   meta = transcription.meta
 
    # Check for CUDA
    device = 'cpu'
    if torch.cuda.is_available():
       device = 'cuda'
 
-   model = WhisperModel(transcription.model, device=device, compute_type='auto', download_root=str(MODEL_CACHE_PATH))
+   model = WhisperModel(meta['model'], device=device, compute_type='auto', download_root=str(MODEL_CACHE_PATH))
    transcription_segments, info = model.transcribe(transcription.upload_file.path, beam_size=5, word_timestamps=True)
 
    for transcription_segment in transcription_segments:

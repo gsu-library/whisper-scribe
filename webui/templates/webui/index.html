@@ -51,10 +51,14 @@
                   <a href="{% url 'webui:edit' transcription.id %}"><button class="btn btn-link" type="button" title="Edit Transcription"><i class="bi bi-pencil"></i></button></a>
 
                   <a href="{% url 'webui:view' transcription.id %}"><button class="btn btn-link" type="button" title="View Transcription"><i class="bi bi-eye" arai-hidden="true"></i></button></a>
+                  <div class="btn-group" role="group">
+                     <button type="button" class="btn btn-outline-secondary" title="Play" aria-label="Play" data-type="play"><i class="bi bi-play-fill"></i></button>
+                     <a href="{% url 'webui:edit' transcription.id %}" class="btn btn-outline-secondary" title="Edit" aria-label="Edit"><i class="bi bi-pencil"></i></a>
+                  </div>
 
-                  <form class="float-end" action="{% url 'webui:delete' transcription.id %}" method="post">
+                  <form class="float-end ms-3" action="{% url 'webui:delete' transcription.id %}" method="post">
                      {% csrf_token %}
-                     <button class="btn btn-link" type="submit" title="Delete Transcription"><i class="bi bi-x-circle" aria-hidden="true"></i></button>
+                     <button class="btn btn-outline-danger border-0 " type="submit" title="Delete Transcription" aria-label="Delete Transcription"><i class="bi bi-x-circle" aria-hidden="true"></i></button>
                   </form>
                </div>
             </li>

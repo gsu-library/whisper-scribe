@@ -42,9 +42,16 @@ def index(request):
             saved_transcription = Transcription(
                title = Path(request.FILES['upload_file'].name).stem,
                upload_file = form.cleaned_data['upload_file'],
-               meta = {'model': form.cleaned_data['model']}
+               meta = {
+                  'model': form.cleaned_data['model'],
+                  'hotwords': form.cleaned_data['hotwords'],
+                  'vad_filter': form.cleaned_data['vad_filter'],
+                  'max_segment_length': form.cleaned_data['max_segment_length'],
+                  'max_segment_time': form.cleaned_data['max_segment_time'],
+               },
             )
             saved_transcription.save()
+            pp(form.cleaned_data)
          elif form.cleaned_data['upload_url']:
             saved_transcription = handle_url_upload(form)
 
@@ -140,7 +147,13 @@ def handle_url_upload(form):
    transcription = Transcription(
       title = info['title'],
       upload_file = str(file_path),
-      meta = {'model': form.cleaned_data['model']},
+      meta = {
+         'model': form.cleaned_data['model'],
+         'hotwords': form.cleaned_data['hotwords'],
+         'vad_filter': form.cleaned_data['vad_filter'],
+         'max_segment_length': form.cleaned_data['max_segment_length'],
+         'max_segment_time': form.cleaned_data['max_segment_time'],
+      },
    )
    transcription.save()
 

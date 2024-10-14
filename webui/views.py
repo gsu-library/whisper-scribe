@@ -39,9 +39,8 @@ def index(request):
       if form.is_valid():
          if request.FILES:
             # TODO: check file type against valid array?
-            file_title = Path(request.FILES['upload_file']._name).stem # TODO: check _name usage
             saved_transcription = Transcription(
-               title = file_title,
+               title = Path(request.FILES['upload_file'].name).stem,
                model = form.cleaned_data['model'],
                upload_file = form.cleaned_data['upload_file'],
             )

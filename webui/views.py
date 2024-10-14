@@ -51,7 +51,6 @@ def index(request):
                },
             )
             saved_transcription.save()
-            pp(form.cleaned_data)
          elif form.cleaned_data['upload_url']:
             saved_transcription = handle_url_upload(form)
 
@@ -171,7 +170,14 @@ def transcribe_file(transcription):
       device = 'cuda'
 
    model = WhisperModel(meta['model'], device=device, compute_type='auto', download_root=str(MODEL_CACHE_PATH))
-   transcription_segments, info = model.transcribe(transcription.upload_file.path, beam_size=5, word_timestamps=True)
+   transcription_segments, info = model.transcribe(
+      transcription.upload_file.path,
+      language=None, #TOOD: will probably implement language later
+      beam_size=5,
+      word_timestamps=True,
+      vad_filter=meta['vad_filter'],
+      hotwords=meta['hotwords'],
+   )
 
    for transcription_segment in transcription_segments:
       for word in transcription_segment.words:
@@ -339,9 +345,7 @@ def diarize_file(transcription):
 
    word_list = diarize_assign_speakers(transcription)
    diarized_segments = resegment_word_list(word_list)
-   # Remove all related segments from transcription.
-   # TODO: if diarization is selected on initial form maybe don't store segments
-   # would be helpful to have if the diarizer fails though
+   # Remove existing segments
    transcription.segment_set.all().delete()
 
    for diarized_segment in diarized_segments:

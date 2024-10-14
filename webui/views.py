@@ -149,7 +149,7 @@ def handle_url_upload(form):
 
 # Function: transcribe_file
 def transcribe_file(transcription):
-   segment_list = []
+   word_list = []
 
    # Check for CUDA
    device = 'cpu'
@@ -160,39 +160,27 @@ def transcribe_file(transcription):
    transcription_segments, info = model.transcribe(transcription.upload_file.path, beam_size=5, word_timestamps=True)
 
    for transcription_segment in transcription_segments:
-      word_list = []
-      min_probability = 1.0
-
       for word in transcription_segment.words:
          word_list.append({
             'start': word.start,
             'end': word.end,
             'word': word.word,
             'probability': word.probability,
+            'speaker': '',
          })
 
-         if word.probability < min_probability: min_probability = word.probability
 
-      segment_list.append({
-         # 'id': segment.id - 1, # TODO: probably remove this, not needed
-         'start': transcription_segment.start,
-         'end': transcription_segment.end,
-         'text': transcription_segment.text,
-         'words': word_list,
-      })
-
-      segment = Segment(
-         transcription = transcription,
-         start = transcription_segment.start,
-         end = transcription_segment.end,
-         text = transcription_segment.text,
-         probability = min_probability,
-      )
-
-      segment.save()
-
-   transcription.base_segments = segment_list
+   transcription.base_segments = word_list
    transcription.save(update_fields=['base_segments'])
+
+   segments = resegment_word_list(word_list)
+
+   for segment in segments:
+      segment['transcription'] = transcription
+      segment_to_save = Segment(**segment)
+      segment_to_save.save()
+
+   pass
 
 
 # Function: resegment_words

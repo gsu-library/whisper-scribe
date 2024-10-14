@@ -294,9 +294,7 @@ def diarize_assign_speakers(transcription):
    if not transcription: return word_list
    speaker_buckets = diarize_separate_overlaps(transcription.diarization)
    transcription.refresh_from_db()
-
    word_list = transcription.word_list
-
    word_list = sorted(word_list, key=lambda x: x['start'])
    bucket_iter = iter(speaker_buckets)
    speaker_bucket = next(bucket_iter, None)
@@ -322,73 +320,6 @@ def diarize_assign_speakers(transcription):
    return word_list
 
 
-# Function diarize_word_list
-def diarize_word_list(transcription):
-   diarized_segments = diarize_separate_overlaps(transcription.diarization)
-
-   # Add text and probability.
-   for segment in diarized_segments:
-      segment['text'] = ''
-      segment['probability'] = 1.0
-
-   # Generate word list
-   word_list = []
-   # Need refresh if q is used
-   transcription.refresh_from_db()
-   for segment in transcription.base_segments:
-      for words in segment['words']:
-         word_list.append(words)
-
-   # Make sure word list is sorted by start time
-   word_list = sorted(word_list, key=lambda x: x['start'])
-   word_index = 0
-
-   # Helper function for diarized segment processing
-   def add_word_probability():
-      segment['text'] += word['word']
-      segment['probability'] = min(segment['probability'], word['probability'])
-
-   for segment in diarized_segments:
-      # TODO: is there a better way to do this without copying?
-      while word_index < len(word_list):
-         word = word_list[word_index]
-
-         # If word start happens during segment
-         if word['start'] >= segment['start'] and word['start'] <= segment['end']:
-            add_word_probability()
-            # segment['end'] = max(word['end'], segment['end']) # todo: keep/remove this?
-         # If word end happens during segment
-         elif word['end'] >= segment['start'] and word['end'] <= segment['end']:
-            add_word_probability()
-            # segment['start'] = min(word['start'], segment['start']) # todo: keep/remove this?
-         # If the word ended before the current segment started
-         elif word['end'] < segment['start']:
-            add_word_probability()
-            # segment['start'] = word['start'] # todo: keep/remove this?
-         else:
-            break
-
-         word_index += 1
-
-      # TODO: look into updating segments ends here
-      # Make sure segment end aligns with last word added?
-      # segment['end'] = word['end']
-
-   segment = diarized_segments[-1]
-
-   # Are there leftover words that didn't fit a segment?
-   while word_index < len(word_list):
-      word = word_list[word_index]
-      add_word_probability()
-      # segment['end'] = word['end'] # todo: keep/remove this?
-      word_index += 1
-
-   # Remove segments that are empty
-   diarized_segments[:] = [segment for segment in diarized_segments if segment['text']]
-   # TODO: Resegment diarized segments
-   return diarized_segments
-
-
 # Function: diarize_file
 def diarize_file(transcription):
    result = []
@@ -406,7 +337,6 @@ def diarize_file(transcription):
    transcription.diarization = result
    transcription.save(update_fields=['diarization'])
 
-   # diarized_segments = diarize_word_list(transcription)
    word_list = diarize_assign_speakers(transcription)
    diarized_segments = resegment_word_list(word_list)
    # Remove all related segments from transcription.

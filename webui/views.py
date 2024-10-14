@@ -5,7 +5,7 @@ from django.contrib import messages
 
 from .forms import *
 from .models import *
-from core.settings import HUGGING_FACE_TOKEN, BASE_DIR, USE_DJANGO_Q
+from core.settings import HUGGING_FACE_TOKEN, BASE_DIR, USE_DJANGO_Q, MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME
 
 from pathlib import Path
 from uuid import uuid4
@@ -193,7 +193,7 @@ def transcribe_file(transcription):
    transcription.word_list = word_list
    transcription.save(update_fields=['word_list'])
 
-   segments = resegment_word_list(word_list)
+   segments = resegment_word_list(word_list, meta['max_segment_length'], meta['max_segment_time'])
 
    for segment in segments:
       segment['transcription'] = transcription
@@ -204,9 +204,10 @@ def transcribe_file(transcription):
 
 
 # Function: resegment_words
-def resegment_word_list(word_list):
-   MAX_TIME = 7.0
-   MAX_CHARACTERS = 42
+def resegment_word_list(word_list, max_characters, max_time):
+   # Better than param defaults as checks for ''
+   if not max_characters: max_characters = MAX_SEGMENT_LENGTH
+   if not max_time: max_time = MAX_SEGMENT_TIME
    segments = []
    segment = None
 
@@ -227,8 +228,8 @@ def resegment_word_list(word_list):
             'probability': word['probability']
          }
       elif word['speaker'] == segment['speaker'] and \
-         len(word['word']) + len(segment['text']) <= MAX_CHARACTERS and \
-         word['end'] - segment['start'] <= MAX_TIME:
+         len(word['word']) + len(segment['text']) <= max_characters and \
+         word['end'] - segment['start'] <= max_time:
          segment['text'] += word['word']
          segment['end'] = word['end']
          segment['probability'] = min(segment['probability'], word['probability'])
@@ -329,6 +330,7 @@ def diarize_assign_speakers(transcription):
 # Function: diarize_file
 def diarize_file(transcription):
    result = []
+   meta = transcription.meta
    pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token=HUGGING_FACE_TOKEN, cache_dir=MODEL_CACHE_PATH)
 
    if torch.cuda.is_available():
@@ -344,7 +346,7 @@ def diarize_file(transcription):
    transcription.save(update_fields=['diarization'])
 
    word_list = diarize_assign_speakers(transcription)
-   diarized_segments = resegment_word_list(word_list)
+   diarized_segments = resegment_word_list(word_list, meta['max_segment_length'], meta['max_segment_time'])
    # Remove existing segments
    transcription.segment_set.all().delete()
 

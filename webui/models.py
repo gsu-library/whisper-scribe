@@ -8,7 +8,7 @@ class Transcription(models.Model):
    notes = models.TextField(null=True, default=None)
    upload_file = models.FileField(upload_to='webui/files/uploads/')
    # TODO: move upload to OR use MEDIA_ROOT & MEDIA_URL
-   base_segments = models.JSONField(null=True, default=None)
+   word_list = models.JSONField(null=True, default=None)
    diarization = models.JSONField(null=True, default=None)
    meta = models.JSONField(null=True, default=None)
    submitted = models.DateTimeField(auto_now=True)

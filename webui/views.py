@@ -184,8 +184,8 @@ def transcribe_file(transcription):
          })
 
 
-   transcription.base_segments = word_list
-   transcription.save(update_fields=['base_segments'])
+   transcription.word_list = word_list
+   transcription.save(update_fields=['word_list'])
 
    segments = resegment_word_list(word_list)
 
@@ -295,9 +295,7 @@ def diarize_assign_speakers(transcription):
    speaker_buckets = diarize_separate_overlaps(transcription.diarization)
    transcription.refresh_from_db()
 
-   for segment in transcription.base_segments:
-      for words in segment['words']:
-         word_list.append(words)
+   word_list = transcription.word_list
 
    word_list = sorted(word_list, key=lambda x: x['start'])
    bucket_iter = iter(speaker_buckets)

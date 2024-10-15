@@ -42,7 +42,6 @@ def download_text(request, transcription_id):
    segments = transcription.segment_set.all()
    output = ''
 
-   # TODO: diarized segments?
    for segment in segments:
       if segment.speaker:
          if UPPERCASE_SPEAKER_NAMES:
@@ -53,6 +52,8 @@ def download_text(request, transcription_id):
          output += ':\t'
 
       output += segment.text + '\n\n'
+
+   output = output.rstrip('\n') + '\n'
 
    return HttpResponse(output, headers = {
       'Content-Type': 'text/plain',
@@ -67,7 +68,9 @@ def download_text_blob(request, transcription_id):
    output = ''
 
    for segment in segments:
-      output += segment.text
+      output += segment.text + ' '
+
+   output = output.rstrip(' ')
 
    return HttpResponse(output, headers = {
       'Content-Type': 'text/plain',
@@ -94,8 +97,10 @@ def download_srt(request, transcription_id):
 
          output += ': '
 
-      output += f'{segment.text.strip()}\n\n' # todo: remove strip when segments are saved with stripping in case spacing is wanted
+      output += f'{segment.text}\n\n'
       count += 1
+
+   output = output.rstrip('\n') + '\n'
 
    return HttpResponse(output, headers = {
       'Content-Type': 'text/plain',
@@ -120,7 +125,9 @@ def download_vtt(request, transcription_id):
 
          output += ': '
 
-      output += f'{segment.text.strip()}\n\n' # todo: remove strip when segments are saved with stripping in case spacing is wanted
+      output += f'{segment.text}\n\n'
+
+   output = output.rstrip('\n') + '\n'
 
    return HttpResponse(output, headers = {
       'Content-Type': 'text/vtt',

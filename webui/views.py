@@ -245,12 +245,14 @@ def resegment_word_list(word_list, max_characters, max_time):
          segment['end'] = word['end']
          segment['probability'] = min(segment['probability'], word['probability'])
       else:
+         segment['text'] = segment['text'].strip()
          segments.append(segment)
          segment = None
          continue
 
       word_list_index += 1
 
+   segment['text'] = segment['text'].strip()
    segments.append(segment)
    return segments
 

@@ -37,23 +37,21 @@
             {% for transcription in transcriptions %}
             <li class="list-group-item">{{ transcription.title }} <small class="text-body-secondary">model: {{ transcription.meta.model }}</small>
                <div class="float-end">
-
-                  <a href="{% url 'webui:download_text' transcription.id %}"><button class="btn btn-link" type="button" title="Download txt File"><i class="bi bi-file-arrow-down"></i></button></a>
-
-                  <a href="{% url 'webui:download_text_blob' transcription.id %}"><button class="btn btn-link" type="button" title="Download txt_blob File"><i class="bi bi-file-arrow-down"></i></button></a>
-
-                  <a href="{% url 'webui:download_srt' transcription.id %}"><button class="btn btn-link" type="button" title="Download srt File"><i class="bi bi-file-arrow-down"></i></button></a>
-
-                  <a href="{% url 'webui:download_vtt' transcription.id %}"><button class="btn btn-link" type="button" title="Download vtt File"><i class="bi bi-file-arrow-down"></i></button></a>
-
-                  <a href="{% url 'webui:download_json' transcription.id %}"><button class="btn btn-link" type="button" title="Download json File"><i class="bi bi-file-arrow-down"></i></button></a>
-
-                  <a href="{% url 'webui:edit' transcription.id %}"><button class="btn btn-link" type="button" title="Edit Transcription"><i class="bi bi-pencil"></i></button></a>
-
-                  <a href="{% url 'webui:view' transcription.id %}"><button class="btn btn-link" type="button" title="View Transcription"><i class="bi bi-eye" arai-hidden="true"></i></button></a>
                   <div class="btn-group" role="group">
-                     <button type="button" class="btn btn-outline-secondary" title="Play" aria-label="Play" data-type="play"><i class="bi bi-play-fill"></i></button>
                      <a href="{% url 'webui:edit' transcription.id %}" class="btn btn-outline-secondary" title="Edit" aria-label="Edit"><i class="bi bi-pencil"></i></a>
+                     <a href="{% url 'webui:view' transcription.id %}" class="btn btn-outline-secondary" title="View Transcription" aria-label="View Transcription"><i class="bi bi-eye" arai-hidden="true"></i></a>
+
+                     <div class="dropdown btn-group">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="fileDownloadButton" data-bs-toggle="dropdown" aria-expanded="false">File Downloads</button>
+                        <ul class="dropdown-menu" aria-labelledby="fileDownloadButton">
+                           <li><a class="dropdown-item" href="{% url 'webui:download_text' transcription.id %}">TXT</a></li>
+                           <li><a class="dropdown-item" href="{% url 'webui:download_text_blob' transcription.id %}">TXT Blob</a></li>
+                           <li><a class="dropdown-item" href="{% url 'webui:download_srt' transcription.id %}">SRT</a></li>
+                           <li><a class="dropdown-item" href="{% url 'webui:download_vtt' transcription.id %}">VTT</a></li>
+                           <li><a class="dropdown-item" href="{% url 'webui:download_json' transcription.id %}">JSON</a></li>
+                           <li><a class="dropdown-item" href=""></a></li>
+                        </ul>
+                     </div>
                   </div>
 
                   <form class="float-end ms-3" action="{% url 'webui:delete' transcription.id %}" method="post">

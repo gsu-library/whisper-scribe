@@ -163,6 +163,7 @@ def handle_url_upload(form):
 
 # Function: transcribe_file
 def transcribe_file(transcription):
+   DESCRIPTION_MAX_LENGTH = 100
    word_list = []
    meta = transcription.meta
 
@@ -197,12 +198,20 @@ def transcribe_file(transcription):
 
    segments = resegment_word_list(word_list, meta['max_segment_length'], meta['max_segment_time'])
 
+   # Save segments to database and generate a description.
+   description = ''
+
    for segment in segments:
       segment['transcription'] = transcription
       segment_to_save = Segment(**segment)
       segment_to_save.save()
 
-   pass
+      if len(description) < DESCRIPTION_MAX_LENGTH:
+         description += segment['text']
+
+   transcription.refresh_from_db()
+   transcription.description = description[:DESCRIPTION_MAX_LENGTH].strip() + '...'
+   transcription.save(update_fields=['description'])
 
 
 # Function: resegment_words

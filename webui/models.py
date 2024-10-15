@@ -4,8 +4,8 @@ from django.db import models
 # Class: transcription
 class Transcription(models.Model):
    title = models.CharField(max_length=255)
-   description = models.TextField(null=True, default=None)
-   notes = models.TextField(null=True, default=None)
+   description = models.TextField(default='')
+   notes = models.TextField(default='')
    upload_file = models.FileField(upload_to='webui/files/uploads/')
    # TODO: move upload to OR use MEDIA_ROOT & MEDIA_URL
    word_list = models.JSONField(null=True, default=None)

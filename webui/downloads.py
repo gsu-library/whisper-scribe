@@ -1,13 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 
 from .models import Transcription
 from core.settings import UPPERCASE_SPEAKER_NAMES
 
 import json, re
-from pprint import pp # todo: remove
-
-# TODO: at some point when saving speakers will need to trim whitespace
 
 
 # Function: format_timestamp

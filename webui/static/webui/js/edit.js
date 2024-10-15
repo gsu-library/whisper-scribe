@@ -1,20 +1,25 @@
 (() => {
-   // TODO: use more data attributes?
    // TODO: check event listener objects
-   'use strict';
    // TODO: save autoplay to local storage and load it from there
+   'use strict';
    const autoplay = document.querySelector('#autoplay');
    const mediaPlayer = document.querySelector('#media');
    const transcriptionId = window.location.pathname.split('/').pop();
-   let title = document.querySelector('input[name="title"]');
+   let transcriptionParts = document.querySelectorAll('.transcription-part');
 
-   // Title update
-   title.addEventListener('change', obj => {
-      const data = { value: obj.target.value };
-      callApi('/api/transcriptions/' + transcriptionId, data, 'POST');
+
+   // Setup transcription part updates
+   transcriptionParts.forEach(part => {
+      part.addEventListener('change', async obj => {
+         const data = {
+            field: obj.target.dataset.field,
+            value: obj.target.value
+         };
+         let result = await callApi('/api/transcriptions/' + transcriptionId, data, 'POST');
+         // TODO: show results
+      });
    });
 
-   // todo: get rid of transcripion id as it is above
 
    // Setup all segment events
    let segments = document.querySelectorAll('.segment');

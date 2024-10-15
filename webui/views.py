@@ -108,6 +108,8 @@ def edit_transcription(request, transcription_id):
    properties = {
       'id': transcription.id,
       'title': transcription.title,
+      'description': transcription.description,
+      'notes': transcription.notes,
       'file': 'uploads/' + str(Path(str(transcription.upload_file)).name),
       'type': type,
       'speakers': speakers,

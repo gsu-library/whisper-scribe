@@ -23,22 +23,35 @@
             </div>
          </div>
 
-         <div class="row mt-4">
-            <div class="col-2">
-               <label class="col-form-label" for="title">Title</label>
-            </div>
+         <div class="row mt-2">
             <div class="col">
-               <input class="form-control" id="title" name="title" value="{{ properties.title }}" placeholder="" />
+               <label class="col-form-label" for="title">Title</label>
+               <input class="form-control transcription-part" id="title" name="title" value="{{ properties.title }}" placeholder="" data-field="title" />
+            </div>
+         </div>
+
+         <div class="row mt-3">
+            <div class="col">
+               <label class="col-form-label" for="description">Description</label>
+               <textarea class="form-control transcription-part" id="description" name="description" rows="3" data-field="description">{{ properties.description }}</textarea>
+            </div>
+         </div>
+
+         <div class="row mt-3">
+            <div class="col">
+               <label class="col-form-label" for="notes">Notes</label>
+               <textarea class="form-control transcription-part" id="notes" name="notes" rows="3" data-field="notes">{{ properties.notes }}</textarea>
             </div>
          </div>
 
          {% if properties.speakers %}
          <form action="{% url 'webui:edit' properties.id %}" method="post">
             {% csrf_token %}
-            <div class="row mt-4">
+            <div class="row mt-3">
+               <label class="col-form-label">Update Speaker</label>
                <div class="col">
                   <select class="form-select" name="speaker-old">
-                     <option selected value="" disabled>Update Speaker</option>
+                     <option selected value="" disabled></option>
                      {% for speaker in properties.speakers %}
                      <option value="{{ speaker }}">{{ speaker }}</option>
                      {% endfor %}
@@ -59,6 +72,7 @@
    <div class="col-8">
       {% csrf_token %}
       {% for segment in segments %}
+      <!-- SEGMENT CHANGES MUST ALSO BE UPDATED IN EDIT.JS!!!! -->
       <div class="segment mb-5" data-index="{{ segment.id }}">
          <div class="row mb-3">
             <div class="col-3">

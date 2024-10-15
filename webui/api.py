@@ -30,6 +30,10 @@ def api_transcriptions_id(request, transcription_id):
       field = data.get('field')
       value = data.get('value', '').strip()
 
+      # Do not allow a blank title to be submitted
+      if field == 'title' and not value:
+         return JsonResponse({'message': 'bad request'}, status=400)
+
       # If value is empty it can be saved as an empty string
       if field and (value == '' or value):
          setattr(transcription, field, value)

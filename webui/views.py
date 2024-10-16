@@ -65,6 +65,7 @@ def index(request):
                upload_file = form.cleaned_data['upload_file'],
                meta = {
                   'model': form.cleaned_data['model'],
+                  'language': form.cleaned_data['language'],
                   'hotwords': form.cleaned_data['hotwords'],
                   'vad_filter': form.cleaned_data['vad_filter'],
                   'max_segment_length': form.cleaned_data['max_segment_length'],
@@ -170,6 +171,7 @@ def handle_url_upload(form):
       upload_file = str(file_path),
       meta = {
          'model': form.cleaned_data['model'],
+         'language': form.cleaned_data['language'],
          'hotwords': form.cleaned_data['hotwords'],
          'vad_filter': form.cleaned_data['vad_filter'],
          'max_segment_length': form.cleaned_data['max_segment_length'],
@@ -186,6 +188,8 @@ def transcribe_file(transcription):
    DESCRIPTION_MAX_LENGTH = 100
    word_list = []
    meta = transcription.meta
+   model = meta.get('model', 'base')
+   language = meta.get('language')
 
    # Save audio duration and file size
    transcription.meta['duration'] = get_file_duration(transcription.upload_file.path)
@@ -200,7 +204,7 @@ def transcribe_file(transcription):
    model = WhisperModel(meta['model'], device=device, compute_type='auto', download_root=str(MODEL_CACHE_PATH))
    transcription_segments, info = model.transcribe(
       transcription.upload_file.path,
-      language=None, #TOOD: will probably implement language later
+      language=language,
       beam_size=5,
       word_timestamps=True,
       vad_filter=meta['vad_filter'],

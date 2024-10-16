@@ -1,28 +1,29 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from core.settings import MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME
+from core.settings import MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME, WHISPER_MODELS, WHISPER_MODEL_DEFAULT, WHISPER_LANGUAGE
 # TODO: check https://docs.djangoproject.com/en/5.0/topics/forms/#working-with-form-templates
+
+
+# Create choices tuples for choice model.
+def create_model_choices():
+   choices = []
+
+   for model in WHISPER_MODELS:
+      choices.append((model, model))
+
+   return tuple(choices)
 
 
 # Class: TranscriptionForm
 class TranscriptionForm(forms.Form):
-   # Entire model list:
-   # tiny, tiny.en, base, base.en, small, small.en, distil-small.en, medium, medium.en, distil-medium.en, large-v1, large-v2, large-v3, large, distil-large-v2,  distil-large-v3
    upload_file = forms.FileField(required=False)
    upload_url = forms.URLField(required=False)
    model = forms.ChoiceField(
-      choices=(
-         ('tiny', 'tiny'),
-         ('base', 'base'),
-         ('small', 'small'),
-         ('medium', 'medium'),
-         ('large-v1', 'large-v1'),
-         ('large-v2', 'large-v2'),
-         ('large-v3', 'large-v3'),
-      ),
-      initial='base',
+      choices=create_model_choices(),
+      initial=WHISPER_MODEL_DEFAULT,
    )
+   language = forms.CharField(required=False, initial=WHISPER_LANGUAGE)
    diarize = forms.BooleanField(required=False)
    hotwords = forms.CharField(
       required=False,
@@ -35,7 +36,6 @@ class TranscriptionForm(forms.Form):
    )
    max_segment_length = forms.IntegerField(required=False, initial=MAX_SEGMENT_LENGTH)
    max_segment_time = forms.IntegerField(required=False, initial=MAX_SEGMENT_TIME)
-
 
 
    # Add form-control class to form fields.
@@ -63,4 +63,3 @@ class TranscriptionForm(forms.Form):
          msg = 'You must either upload a file or provide an upload URL.'
          self.add_error('upload_file', msg)
          self.add_error('upload_url', msg)
-

@@ -38,14 +38,14 @@
             <li class="list-group-item">{{ transcription.title }} <small class="text-body-secondary">model: {{ transcription.meta.model }}</small>
                <div class="float-end">
                   <div class="btn-group" role="group">
-                     <a href="{% url 'webui:edit' transcription.id %}" class="btn btn-outline-secondary" title="Edit" aria-label="Edit"><i class="bi bi-pencil"></i></a>
-                     <a href="{% url 'webui:view' transcription.id %}" class="btn btn-outline-secondary" title="View Transcription" aria-label="View Transcription"><i class="bi bi-eye" arai-hidden="true"></i></a>
+                     <a href="{% url 'webui:edit' transcription.id %}" class="btn btn-outline-secondary" title="Edit Transcription" aria-label="Edit Transcription">Edit</a>
+                     <a href="{% url 'webui:view' transcription.id %}" class="btn btn-outline-secondary" title="View Transcription" aria-label="View Transcription">Quick View</a>
 
                      <div class="dropdown btn-group">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="fileDownloadButton" data-bs-toggle="dropdown" aria-expanded="false">File Downloads</button>
                         <ul class="dropdown-menu" aria-labelledby="fileDownloadButton">
-                           <li><a class="dropdown-item" href="{% url 'webui:download_text' transcription.id %}">TXT</a></li>
                            <li><a class="dropdown-item" href="{% url 'webui:download_text_blob' transcription.id %}">TXT Blob</a></li>
+                           <li><a class="dropdown-item" href="{% url 'webui:download_text' transcription.id %}">TXT</a></li>
                            <li><a class="dropdown-item" href="{% url 'webui:download_srt' transcription.id %}">SRT</a></li>
                            <li><a class="dropdown-item" href="{% url 'webui:download_vtt' transcription.id %}">VTT</a></li>
                            <li><a class="dropdown-item" href="{% url 'webui:download_json' transcription.id %}">JSON</a></li>

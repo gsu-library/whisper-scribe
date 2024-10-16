@@ -39,6 +39,23 @@ MAX_SEGMENT_LENGTH = 42
 # Default max length of segments in seconds.
 MAX_SEGMENT_TIME = 7
 
+# The default for the language spoken in the audio. Set to None or '' for auto detection.
+WHISPER_LANGUAGE = 'en'
+
+# The list of models available to Whisper.
+WHISPER_MODELS = [
+    'tiny',
+    'base',
+    'small',
+    'medium',
+    'large-v1',
+    'large-v2',
+    'large-v3',
+]
+
+# The default whisper model to show. Leave empty or set to None for default behavior.
+WHISPER_MODEL_DEFAULT = 'base'
+
 # Enable/disable Django-Q.
 USE_DJANGO_Q = True
 

@@ -16,15 +16,36 @@ from django_q.tasks import async_task, result
 from pprint import pp
 import torch
 import mimetypes
+import subprocess
 # TODO: fix multiple Path instances
 # TODO: move form model listing to settings
 
 
 FILE_UPLOAD_PATH = Path(__file__).resolve().parent.joinpath('files/uploads')
-FILE_DOWNLOAD_PATH = Path(__file__).resolve().parent.joinpath('files/downloads')
-# TODO: probably won't need download path
 MODEL_CACHE_PATH = Path(__file__).resolve().parent.joinpath('files/models')
-# TODO: at some point trim whitespace from final segments
+
+
+def get_file_duration(file):
+   if not file: return None
+
+   cmd = [
+      'ffprobe',
+      '-v',
+      'error',
+      '-show_entries',
+      'format=duration',
+      '-of',
+      'default=noprint_wrappers=1:nokey=1',
+      file,
+   ]
+
+   result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+   if result.returncode == 0:
+      return float(result.stdout)
+   else:
+      # TODO: may not want exception
+      raise Exception(f"Error getting file duration: {result.stderr}")
 
 
 # Function: index
@@ -165,6 +186,11 @@ def transcribe_file(transcription):
    DESCRIPTION_MAX_LENGTH = 100
    word_list = []
    meta = transcription.meta
+
+   # Save audio duration and file size
+   transcription.meta['duration'] = get_file_duration(transcription.upload_file.path)
+   transcription.meta['size'] = transcription.upload_file.size
+   transcription.save(update_fields=['meta'])
 
    # Check for CUDA
    device = 'cpu'

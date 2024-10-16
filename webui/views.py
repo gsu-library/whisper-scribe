@@ -105,6 +105,7 @@ def edit_transcription(request, transcription_id):
    if mimetypes.guess_type(str(transcription.upload_file))[0].startswith('audio'):
       type = 'audio'
 
+   # TODO: send transcription along with properties?
    properties = {
       'id': transcription.id,
       'title': transcription.title,
@@ -114,8 +115,6 @@ def edit_transcription(request, transcription_id):
       'type': type,
       'speakers': speakers,
    }
-
-   # TODO: can the template reference transcription from segments passed? (for title, id, etc.)
 
    return render(request, 'webui/edit.html', {'segments': segments, 'properties': properties})
 
@@ -207,7 +206,7 @@ def transcribe_file(transcription):
       segment_to_save.save()
 
       if len(description) < DESCRIPTION_MAX_LENGTH:
-         description += segment['text']
+         description += segment['text'] + ' '
 
    transcription.refresh_from_db()
    transcription.description = description[:DESCRIPTION_MAX_LENGTH].strip() + '...'

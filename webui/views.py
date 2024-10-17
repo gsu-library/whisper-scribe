@@ -5,6 +5,7 @@ from django.contrib import messages
 
 from .forms import *
 from .models import *
+from .utils import format_timestamp
 from core.settings import HUGGING_FACE_TOKEN, BASE_DIR, USE_DJANGO_Q, MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME
 
 from pathlib import Path
@@ -18,7 +19,6 @@ import torch
 import mimetypes
 import subprocess
 # TODO: fix multiple Path instances
-# TODO: move form model listing to settings
 
 
 FILE_UPLOAD_PATH = Path(__file__).resolve().parent.joinpath('files/uploads')
@@ -188,11 +188,11 @@ def transcribe_file(transcription):
    DESCRIPTION_MAX_LENGTH = 100
    word_list = []
    meta = transcription.meta
-   model = meta.get('model', 'base')
-   language = meta.get('language')
+   model = 'base' if not meta['model'] else meta['model']
+   language = None if not meta['language'] else meta['language']
 
    # Save audio duration and file size
-   transcription.meta['duration'] = get_file_duration(transcription.upload_file.path)
+   transcription.meta['duration'] = format_timestamp(get_file_duration(transcription.upload_file.path), include_mill=False)
    transcription.meta['size'] = transcription.upload_file.size
    transcription.save(update_fields=['meta'])
 

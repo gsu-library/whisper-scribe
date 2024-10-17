@@ -30,6 +30,12 @@ DEBUG = False
 
 ALLOWED_HOSTS = []
 
+# Path to save audio/video files to.
+FILE_UPLOAD_PATH = BASE_DIR.joinpath('webui/files/uploads')
+
+# Path to save model caching to.
+MODEL_CACHE_PATH = BASE_DIR.joinpath('webui/files/models')
+
 # Should speaker names be uppercase in file downloads?
 UPPERCASE_SPEAKER_NAMES = True
 

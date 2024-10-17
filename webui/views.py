@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 
 from .forms import *
 from .models import *
 from .utils import format_timestamp
-from core.settings import HUGGING_FACE_TOKEN, BASE_DIR, USE_DJANGO_Q, MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME
+from core.settings import HUGGING_FACE_TOKEN, BASE_DIR, USE_DJANGO_Q, MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME, FILE_UPLOAD_PATH, MODEL_CACHE_PATH
 
 from pathlib import Path
 from uuid import uuid4
@@ -19,10 +19,6 @@ import torch
 import mimetypes
 import subprocess
 # TODO: fix multiple Path instances
-
-
-FILE_UPLOAD_PATH = Path(__file__).resolve().parent.joinpath('files/uploads')
-MODEL_CACHE_PATH = Path(__file__).resolve().parent.joinpath('files/models')
 
 
 def get_file_duration(file):

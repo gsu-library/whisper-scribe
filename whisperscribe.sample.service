@@ -1,0 +1,16 @@
+[Unit]
+Description=WhisperScribe
+Requires=network.target
+After=network.target
+
+[Service]
+Type=simple
+Restart=no
+User=whisper
+Group=whisper
+WorkingDirectory=/path/to/whisperscribe/
+Environment="LD_LIBRARY_PATH=/path/to/whisperscribe/.venv/lib/python3.10/site-packages/nvidia/cublas/lib:/path/to/whisperscribe/.venv/lib/python3.10/site-packages/nvidia/cudnn/lib"
+ExecStart=/path/to/whisperscribe/.venv/bin/python manage.py runserver
+
+[Install]
+WantedBy=multi-user.target

@@ -4,8 +4,8 @@
 !/webui/files/uploads/.gitkeep
 /webui/files/models/*
 !/webui/files/models/.gitkeep
-/whisper.service
-/whisper-q.service
+/whisperscribe.service
+/whisperscribe-q.service
 /activate.sh
 
 # NPM

@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-#TODO: put model list on this page for easy updating
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,13 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ''
 
-# Set Hugging Face token if using diarization.
-HUGGING_FACE_TOKEN = ''
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 ALLOWED_HOSTS = []
+
+CSRF_TRUSTED_ORIGINS = []
+
+
+##### START WHISPERSCRIBE SPECIFIC CONFIGURATION #####
+
+# Set Hugging Face token if using diarization.
+HUGGING_FACE_TOKEN = ''
 
 # Path to save audio/video files to.
 FILE_UPLOAD_PATH = BASE_DIR.joinpath('webui/files/uploads')
@@ -45,10 +49,10 @@ MAX_SEGMENT_LENGTH = 42
 # Default max length of segments in seconds.
 MAX_SEGMENT_TIME = 7
 
-# The default for the language spoken in the audio. Set to None or '' for auto detection.
+# The default for the language spoken in the audio. Set to None or '' for auto detection as a default.
 WHISPER_LANGUAGE = 'en'
 
-# The list of models available to Whisper.
+# The list of models available to Whisper (https://huggingface.co/Systran).
 WHISPER_MODELS = [
     'tiny',
     'base',
@@ -76,6 +80,9 @@ Q_CLUSTER = {
     'bulk': 10,
     'orm': 'default'
 }
+
+##### END WHISPERSCRIBE SPECIFIC CONFIGURATION #####
+
 
 CACHES = {
     "default": {

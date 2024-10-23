@@ -85,7 +85,7 @@ python manage.py qcluster
 python manage.py runserver
 ```
 
-### Using Systmed Service
+### Using Systemd Service
 The systemd service can be used to run WhisperScribe on Linux operating systems. To set this up first copy both the whisperscribe.sample.service and whisperscribe-q.sample.service files to whisperscribe.service and whisperscribe-q.service respectively. Then edit both copied files to update the paths for WorkingDirectory, Environemnt, and ExecStart. For all three make sure the absolute path to WhisperScribe is used and for the Environment and ExecStart directives make sure the name of the virtual environment folder is correct. Once configured the files can be added to systemd with the following commands. You will need to edit the command to use the path to your instance of WhisperScribe.
 
 ```bash
@@ -103,7 +103,7 @@ sudo systemctl restart whisperscribe
 
 ## Additional Information
 ### Reverse Proxy Server
-At some point you will possible want to reverse proxy a web server to WhisperScribe in order to use SSL certificates. [Apache](https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html) provides a well documented guide on setting up a reverse proxy as does [NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/). Do note that if using a reverse proxy server some additional settings will need to be adjusted such as max post size.
+At some point you will want to reverse proxy a web server to WhisperScribe in order to use SSL certificates. [Apache](https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html) provides a well documented guide on setting up a reverse proxy as does [NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/). Do note that if using a reverse proxy server some additional settings will need to be adjusted such as max post size.
 
 ## Updates
 Check the [CHANGELOG](CHANGELOG.md) and release notes to see if there are any major changes with the core/settings.sample.py file, if a migration is required, or if the requirements.txt pip packages file has been updated.

@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
+from django.conf import settings
 
 from .forms import *
 from .models import *
@@ -129,7 +130,7 @@ def edit_transcription(request, transcription_id):
       'title': transcription.title,
       'description': transcription.description,
       'notes': transcription.notes,
-      'file': 'uploads/' + str(Path(str(transcription.upload_file)).name),
+      'file': transcription.upload_file,
       'type': type,
       'speakers': speakers,
    }

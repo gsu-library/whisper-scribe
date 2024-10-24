@@ -9,9 +9,8 @@ Version: 0.0.1
 WhisperScribe is a Django-powered web application that simplifies audio analysis by using AI for speech recognition (Faster Whisper) and speaker diarization (Pyannote.Audio). Users can upload or link media, generate accurate transcripts with speaker identification, and easily edit the results. This project also leverages CUDA support for quicker processing.
 
 ## Requirements
-- Python >= v3.10
+- Python v3.10 - v3.12
 - FFmpeg
-- The python packages in [requirements.txt](requirements.txt)
 - NVIDIA drivers (if using CUDA)
 
 ## Installation

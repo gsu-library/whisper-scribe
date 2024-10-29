@@ -4,5 +4,3 @@ django-q2 ~= 1.7.0
 faster-whisper
 yt-dlp
 pyannote.audio
-nvidia-cublas-cu12 ~= 12.1
-nvidia-cudnn-cu12 ~= 8.9

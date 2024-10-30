@@ -72,6 +72,15 @@ Configure what kind of database you want to use. The default is SQLite. See <htt
 TIME_ZONE  
 Set to your local time zone.
 
+MEDIA_URL  
+
+MEDIA_ROOT  
+
+STATIC_URL  
+
+STATIC_ROOT  
+
+
 ### NVIDIA Drivers
 The NVIDIA drivers available will depend on the OS and the video card installed. Ubuntu provides a [helpful article](https://documentation.ubuntu.com/server/how-to/graphics/install-nvidia-drivers/) that goes over searching for and installing NVIDIDA drivers. We have had success on our setup using the nvidida-driver-535-server package.
 

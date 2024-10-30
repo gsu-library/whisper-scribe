@@ -160,7 +160,6 @@ def handle_url_upload(form):
    with YoutubeDL(ydl_opts) as ydl:
       info = ydl.extract_info(form.cleaned_data['upload_url'])
 
-   # Create relative file path to match model file field behavior.
    file_path = Path(info['requested_downloads'][0]['filepath'])
 
    transcription = Transcription(

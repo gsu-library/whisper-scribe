@@ -8,7 +8,7 @@ from django.core.files import File
 from .forms import *
 from .models import *
 from .utils import format_timestamp
-from core.settings import HUGGING_FACE_TOKEN, BASE_DIR, USE_DJANGO_Q, MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME, FILE_UPLOAD_PATH, MODEL_CACHE_PATH
+from core.settings import HUGGING_FACE_TOKEN, USE_DJANGO_Q, MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME, MODEL_CACHE_PATH
 
 from pathlib import Path
 from uuid import uuid4
@@ -151,7 +151,7 @@ def handle_url_upload(form):
 
    ydl_opts = {
       'paths': {
-         'home': str(FILE_UPLOAD_PATH / 'temp'),
+         'home': str(Path(settings.MEDIA_ROOT).joinpath('temp')),
       },
       'outtmpl': '%(title)s' + hex,
    }

@@ -193,7 +193,6 @@ STATIC_URL = 'static/'
 STATIC_ROOT = ''
 
 STATICFILES_DIRS = [
-   ('uploads', BASE_DIR / 'webui/files/uploads'),
 ]
 
 # Default primary key field type

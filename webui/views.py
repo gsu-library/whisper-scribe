@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.conf import settings
+from django.core.files import File
 
 from .forms import *
 from .models import *
@@ -15,7 +16,6 @@ from yt_dlp import YoutubeDL
 from faster_whisper import WhisperModel
 from pyannote.audio import Pipeline
 from django_q.tasks import async_task, result
-from pprint import pp
 import torch
 import mimetypes
 import subprocess
@@ -151,7 +151,7 @@ def handle_url_upload(form):
 
    ydl_opts = {
       'paths': {
-         'home': str(FILE_UPLOAD_PATH),
+         'home': str(FILE_UPLOAD_PATH / 'temp'),
       },
       'outtmpl': '%(title)s' + hex,
    }
@@ -164,7 +164,7 @@ def handle_url_upload(form):
 
    transcription = Transcription(
       title = info['title'],
-      upload_file = str(file_path),
+      upload_file = File(open(str(file_path), 'rb'), name=file_path.name),
       meta = {
          'model': form.cleaned_data['model'],
          'language': form.cleaned_data['language'],
@@ -175,6 +175,8 @@ def handle_url_upload(form):
       },
    )
    transcription.save()
+   # Delete temp file
+   Path(file_path).unlink(True)
 
    return transcription
 

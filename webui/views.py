@@ -121,7 +121,9 @@ def edit_transcription(request, transcription_id):
 
    type = 'video'
 
-   if mimetypes.guess_type(str(transcription.upload_file))[0].startswith('audio'):
+   file_mimetype = mimetypes.guess_type(str(transcription.upload_file))[0]
+
+   if file_mimetype and file_mimetype.startswith('audio'):
       type = 'audio'
 
    # TODO: send transcription along with properties?

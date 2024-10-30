@@ -34,9 +34,6 @@ CSRF_TRUSTED_ORIGINS = []
 # Set Hugging Face token if using diarization.
 HUGGING_FACE_TOKEN = ''
 
-# Path to save audio/video files to.
-FILE_UPLOAD_PATH = BASE_DIR.joinpath('webui/files/uploads')
-
 # Path to save model caching to.
 MODEL_CACHE_PATH = BASE_DIR.joinpath('webui/files/models')
 
@@ -186,7 +183,7 @@ USE_TZ = True
 
 MEDIA_URL = 'media/'
 
-MEDIA_ROOT = FILE_UPLOAD_PATH
+MEDIA_ROOT = BASE_DIR / 'webui/files/uploads'
 
 STATIC_URL = 'static/'
 

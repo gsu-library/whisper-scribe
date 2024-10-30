@@ -161,7 +161,7 @@ def handle_url_upload(form):
       info = ydl.extract_info(form.cleaned_data['upload_url'])
 
    # Create relative file path to match model file field behavior.
-   file_path = Path(info['requested_downloads'][0]['filepath']).relative_to(BASE_DIR)
+   file_path = Path(info['requested_downloads'][0]['filepath'])
 
    transcription = Transcription(
       title = info['title'],

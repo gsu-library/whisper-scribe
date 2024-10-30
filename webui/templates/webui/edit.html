@@ -12,7 +12,7 @@
 
          <div class="row mt-4">
             <{{ properties.type }} controls id="media" class="w-100">
-               <source src="{% get_media_prefix %}{{ properties.file }}" />
+               <source src="{{ properties.file.url }}" />
             </{{ properties.type }}>
          </div>
 

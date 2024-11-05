@@ -85,7 +85,7 @@ MEDIA_ROOT
 The absolute filesystem path to the directory that will store the media files.
 
 STATIC_URL  
-The URL to sue when referring to the static files located in STATIC_ROOT. This must end in a slash.
+The URL to use when referring to the static files located in STATIC_ROOT. This must end in a slash.
 
 STATIC_ROOT  
 The absolute filesystem path to the directory where the collectstatic command will move static files for deployment.

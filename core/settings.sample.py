@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,13 +21,47 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ''
 
-# Set Hugging Face token if using diarization.
-HUGGING_FACE_TOKEN = ''
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 ALLOWED_HOSTS = []
+
+CSRF_TRUSTED_ORIGINS = []
+
+
+##### START WHISPERSCRIBE SPECIFIC CONFIGURATION #####
+
+# Set Hugging Face token if using diarization.
+HUGGING_FACE_TOKEN = ''
+
+# Path to save model caching to.
+MODEL_CACHE_PATH = BASE_DIR.joinpath('webui/files/models')
+
+# Should speaker names be uppercase in file downloads?
+UPPERCASE_SPEAKER_NAMES = True
+
+# Default max number of characters per segment.
+MAX_SEGMENT_LENGTH = 42
+
+# Default max length of segments in seconds.
+MAX_SEGMENT_TIME = 7
+
+# The default for the language spoken in the audio. Set to None or '' for auto detection as a default.
+WHISPER_LANGUAGE = 'en'
+
+# The list of models available to Whisper (tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3).
+WHISPER_MODELS = [
+    'tiny',
+    'base',
+    'small',
+    'medium',
+    'large-v1',
+    'large-v2',
+    'large-v3',
+]
+
+# The default whisper model to show. Leave empty or set to None for default behavior.
+WHISPER_MODEL_DEFAULT = 'base'
 
 # Enable/disable Django-Q.
 USE_DJANGO_Q = True
@@ -45,12 +78,15 @@ Q_CLUSTER = {
     'orm': 'default'
 }
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
-#         "LOCATION": "django_cache",
-#     }
-# }
+##### END WHISPERSCRIBE SPECIFIC CONFIGURATION #####
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
+    }
+}
 
 
 # Application definition
@@ -89,6 +125,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -144,10 +181,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = BASE_DIR / 'webui/files/uploads'
+
 STATIC_URL = 'static/'
 
+STATIC_ROOT = ''
+
 STATICFILES_DIRS = [
-   ('uploads', BASE_DIR / 'webui/files/uploads'),
 ]
 
 # Default primary key field type

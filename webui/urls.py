@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 from . import views
 from . import downloads
@@ -21,4 +23,8 @@ urlpatterns = [
    # API routes
    path('api/transcriptions/<int:transcription_id>', api.api_transcriptions_id, name='api_transcriptions_id'),
    path('api/segments/<int:segment_id>', api.api_segments_id, name='api_segments_id'),
+   path('api/segments/', api.api_segments, name='api_segments'),
 ]
+
+if settings.DEBUG:
+   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

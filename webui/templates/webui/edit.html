@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+<!-- TODO: what to display if no segments found? -->
 <div class="row">
    <div class="col-4">
       <div class="sticky-top">
@@ -11,33 +12,46 @@
 
          <div class="row mt-4">
             <{{ properties.type }} controls id="media" class="w-100">
-               <source src="{% static properties.file %}" />
+               <source src="{{ properties.file.url }}" />
             </{{ properties.type }}>
          </div>
 
          <div class="row mt-4">
             <div class="form-check m-3">
-               <input type="checkbox" class="form-check-input" id="autoplay" name="autoplay" value="" checked />
+               <input type="checkbox" class="form-check-input" id="autoplay" name="autoplay" value="" />
                <label class="form-check-label" for="autoplay">Autoplay Segments</label>
             </div>
          </div>
 
-         <div class="row mt-4">
-            <div class="col-2">
-               <label class="col-form-label" for="title">Title</label>
-            </div>
+         <div class="row mt-2">
             <div class="col">
-               <input class="form-control" id="title" name="title" value="{{ properties.title }}" placeholder="" />
+               <label class="col-form-label" for="title">Title</label>
+               <input class="form-control transcription-part" id="title" name="title" value="{{ properties.title }}" placeholder="" data-field="title" />
+            </div>
+         </div>
+
+         <div class="row mt-3">
+            <div class="col">
+               <label class="col-form-label" for="description">Description</label>
+               <textarea class="form-control transcription-part" id="description" name="description" rows="3" data-field="description">{{ properties.description }}</textarea>
+            </div>
+         </div>
+
+         <div class="row mt-3">
+            <div class="col">
+               <label class="col-form-label" for="notes">Notes</label>
+               <textarea class="form-control transcription-part" id="notes" name="notes" rows="3" data-field="notes">{{ properties.notes }}</textarea>
             </div>
          </div>
 
          {% if properties.speakers %}
          <form action="{% url 'webui:edit' properties.id %}" method="post">
             {% csrf_token %}
-            <div class="row mt-4">
+            <div class="row mt-3">
+               <label class="col-form-label">Update Speaker</label>
                <div class="col">
                   <select class="form-select" name="speaker-old">
-                     <option selected value="" disabled>Update Speaker</option>
+                     <option selected value="" disabled></option>
                      {% for speaker in properties.speakers %}
                      <option value="{{ speaker }}">{{ speaker }}</option>
                      {% endfor %}
@@ -58,36 +72,47 @@
    <div class="col-8">
       {% csrf_token %}
       {% for segment in segments %}
-      <div class="segment">
+      <!-- SEGMENT CHANGES MUST ALSO BE UPDATED IN EDIT.JS!!!! -->
+      <div class="segment mb-5" data-index="{{ segment.id }}">
          <div class="row mb-3">
             <div class="col-3">
                <div class="form-floating">
-                  <input type="text" class="segment-part form-control border-0" id="speaker-{{ segment.id }}" name="speaker-{{ segment.id }}" value="{{ segment.speaker }}" placeholder="" />
-                  <label for="speaker-{{ segment.id }}">Speaker</label>
+                  <input type="text" class="form-control border-0" id="speaker-{{ segment.id }}" name="speaker-{{ segment.id }}" value="{{ segment.speaker }}" placeholder="" data-field="speaker" />
+                  <label for="speaker-{{ segment.id }}" >Speaker</label>
                </div>
             </div>
 
             <div class="col-2">
                <div class="form-floating">
-                  <input type="text" class="segment-part form-control border-0" id="start-{{ segment.id }}" name="start-{{ segment.id }}" value="{{ segment.start|floatformat:3 }}" placeholder="" />
+                  <input type="text" class="form-control border-0" id="start-{{ segment.id }}" name="start-{{ segment.id }}" value="{{ segment.start|floatformat:3 }}" placeholder="" data-field="start" />
                   <label for="start-{{ segment.id }}">Start</label>
                </div>
             </div>
 
             <div class="col-2">
                <div class="form-floating">
-                  <input type="text" class="segment-part form-control border-0" id="end-{{ segment.id }}" name="end-{{ segment.id }}" value="{{ segment.end|floatformat:3 }}" placeholder="" />
+                  <input type="text" class="form-control border-0" id="end-{{ segment.id }}" name="end-{{ segment.id }}" value="{{ segment.end|floatformat:3 }}" placeholder="" data-field="end" />
                   <label for="end-{{ segment.id }}">End</label>
                </div>
             </div>
-
-            <div class="col-1 ms-auto">
-               <button class="btn btn-outline-secondary border-0 segment-delete" data-index="{{ segment.id }}" title="Delete Segment"><i class="bi bi-x-circle"></i></button>
-            </div>
          </div>
 
-         <div class="row mb-5">
-            <textarea class="segment-part form-control" id="text-{{ segment.id }}" name="text-{{ segment.id }}">{{ segment.text }}</textarea>
+         <div class="row mb-3">
+            <textarea class="form-control" id="text-{{ segment.id }}" name="text-{{ segment.id }}" data-field="text">{{ segment.text }}</textarea>
+         </div>
+
+         <div>
+            <div class="btn-group" role="group">
+               <button type="button" class="btn btn-outline-secondary" title="Play" aria-label="Play" data-type="play"><i class="bi bi-play-fill"></i></button>
+               <button type="button" class="btn btn-outline-secondary" title="Pause" aria-label="Pause" data-type="pause"><i class="bi bi-pause-fill"></i></button>
+               <button type="button" class="btn btn-outline-secondary" title="Quick Rewind" aria-label="Quick Rewind" data-type="rewind"><i class="bi bi-arrow-counterclockwise"></i></button>
+               <button type="button" class="btn btn-outline-secondary" title="Add Segment Before" aria-label="Add Segment Before" data-type="add-before"><i class="bi bi-arrow-bar-up"></i></button>
+               <button type="button" class="btn btn-outline-secondary" title="Add Segment After" aria-label="Add Segment After" data-type="add-after"><i class="bi bi-arrow-bar-down"></i></button>
+            </div>
+
+            <div class="float-end" role="group">
+               <button class="btn btn-outline-danger border-0 segment-delete" title="Delete Segment" aria-label="Delete Segment" data-type="delete"><i class="bi bi-x-lg"></i></button>
+            </div>
          </div>
       </div>
       {% endfor %}

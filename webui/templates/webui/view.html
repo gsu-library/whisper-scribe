@@ -2,7 +2,10 @@
 
 {% block content %}
 <div class="row">
-   <p>
+   <div>
+      <a href="{% url 'webui:index' %}" class="link-primary"><i class="bi bi-arrow-left"></i> Transcript List</a>
+   </div>
+   <p class="col mt-4">
       {% for segment in segments %}
       {{ segment.text }}
       {% endfor %}

@@ -4,11 +4,15 @@ from django.db import models
 # Class: transcription
 class Transcription(models.Model):
    title = models.CharField(max_length=255)
-   upload_file = models.FileField(upload_to='webui/files/uploads/')
+   description = models.TextField(default='')
+   notes = models.TextField(default='')
+   upload_file = models.FileField(max_length=255)
    # TODO: move upload to OR use MEDIA_ROOT & MEDIA_URL
-   model = models.CharField(max_length=255)
-   base_segments = models.JSONField(null=True, default=None)
+   # TODO: also do we want absolute or relative path?
+   # TODO: make sure file paths + names are not longer than upload_file max_length
+   word_list = models.JSONField(null=True, default=None)
    diarization = models.JSONField(null=True, default=None)
+   meta = models.JSONField(null=True, default=None)
    submitted = models.DateTimeField(auto_now=True)
 
 
@@ -20,3 +24,6 @@ class Segment(models.Model):
    text = models.TextField()
    speaker = models.CharField(max_length=255, default='')
    probability = models.FloatField(null=True, default=None)
+
+   class Meta:
+      ordering = ['start', 'end']

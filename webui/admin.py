@@ -7,18 +7,18 @@ from .models import Transcription, Segment
 # Class: TranscriptionAdmin
 class TranscriptonAdmin(admin.ModelAdmin):
    _max_chars = 200
-   list_display = ('title', 'upload_file', 'model', 'get_segments', 'get_diarization', 'submitted')
+   list_display = ('title', 'get_description', 'get_notes', 'upload_file', 'meta', 'submitted')
 
-   def get_segments(self, obj):
-      trunc = Truncator(obj.base_segments)
+   def get_description(self, obj):
+      trunc = Truncator(obj.description)
       return trunc.chars(self._max_chars)
 
-   def get_diarization(self, obj):
-      trunc = Truncator(obj.diarization)
+   def get_notes(self, obj):
+      trunc = Truncator(obj.notes)
       return trunc.chars(self._max_chars)
 
-   get_segments.short_description = 'base segments'
-   get_diarization.short_description = 'diarization'
+   get_description.short_description = 'description'
+   get_notes.short_description = 'notes'
 
 
 # Class: SegmentAdmin

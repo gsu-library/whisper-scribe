@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from django.conf import settings
 
 from .models import Transcription
-from core.settings import UPPERCASE_SPEAKER_NAMES
 from .utils import format_timestamp
 
 import json, re
@@ -24,7 +24,7 @@ def download_text(request, transcription_id):
 
    for segment in segments:
       if segment.speaker:
-         if UPPERCASE_SPEAKER_NAMES:
+         if settings.UPPERCASE_SPEAKER_NAMES:
             output += segment.speaker.upper()
          else:
             output += segment.speaker
@@ -70,7 +70,7 @@ def download_srt(request, transcription_id):
       output += f'{format_timestamp(segment.start, True, ",")} --> {format_timestamp(segment.end, True, ",")}\n'
 
       if segment.speaker:
-         if UPPERCASE_SPEAKER_NAMES:
+         if settings.UPPERCASE_SPEAKER_NAMES:
             output += segment.speaker.upper()
          else:
             output += segment.speaker
@@ -98,7 +98,7 @@ def download_vtt(request, transcription_id):
       output += f'{format_timestamp(segment.start)} --> {format_timestamp(segment.end)}\n'
 
       if segment.speaker:
-         if UPPERCASE_SPEAKER_NAMES:
+         if settings.UPPERCASE_SPEAKER_NAMES:
             output += segment.speaker.upper()
          else:
             output += segment.speaker

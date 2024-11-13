@@ -7,7 +7,7 @@ from django.core.files import File
 
 from .forms import *
 from .models import *
-from .utils import format_timestamp
+from .utils import format_timestamp, get_file_duration
 from core.settings import HUGGING_FACE_TOKEN, USE_DJANGO_Q, MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME, MODEL_CACHE_PATH
 
 from pathlib import Path
@@ -18,31 +18,7 @@ from pyannote.audio import Pipeline
 from django_q.tasks import async_task, result
 import torch
 import mimetypes
-import subprocess
 # TODO: fix multiple Path instances
-
-
-def get_file_duration(file):
-   if not file: return None
-
-   cmd = [
-      'ffprobe',
-      '-v',
-      'error',
-      '-show_entries',
-      'format=duration',
-      '-of',
-      'default=noprint_wrappers=1:nokey=1',
-      file,
-   ]
-
-   result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-   if result.returncode == 0:
-      return float(result.stdout)
-   else:
-      # TODO: may not want exception
-      raise Exception(f"Error getting file duration: {result.stderr}")
 
 
 # Function: index

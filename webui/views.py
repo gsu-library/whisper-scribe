@@ -8,7 +8,6 @@ from django.core.files import File
 from .forms import *
 from .models import *
 from .utils import format_timestamp, get_file_duration
-from core.settings import HUGGING_FACE_TOKEN, USE_DJANGO_Q, MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME, MODEL_CACHE_PATH
 
 from pathlib import Path
 from uuid import uuid4
@@ -49,13 +48,13 @@ def index(request):
          elif form.cleaned_data['upload_url']:
             saved_transcription = handle_url_upload(form)
 
-         if USE_DJANGO_Q:
+         if settings.USE_DJANGO_Q:
             async_task(transcribe_file, saved_transcription, hook=transcription_complete)
          else:
             transcribe_file(saved_transcription)
 
-         if form.cleaned_data['diarize']:
-            if USE_DJANGO_Q:
+         if form.cleaned_data['diarize'] and settings.HUGGING_FACE_TOKEN:
+            if settings.USE_DJANGO_Q:
                async_task(diarize_file, saved_transcription, hook=diarization_complete)
             else:
                diarize_file(saved_transcription)
@@ -177,7 +176,7 @@ def transcribe_file(transcription):
    if torch.cuda.is_available():
       device = 'cuda'
 
-   model = WhisperModel(meta['model'], device=device, compute_type='auto', download_root=str(MODEL_CACHE_PATH))
+   model = WhisperModel(meta['model'], device=device, compute_type='auto', download_root=str(settings.MODEL_CACHE_PATH))
    transcription_segments, info = model.transcribe(
       transcription.upload_file.path,
       language=language,
@@ -222,8 +221,8 @@ def transcribe_file(transcription):
 # Function: resegment_words
 def resegment_word_list(word_list, max_characters, max_time):
    # Better than param defaults as checks for ''
-   if not max_characters: max_characters = MAX_SEGMENT_LENGTH
-   if not max_time: max_time = MAX_SEGMENT_TIME
+   if not max_characters: max_characters = settings.MAX_SEGMENT_LENGTH
+   if not max_time: max_time = settings.MAX_SEGMENT_TIME
    segments = []
    segment = None
 
@@ -349,7 +348,7 @@ def diarize_assign_speakers(transcription):
 def diarize_file(transcription):
    result = []
    meta = transcription.meta
-   pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token=HUGGING_FACE_TOKEN, cache_dir=MODEL_CACHE_PATH)
+   pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)
 
    if torch.cuda.is_available():
       pipeline.to(torch.device('cuda'))

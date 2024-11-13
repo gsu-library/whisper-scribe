@@ -1,4 +1,7 @@
 import subprocess
+import tempfile
+import os
+import uuid
 
 
 # Function: is_float
@@ -50,4 +53,61 @@ def get_file_duration(file):
       return float(result.stdout)
    else:
       # TODO: may not want exception
-      raise Exception(f"Error getting file duration: {result.stderr}")
+      raise Exception(f'Error getting file duration: {result.stderr}')
+
+
+def extract_audio_to_wav(input_file):
+    try:
+        # Generate a unique random filename
+        random_filename = str(uuid.uuid4()) + '.wav'
+
+        # Create a temporary directory
+        temp_dir = tempfile.mkdtemp()
+        output_file = os.path.join(temp_dir, random_filename)
+
+        # Construct the FFmpeg command
+        ffmpeg_cmd = [
+            'ffmpeg',              # FFmpeg executable
+            '-i', input_file,    # Input file path
+            '-acodec', 'pcm_s16le',  # Audio codec (WAV)
+            '-ac', '1',           # Number of audio channels (mono)
+            # '-ar', '48000',
+            output_file           # Output file path
+        ]
+
+        # Execute the FFmpeg command using subprocess
+        subprocess.run(ffmpeg_cmd, stderr=subprocess.PIPE, check=True)
+
+        return output_file
+
+    except subprocess.CalledProcessError as e:
+        print(f'FFmpeg error: {e.stderr.decode()}')  # Print FFmpeg's error output
+        return None
+    except Exception as e:
+        print(f'Error: {e}')
+        return None
+
+
+def get_sample_rate(input_file):
+    try:
+        # Construct the FFprobe command
+        ffprobe_cmd = [
+            'ffprobe',
+            '-v', 'error',  # Suppress verbose output
+            '-select_streams', 'a:0',  # Select the first audio stream
+            '-show_entries', 'stream=sample_rate',  # Show only the sample rate
+            '-of', 'default=noprint_wrappers=1:nokey=1',  # Output only the value
+            input_file
+        ]
+
+        # Execute the FFprobe command and capture the output
+        result = subprocess.run(ffprobe_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        sample_rate = int(result.stdout.decode().strip())
+        return sample_rate
+
+    except subprocess.CalledProcessError as e:
+        print(f'FFprobe error: {e.stderr.decode()}')
+        return None
+    except Exception as e:
+        print(f'Error: {e}')
+        return None

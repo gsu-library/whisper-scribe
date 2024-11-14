@@ -7,7 +7,7 @@ from django.core.files import File
 
 from .forms import *
 from .models import *
-from .utils import format_timestamp, get_file_duration
+from .utils import format_timestamp, get_file_duration, extract_audio_to_wav
 
 from pathlib import Path
 from uuid import uuid4
@@ -221,6 +221,7 @@ def transcribe_file(transcription):
 # Function: resegment_words
 def resegment_word_list(word_list, max_characters, max_time):
    # Better than param defaults as checks for ''
+   # Segments will get the first word, do not need to check for minimum length or time
    if not max_characters: max_characters = settings.MAX_SEGMENT_LENGTH
    if not max_time: max_time = settings.MAX_SEGMENT_TIME
    segments = []
@@ -353,7 +354,10 @@ def diarize_file(transcription):
    if torch.cuda.is_available():
       pipeline.to(torch.device('cuda'))
 
-   diarization = pipeline(transcription.upload_file.path)
+   # Convert media to .wav
+   temp_audio = extract_audio_to_wav(transcription.upload_file.path)
+
+   diarization = pipeline(temp_audio)
 
    for turn, _, speaker in diarization.itertracks(yield_label=True):
       # print(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker}")
@@ -361,6 +365,8 @@ def diarize_file(transcription):
 
    transcription.diarization = result
    transcription.save(update_fields=['diarization'])
+   # Delete temp audio file
+   temp_audio.unlink()
 
    word_list = diarize_assign_speakers(transcription)
    diarized_segments = resegment_word_list(word_list, meta['max_segment_length'], meta['max_segment_time'])

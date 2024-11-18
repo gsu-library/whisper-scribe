@@ -71,7 +71,7 @@ def extract_audio_to_wav(input_file):
 
     try:
         random_filename = str(uuid.uuid4()) + '.wav'
-        output_file = Path(temp_dir).joinpath(random_filename)
+        output_file = temp_dir.joinpath(random_filename)
 
         cmd = [
             'ffmpeg',

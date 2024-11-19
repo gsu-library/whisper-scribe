@@ -7,8 +7,6 @@ class Transcription(models.Model):
    description = models.TextField(default='')
    notes = models.TextField(default='')
    upload_file = models.FileField(max_length=255)
-   # TODO: move upload to OR use MEDIA_ROOT & MEDIA_URL
-   # TODO: also do we want absolute or relative path?
    # TODO: make sure file paths + names are not longer than upload_file max_length
    word_list = models.JSONField(null=True, default=None)
    diarization = models.JSONField(null=True, default=None)

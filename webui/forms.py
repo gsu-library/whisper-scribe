@@ -1,7 +1,6 @@
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
-
-from core.settings import MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME, WHISPER_MODELS, WHISPER_MODEL_DEFAULT, WHISPER_LANGUAGE
 # TODO: check https://docs.djangoproject.com/en/5.0/topics/forms/#working-with-form-templates
 
 
@@ -9,7 +8,7 @@ from core.settings import MAX_SEGMENT_LENGTH, MAX_SEGMENT_TIME, WHISPER_MODELS, 
 def create_model_choices():
    choices = []
 
-   for model in WHISPER_MODELS:
+   for model in settings.WHISPER_MODELS:
       choices.append((model, model))
 
    return tuple(choices)
@@ -21,9 +20,9 @@ class TranscriptionForm(forms.Form):
    upload_url = forms.URLField(required=False)
    model = forms.ChoiceField(
       choices=create_model_choices(),
-      initial=WHISPER_MODEL_DEFAULT,
+      initial=settings.WHISPER_MODEL_DEFAULT,
    )
-   language = forms.CharField(required=False, initial=WHISPER_LANGUAGE)
+   language = forms.CharField(required=False, initial=settings.WHISPER_LANGUAGE)
    diarize = forms.BooleanField(required=False)
    hotwords = forms.CharField(
       required=False,
@@ -34,8 +33,8 @@ class TranscriptionForm(forms.Form):
       label='VAD filter',
       help_text='Enable the voice activity detection (VAD) to filter out parts of the audio without speech.',
    )
-   max_segment_length = forms.IntegerField(required=False, initial=MAX_SEGMENT_LENGTH)
-   max_segment_time = forms.IntegerField(required=False, initial=MAX_SEGMENT_TIME)
+   max_segment_length = forms.IntegerField(required=False, initial=settings.MAX_SEGMENT_LENGTH)
+   max_segment_time = forms.IntegerField(required=False, initial=settings.MAX_SEGMENT_TIME)
 
 
    # Add form-control class to form fields.

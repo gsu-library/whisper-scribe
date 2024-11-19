@@ -11,9 +11,9 @@ app_name = 'webui'
 
 urlpatterns = [
    path('', views.index, name='index'),
-   path('delete/<int:transcription_id>', views.delete_transcription, name='delete'),
    path('view/<int:transcription_id>', views.view_transcription, name='view'),
    path('edit/<int:transcription_id>', views.edit_transcription, name='edit'),
+   path('delete/<int:transcription_id>', views.delete_transcription, name='delete'),
    # Download routes
    path('download/text/<int:transcription_id>', downloads.download_text, name='download_text'),
    path('download/text_blob/<int:transcription_id>', downloads.download_text_blob, name='download_text_blob'),

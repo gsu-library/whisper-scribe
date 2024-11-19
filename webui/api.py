@@ -1,17 +1,9 @@
 from django.http import HttpResponse, JsonResponse
 
 from .models import *
+from .utils import is_float
 
 import json
-
-
-# Function: is_float
-def is_float(number):
-   try:
-      float(number)
-      return True
-   except ValueError:
-      return False
 
 
 # Function: api_transcriptions_id

@@ -1,7 +1,7 @@
 from django.conf import settings
 
-import subprocess
 from pathlib import Path
+import subprocess
 import uuid
 
 
@@ -16,6 +16,7 @@ def is_float(number):
 
 # Function: format_timestamp
 def format_timestamp(seconds: float, always_include_hours: bool = False, decimal_marker: str = '.', include_mill = True):
+   # TODO: check seconds for float, return none if not, remove assertion?
    assert seconds >= 0, 'non-negative timestamp expected'
    milliseconds = round(seconds * 1000.0)
 
@@ -53,7 +54,7 @@ def get_file_duration(file):
    if result.returncode == 0:
       return float(result.stdout)
    else:
-      # TODO: may not want exception
+      # TODO: may not want exception, try except block instead?
       raise Exception(f'Error getting file duration: {result.stderr}')
 
 
@@ -83,7 +84,6 @@ def extract_audio_to_wav(input_file):
 
         subprocess.run(cmd, stderr=subprocess.PIPE, check=True)
         return output_file
-
     except subprocess.CalledProcessError as e:
         print(f'FFmpeg error: {e.stderr.decode()}')
         return None

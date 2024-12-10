@@ -123,10 +123,6 @@ sudo systemctl stop whisperscribe
 sudo systemctl restart whisperscribe
 ```
 
-## Additional Information
-### Reverse Proxy Server
-At some point you will want to reverse proxy a web server to WhisperScribe in order to use SSL certificates. [Apache](https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html) and [NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) provide well documented guides on setting up reverse proxies. Gunicorn also provides a [guide](https://docs.gunicorn.org/en/latest/deploy.html) on setting up a reverse proxy using Nginx. Do note that if using a reverse proxy server some additional settings will need to be adjusted such as max post size.
-
 ## Updates
 Check the [CHANGELOG](CHANGELOG.md) and release notes to see if there are any major changes with the core/settings.sample.py file, if a migration is required, if the requirements.txt pip packages file has been updated, or if static files need to be migrated.
 
@@ -137,6 +133,11 @@ pip install -r requirements.txt
 python manage.py migrate
 python manage.py collectstatic
 ```
+
+## Additional Information
+### Reverse Proxy Server
+At some point you will want to reverse proxy a web server to WhisperScribe in order to use SSL certificates. [Apache](https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html) and [NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) provide well documented guides on setting up reverse proxies. Gunicorn also provides a [guide](https://docs.gunicorn.org/en/latest/deploy.html) on setting up a reverse proxy using Nginx. Do note that if using a reverse proxy server some additional settings will need to be adjusted such as max post size.
+
 
 ## Developer Notes
 The Django project folder is 'core' and the application folder is 'webui'.

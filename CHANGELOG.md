@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2024-12-
+- The new large-v3-turbo model is now available.
+- Update pip packages to latest versions.
+
 ## [1.1.0] - 2024-11-19
 - Convert media files to temporary .wav files for diarizer.
 - Reorganize some functions into utils.py and media.py.

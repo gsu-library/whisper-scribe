@@ -17,7 +17,7 @@ WhisperScribe is a Django-powered web application that simplifies audio analysis
 ## Installation
 The following installation instructions are based on a Linux install. This mostly works in a Windows environment with some extra configuration.
 
-1. [Install Python](https://wiki.python.org/moin/BeginnersGuide/Download). We recommend using version 3.10.12, as that is what this repository is built using. If you need to manage multiple Python versions, we suggest using [Pyenv](https://github.com/pyenv/pyenv).
+1. [Install Python](https://wiki.python.org/moin/BeginnersGuide/Download). We recommend using version 3.10.12, as that is what this repository is built on. If you need to manage multiple Python versions, we suggest using [Pyenv](https://github.com/pyenv/pyenv).
 1. [Install FFmpeg](https://www.ffmpeg.org/).
 1. Install and [configure](#configuring-the-web-server) a web server for static and media file hosting. This can also be used as a reverse proxy server to proxy Gunicorn. Either [Apache](https://httpd.apache.org/) or [Nginx](https://nginx.org/) are recommended.
 1. Either clone the WhisperScribe git repository or download the source code from the latest release. Move/extract the files in a location that is not being served by a web server.

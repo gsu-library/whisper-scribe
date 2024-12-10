@@ -3,13 +3,13 @@ Code Repository: https://github.com/gsu-library/whisper-scribe
 Author: Matt Brooks <mbrooks34@gsu.edu>  
 Date Created: 2024-05-21  
 License: [GPLv3](LICENSE)  
-Version: 1.1.0
+Version: 1.2.0
 
 ## Description
 WhisperScribe is a Django-powered web application that simplifies audio analysis by using AI for speech recognition (Faster Whisper) and speaker diarization (Pyannote.Audio). Users can upload or link media, generate accurate transcripts with speaker identification, and easily edit the results. This project also leverages CUDA support for quicker processing.
 
 ## Requirements
-- Python v3.10 - v3.12
+- Python v3.10.12
 - FFmpeg
 - Web Server
 - NVIDIA drivers (if using CUDA)
@@ -17,12 +17,12 @@ WhisperScribe is a Django-powered web application that simplifies audio analysis
 ## Installation
 The following installation instructions are based on a Linux install. This mostly works in a Windows environment with some extra configuration.
 
-1. [Install Python](https://wiki.python.org/moin/BeginnersGuide/Download) v3.10 to v3.12.
+1. [Install Python](https://wiki.python.org/moin/BeginnersGuide/Download). We recommend using version 3.10.12, as that is what this repository is built on. If you need to manage multiple Python versions, we suggest using [Pyenv](https://github.com/pyenv/pyenv).
 1. [Install FFmpeg](https://www.ffmpeg.org/).
 1. Install and [configure](#configuring-the-web-server) a web server for static and media file hosting. This can also be used as a reverse proxy server to proxy Gunicorn. Either [Apache](https://httpd.apache.org/) or [Nginx](https://nginx.org/) are recommended.
 1. Either clone the WhisperScribe git repository or download the source code from the latest release. Move/extract the files in a location that is not being served by a web server.
 1. Create a Python virtual environment inside the WhisperScribe folder - [venv](https://docs.python.org/3/library/venv.html) is recommended.
-1. Activate the Python virtual envrionment (stay in the virtual environment for the remainder of the steps). Once activated install the pip requirements: `pip install -r requirements.txt`.
+1. Activate the Python virtual envrionment (stay in the virtual environment for the remainder of the steps). Once activated install the pip requirements: `pip install -r requirements-freeze.txt`.
 1. Copy the core/settings.sample.py file to core/settings.py and [configure the settings file](#configuring-the-settings-file). If wanting to use a database other than SQLite configure it now (see [Django's databases documentation](https://docs.djangoproject.com/en/5.1/ref/databases/)).
 1. Run Django database migrations: `python manage.py migrate`.
 1. Create the cache table: `python manage.py createcachetable`.
@@ -123,32 +123,33 @@ sudo systemctl stop whisperscribe
 sudo systemctl restart whisperscribe
 ```
 
-## Additional Information
-### Reverse Proxy Server
-At some point you will want to reverse proxy a web server to WhisperScribe in order to use SSL certificates. [Apache](https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html) and [NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) provide well documented guides on setting up reverse proxies. Gunicorn also provides a [guide](https://docs.gunicorn.org/en/latest/deploy.html) on setting up a reverse proxy using Nginx. Do note that if using a reverse proxy server some additional settings will need to be adjusted such as max post size.
-
 ## Updates
-Check the [CHANGELOG](CHANGELOG.md) and release notes to see if there are any major changes with the core/settings.sample.py file, if a migration is required, if the requirements.txt pip packages file has been updated, or if static files need to be migrated.
+Check the [CHANGELOG](CHANGELOG.md) and release notes to see if there are any major changes with the core/settings.sample.py file, if a migration is required, if the requirements-freeze.txt pip packages file has been updated, or if static files need to be migrated.
 
 It never hurts to run the commands below after an update (while in the Python virtual environment).
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-freeze.txt
 python manage.py migrate
 python manage.py collectstatic
 ```
+
+## Additional Information
+### Reverse Proxy Server
+At some point you will want to reverse proxy a web server to WhisperScribe in order to use SSL certificates. [Apache](https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html) and [NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) provide well documented guides on setting up reverse proxies. Gunicorn also provides a [guide](https://docs.gunicorn.org/en/latest/deploy.html) on setting up a reverse proxy using Nginx. Do note that if using a reverse proxy server some additional settings will need to be adjusted such as max post size.
 
 ## Developer Notes
 The Django project folder is 'core' and the application folder is 'webui'.
 
 ## Dependencies
-- [Faster-Whisper v1.0.3](https://github.com/SYSTRAN/faster-whisper)
-- [Pyannote.Audio v3.3.1](https://github.com/pyannote/pyannote-audio)
-- [YT-DLP v2024-8-6](https://github.com/yt-dlp/yt-dlp)
+- [Python v3.10.12](https://www.python.org/)
+- [Faster-Whisper v1.1.0](https://github.com/SYSTRAN/faster-whisper)
+- [Pyannote.Audio v3.3.2](https://github.com/pyannote/pyannote-audio)
+- [YT-DLP v2024.12.6](https://github.com/yt-dlp/yt-dlp)
 - [FFmpeg](https://www.ffmpeg.org/)
-- [Django v5.1.1](https://www.djangoproject.com/)
+- [Django v5.1.4](https://www.djangoproject.com/)
 - [Django Cleanup v8.1.0](https://github.com/un1t/django-cleanup/)
-- [Django Q2 v1.7.2](https://django-q2.readthedocs.io/en/master/)
+- [Django Q2 v1.7.4](https://django-q2.readthedocs.io/en/master/)
 - [NVIDIA cuBLAS v12.1.3.1](https://developer.nvidia.com/cublas)
 - [NVIDIA cuDNN v8.9.2.26](https://developer.nvidia.com/cudnn)
 - [Bootstrap v5.3.3](https://getbootstrap.com/)

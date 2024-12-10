@@ -8,6 +8,9 @@
 !/*.sample.service
 /activate.sh
 
+# pyenv
+.python-version
+
 # NPM
 /node_modules/
 

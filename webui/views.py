@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.conf import settings
-from django.contrib import messages
 
 from .forms import *
 from .models import *

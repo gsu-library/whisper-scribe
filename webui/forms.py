@@ -1,6 +1,5 @@
 from django import forms
 from django.conf import settings
-from django.core.exceptions import ValidationError
 # TODO: check https://docs.djangoproject.com/en/5.0/topics/forms/#working-with-form-templates
 
 
@@ -58,7 +57,6 @@ class TranscriptionForm(forms.Form):
       upload_url = cleaned_data.get('upload_url')
 
       if not upload_file and not upload_url:
-         # raise ValidationError('You must either upload a file or provide an upload URL.')
          msg = 'You must either upload a file or provide an upload URL.'
          self.add_error('upload_file', msg)
          self.add_error('upload_url', msg)

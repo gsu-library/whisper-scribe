@@ -4,4 +4,4 @@ django-q2 ~= 1.7.0
 faster-whisper ~= 1.1.0
 pyannote.audio ~= 3.3.2
 gunicorn ~= 23.0.0
-yt-dlp
+yt-dlp[default]

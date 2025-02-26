@@ -3,7 +3,7 @@ Code Repository: https://github.com/gsu-library/whisper-scribe
 Author: Matt Brooks <mbrooks34@gsu.edu>  
 Date Created: 2024-05-21  
 License: [GPLv3](LICENSE)  
-Version: 1.2.0
+Version: 1.2.1
 
 ## Description
 WhisperScribe is a Django-powered web application that simplifies audio analysis by using AI for speech recognition (Faster Whisper) and speaker diarization (Pyannote.Audio). Users can upload or link media, generate accurate transcripts with speaker identification, and easily edit the results. This project also leverages CUDA support for quicker processing.
@@ -15,20 +15,23 @@ WhisperScribe is a Django-powered web application that simplifies audio analysis
 - NVIDIA drivers (if using CUDA)
 
 ## Installation
-The following installation instructions are based on a Linux install. This mostly works in a Windows environment with some extra configuration.
+The following installation instructions are based on a Linux server install using Python v3.10.12.
 
 1. [Install Python](https://wiki.python.org/moin/BeginnersGuide/Download). We recommend using version 3.10.12, as that is what this repository is built on. If you need to manage multiple Python versions, we suggest using [Pyenv](https://github.com/pyenv/pyenv).
 1. [Install FFmpeg](https://www.ffmpeg.org/).
 1. Install and [configure](#configuring-the-web-server) a web server for static and media file hosting. This can also be used as a reverse proxy server to proxy Gunicorn. Either [Apache](https://httpd.apache.org/) or [Nginx](https://nginx.org/) are recommended.
 1. Either clone the WhisperScribe git repository or download the source code from the latest release. Move/extract the files in a location that is not being served by a web server.
-1. Create a Python virtual environment inside the WhisperScribe folder - [venv](https://docs.python.org/3/library/venv.html) is recommended.
-1. Activate the Python virtual envrionment (stay in the virtual environment for the remainder of the steps). Once activated install the pip requirements: `pip install -r requirements-freeze.txt`.
+1. Create a Python virtual environment inside the WhisperScribe folder - [venv](https://docs.python.org/3/library/venv.html) is recommended. Once created, activate and stay in the virtual environment for the remainder of the steps.
+1. [Install the required Python packages](#installing-python-packages).
 1. Copy the core/settings.sample.py file to core/settings.py and [configure the settings file](#configuring-the-settings-file). If wanting to use a database other than SQLite configure it now (see [Django's databases documentation](https://docs.djangoproject.com/en/5.1/ref/databases/)).
 1. Run Django database migrations: `python manage.py migrate`.
 1. Create the cache table: `python manage.py createcachetable`.
 1. Move static files: `python manage.py collectstatic`.
 1. [Install NVIDIA drivers](#nvidia-drivers) if using CUDA (optional).
 1. Create Django admin user (optional): `python manage.py createsuperuser`.
+
+### Installing Python Packages
+To install the required Python packages it is recommended to use pip to install the freeze file that is used with this project: `pip install -r requirements-freeze.txt`. In some scenarios (not using Linux, different Python version, etc.) pip will fail to install the freeze file. If this is the case, installing the requirements.txt file should work: `pip install -r requirements.txt`.
 
 ### Configuring the Web Server
 A web server will have to be configured to host static and media files used by WhisperScribe. Django has documentation on [how to deploy static files](https://docs.djangoproject.com/en/5.1/howto/static-files/deployment/).
@@ -143,13 +146,14 @@ The Django project folder is 'core' and the application folder is 'webui'.
 
 ## Dependencies
 - [Python v3.10.12](https://www.python.org/)
-- [Faster-Whisper v1.1.0](https://github.com/SYSTRAN/faster-whisper)
+- [Faster-Whisper v1.1.1](https://github.com/SYSTRAN/faster-whisper)
 - [Pyannote.Audio v3.3.2](https://github.com/pyannote/pyannote-audio)
-- [YT-DLP v2024.12.6](https://github.com/yt-dlp/yt-dlp)
+- [YT-DLP v2025.2.19](https://github.com/yt-dlp/yt-dlp)
+- [Gunicorn v23.0.0](https://gunicorn.org/)
 - [FFmpeg](https://www.ffmpeg.org/)
-- [Django v5.1.4](https://www.djangoproject.com/)
+- [Django v5.1.6](https://www.djangoproject.com/)
 - [Django Cleanup v8.1.0](https://github.com/un1t/django-cleanup/)
-- [Django Q2 v1.7.4](https://django-q2.readthedocs.io/en/master/)
+- [Django Q2 v1.7.6](https://django-q2.readthedocs.io/en/master/)
 - [NVIDIA cuBLAS v12.1.3.1](https://developer.nvidia.com/cublas)
 - [NVIDIA cuDNN v8.9.2.26](https://developer.nvidia.com/cudnn)
 - [Bootstrap v5.3.3](https://getbootstrap.com/)

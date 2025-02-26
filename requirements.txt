@@ -1,7 +1,7 @@
 django ~= 5.1.0
 django-cleanup ~= 8.1
 django-q2 ~= 1.7.0
-faster-whisper
-yt-dlp
-pyannote.audio
-gunicorn
+faster-whisper ~= 1.1.0
+pyannote.audio ~= 3.3.2
+gunicorn ~= 23.0.0
+yt-dlp[default]

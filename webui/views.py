@@ -23,7 +23,6 @@ def index(request):
 
       if form.is_valid():
          if request.FILES:
-            # TODO: check file type against valid array?
             saved_transcription = Transcription(
                title = Path(request.FILES['upload_file'].name).stem,
                upload_file = form.cleaned_data['upload_file'],
@@ -85,7 +84,6 @@ def edit_transcription(request, transcription_id):
    if file_mimetype and file_mimetype.startswith('audio'):
       type = 'audio'
 
-   # TODO: send transcription along with properties?
    properties = {
       'id': transcription.id,
       'title': transcription.title,

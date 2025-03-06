@@ -7,7 +7,6 @@ import json
 
 
 # Function: api_transcriptions_id
-# TODO: create allowed field list and check
 def api_transcriptions_id(request, transcription_id):
    if 'X-Requested-With' not in request.headers or request.headers['X-Requested-With'] != 'XMLHttpRequest':
       return JsonResponse({'message': 'malformed header'}, status=400)
@@ -100,7 +99,6 @@ def api_segments(request):
 
 
 # Function: api_segments_id
-# TODO: create allowed field list and check
 def api_segments_id(request, segment_id):
    if 'X-Requested-With' not in request.headers or request.headers['X-Requested-With'] != 'XMLHttpRequest':
       return JsonResponse({'message': 'malformed header'}, status=400)

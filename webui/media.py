@@ -33,7 +33,6 @@ def handle_url_upload(form):
       'outtmpl': '%(title)s' + hex,
    }
 
-   # TODO: configure this to work with playlists
    with YoutubeDL(ydl_opts) as ydl:
       info = ydl.extract_info(form.cleaned_data['upload_url'])
 
@@ -163,7 +162,6 @@ def transcribe_file(transcription):
 
 
 # Function: diarize_separate_overlaps
-# TODO: rework this function
 def diarize_separate_overlaps(diarization):
    # Sort the speaker ranges by their start time
    diarization = sorted(diarization, key=lambda x: x['start'])

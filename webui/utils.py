@@ -16,7 +16,6 @@ def is_float(number):
 
 # Function: format_timestamp
 def format_timestamp(seconds: float, always_include_hours: bool = False, decimal_marker: str = '.', include_mill = True):
-   # TODO: check seconds for float, return none if not, remove assertion?
    assert seconds >= 0, 'non-negative timestamp expected'
    milliseconds = round(seconds * 1000.0)
 
@@ -54,7 +53,6 @@ def get_file_duration(file):
    if result.returncode == 0:
       return float(result.stdout)
    else:
-      # TODO: may not want exception, try except block instead?
       raise Exception(f'Error getting file duration: {result.stderr}')
 
 

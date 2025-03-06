@@ -1,6 +1,4 @@
 (() => {
-   // TODO: check event listener objects
-   // TODO: save autoplay to local storage and load it from there
    'use strict';
    const autoplay = document.querySelector('#autoplay');
    const mediaPlayer = document.querySelector('#media');
@@ -16,7 +14,6 @@
             value: obj.target.value
          };
          let result = await callApi('/api/transcriptions/' + transcriptionId, data, 'POST');
-         // TODO: show results
       });
    });
 
@@ -43,7 +40,6 @@
                value: obj.target.value
             };
             let result = await callApi('/api/segments/' + segmentId, data, 'POST');
-            // TODO: show result
          });
       });
 
@@ -64,7 +60,6 @@
                value: obj.target.value
             };
             let result = await callApi('/api/segments/' + segmentId, data, 'POST');
-            // TODO: show result
          });
       });
 
@@ -84,7 +79,6 @@
                case 'rewind':
                   let currentTime = mediaPlayer.currentTime;
                   mediaPlayer.currentTime = currentTime - 1.0;
-                  // TODO: check to see if negative time breaks any browsers
                   break;
                case 'add-before':
                   createSegment(segmentId, -1);
@@ -116,7 +110,6 @@
          otherSegment = clickedSegment.nextElementSibling;
       }
       else {
-         // TODO: display segment creation error
          console.log('segment creation failed');
          return;
       }
@@ -159,11 +152,10 @@
          let response = await callApi('/api/segments/' + segmentId, data, 'POST');
 
          if(response.status == 204) {
-            // Todo: fade out and/or display toast?
             segment.remove();
          }
          else {
-            // TODO: display some error
+            // placeholder
          }
       }
    }
@@ -243,6 +235,5 @@
       let temp = document.createElement('div');
       temp.innerHTML = segmentCode;
       return temp;
-      // TODO: this returns a div wrapped around the segment code - do not need the extra div although probably doesn't hurt
    }
 })();

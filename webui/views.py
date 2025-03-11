@@ -36,14 +36,18 @@ def index(request):
                },
             )
             saved_transcription.save()
+
+         # Download media
          elif form.cleaned_data['upload_url']:
             saved_transcription = handle_url_upload(form)
 
+         # Transcribe file
          if settings.USE_DJANGO_Q:
             async_task(transcribe_file, saved_transcription, hook=transcription_complete)
          else:
             transcribe_file(saved_transcription)
 
+         # Diarize transcription
          if form.cleaned_data['diarize'] and settings.HUGGING_FACE_TOKEN:
             if settings.USE_DJANGO_Q:
                async_task(diarize_file, saved_transcription, hook=diarization_complete)

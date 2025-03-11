@@ -43,16 +43,16 @@ def index(request):
 
          # Transcribe file
          if settings.USE_DJANGO_Q:
-            async_task(transcribe_file, saved_transcription, hook=transcription_complete)
+            async_task(transcribe_file, saved_transcription.id, hook=transcription_complete)
          else:
-            transcribe_file(saved_transcription)
+            transcribe_file(saved_transcription.id)
 
          # Diarize transcription
          if form.cleaned_data['diarize'] and settings.HUGGING_FACE_TOKEN:
             if settings.USE_DJANGO_Q:
-               async_task(diarize_file, saved_transcription, hook=diarization_complete)
+               async_task(diarize_file, saved_transcription.id, hook=diarization_complete)
             else:
-               diarize_file(saved_transcription)
+               diarize_file(saved_transcription.id)
 
          return HttpResponseRedirect(reverse('webui:index'))
 

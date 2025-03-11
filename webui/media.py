@@ -102,7 +102,12 @@ def resegment_word_list(word_list, max_characters, max_time):
 
 
 # Function: transcribe_file
-def transcribe_file(transcription):
+def transcribe_file(transcription_id):
+   try:
+      transcription = Transcription.objects.get(pk=transcription_id)
+   except Transcription.DoesNotExist:
+      return None
+
    DESCRIPTION_MAX_LENGTH = 100
    word_list = []
    meta = transcription.meta
@@ -244,7 +249,12 @@ def diarize_assign_speakers(transcription):
 
 
 # Function: diarize_file
-def diarize_file(transcription):
+def diarize_file(transcription_id):
+   try:
+      transcription = Transcription.objects.get(pk=transcription_id)
+   except Transcription.DoesNotExist:
+      return None
+
    result = []
    meta = transcription.meta
    pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)

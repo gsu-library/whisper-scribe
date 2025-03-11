@@ -8,6 +8,7 @@ from .models import *
 from .media import *
 
 import mimetypes
+from django_q.tasks import async_task
 
 
 # Function: index
@@ -20,7 +21,41 @@ def index(request):
       form = TranscriptionForm(request.POST, request.FILES)
 
       if form.is_valid():
-         async_task(process_submission, request, form)
+         saved_transcription = Transcription(
+            meta = {
+               'model': form.cleaned_data['model'],
+               'language': form.cleaned_data['language'],
+               'hotwords': form.cleaned_data['hotwords'],
+               'vad_filter': form.cleaned_data['vad_filter'],
+               'max_segment_length': form.cleaned_data['max_segment_length'],
+               'max_segment_time': form.cleaned_data['max_segment_time'],
+            },
+         )
+         saved_transcription.save()
+
+         if request.FILES:
+            saved_transcription.title = Path(request.FILES['upload_file'].name).stem
+            saved_transcription.upload_file = form.cleaned_data['upload_file']
+            saved_transcription.save()
+         # Download media
+         elif form.cleaned_data['upload_url']:
+            saved_transcription.title = 'Downloading...'
+            saved_transcription.save()
+            async_task(download_media, saved_transcription.id, form.cleaned_data['upload_url'])
+
+         # Transcribe file
+         if settings.USE_DJANGO_Q:
+            async_task(transcribe_file, saved_transcription.id) # remove async_task?
+         else:
+            transcribe_file(saved_transcription.id)
+
+         # Diarize transcription
+         if form.cleaned_data['diarize'] and settings.HUGGING_FACE_TOKEN:
+            if settings.USE_DJANGO_Q:
+               async_task(diarize_file, saved_transcription.id) # remove async_task?
+            else:
+               diarize_file(saved_transcription.id)
+
          return HttpResponseRedirect(reverse('webui:index'))
 
    return render(request, 'webui/index.html', {'form': form, 'transcriptions': transcriptions})

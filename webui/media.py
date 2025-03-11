@@ -8,48 +8,17 @@ from pathlib import Path
 from yt_dlp import YoutubeDL
 from faster_whisper import WhisperModel
 from pyannote.audio import Pipeline
-from django_q.tasks import async_task
 import torch
 import uuid
 
 
-# Function: process_submission
-def process_submission(request, form):
-   if request.FILES:
-      saved_transcription = Transcription(
-         title = Path(request.FILES['upload_file'].name).stem,
-         upload_file = form.cleaned_data['upload_file'],
-         meta = {
-            'model': form.cleaned_data['model'],
-            'language': form.cleaned_data['language'],
-            'hotwords': form.cleaned_data['hotwords'],
-            'vad_filter': form.cleaned_data['vad_filter'],
-            'max_segment_length': form.cleaned_data['max_segment_length'],
-            'max_segment_time': form.cleaned_data['max_segment_time'],
-         },
-      )
-      saved_transcription.save()
-
-   # Download media
-   elif form.cleaned_data['upload_url']:
-      saved_transcription = download_media(form)
-
-   # Transcribe file
-   if settings.USE_DJANGO_Q:
-      async_task(transcribe_file, saved_transcription.id) # remove async_task?
-   else:
-      transcribe_file(saved_transcription.id)
-
-   # Diarize transcription
-   if form.cleaned_data['diarize'] and settings.HUGGING_FACE_TOKEN:
-      if settings.USE_DJANGO_Q:
-         async_task(diarize_file, saved_transcription.id) # remove async_task?
-      else:
-         diarize_file(saved_transcription.id)
-
-
 # Function: download_media
-def download_media(form):
+def download_media(transcription_id, upload_url):
+   try:
+      transcription = Transcription.objects.get(pk=transcription_id)
+   except Transcription.DoesNotExist:
+      return None
+
    hex = '_' + uuid.uuid4().hex[:7]
 
    ydl_opts = {
@@ -60,23 +29,14 @@ def download_media(form):
    }
 
    with YoutubeDL(ydl_opts) as ydl:
-      info = ydl.extract_info(form.cleaned_data['upload_url'])
+      info = ydl.extract_info(upload_url)
 
    file_path = Path(info['requested_downloads'][0]['filepath'])
 
-   transcription = Transcription(
-      title = info['title'],
-      upload_file = File(open(str(file_path), 'rb'), name=file_path.name),
-      meta = {
-         'model': form.cleaned_data['model'],
-         'language': form.cleaned_data['language'],
-         'hotwords': form.cleaned_data['hotwords'],
-         'vad_filter': form.cleaned_data['vad_filter'],
-         'max_segment_length': form.cleaned_data['max_segment_length'],
-         'max_segment_time': form.cleaned_data['max_segment_time'],
-      },
-   )
+   transcription.title = info['title']
+   transcription.upload_file = File(open(str(file_path), 'rb'), name=file_path.name)
    transcription.save()
+
    # Delete temp file
    Path(file_path).unlink(True)
 

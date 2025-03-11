@@ -12,16 +12,6 @@ import torch
 import uuid
 
 
-# Function: transcription_complete
-def transcription_complete(task):
-   print('transcription completed')
-
-
-# Function: diarization_complete
-def diarization_complete(task):
-   print('diarization completed')
-
-
 # Function: handle_url_upload
 def handle_url_upload(form):
    hex = '_' + uuid.uuid4().hex[:7]

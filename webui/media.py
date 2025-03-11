@@ -8,12 +8,48 @@ from pathlib import Path
 from yt_dlp import YoutubeDL
 from faster_whisper import WhisperModel
 from pyannote.audio import Pipeline
+from django_q.tasks import async_task
 import torch
 import uuid
 
 
-# Function: handle_url_upload
-def handle_url_upload(form):
+# Function: process_submission
+def process_submission(request, form):
+   if request.FILES:
+      saved_transcription = Transcription(
+         title = Path(request.FILES['upload_file'].name).stem,
+         upload_file = form.cleaned_data['upload_file'],
+         meta = {
+            'model': form.cleaned_data['model'],
+            'language': form.cleaned_data['language'],
+            'hotwords': form.cleaned_data['hotwords'],
+            'vad_filter': form.cleaned_data['vad_filter'],
+            'max_segment_length': form.cleaned_data['max_segment_length'],
+            'max_segment_time': form.cleaned_data['max_segment_time'],
+         },
+      )
+      saved_transcription.save()
+
+   # Download media
+   elif form.cleaned_data['upload_url']:
+      saved_transcription = download_media(form)
+
+   # Transcribe file
+   if settings.USE_DJANGO_Q:
+      async_task(transcribe_file, saved_transcription.id) # remove async_task?
+   else:
+      transcribe_file(saved_transcription.id)
+
+   # Diarize transcription
+   if form.cleaned_data['diarize'] and settings.HUGGING_FACE_TOKEN:
+      if settings.USE_DJANGO_Q:
+         async_task(diarize_file, saved_transcription.id) # remove async_task?
+      else:
+         diarize_file(saved_transcription.id)
+
+
+# Function: download_media
+def download_media(form):
    hex = '_' + uuid.uuid4().hex[:7]
 
    ydl_opts = {

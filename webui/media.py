@@ -35,7 +35,7 @@ def download_media(transcription_id, upload_url):
 
    transcription.title = info['title']
    transcription.upload_file = File(open(str(file_path), 'rb'), name=file_path.name)
-   transcription.save()
+   transcription.save(update_fields=['title', 'upload_file'])
 
    # Delete temp file
    Path(file_path).unlink(True)

@@ -36,12 +36,14 @@ def index(request):
          if request.FILES:
             saved_transcription.title = Path(request.FILES['upload_file'].name).stem
             saved_transcription.upload_file = form.cleaned_data['upload_file']
-            saved_transcription.save()
+            saved_transcription.save(update_fields=['title', 'upload_file'])
          # Download media
          elif form.cleaned_data['upload_url']:
             saved_transcription.title = 'Downloading...'
-            saved_transcription.save()
+            saved_transcription.save(update_fields=['title'])
             async_task(download_media, saved_transcription.id, form.cleaned_data['upload_url'])
+         else:
+            return
 
          # Transcribe file
          if settings.USE_DJANGO_Q:

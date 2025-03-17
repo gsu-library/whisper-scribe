@@ -1,6 +1,5 @@
 from django import forms
 from django.conf import settings
-# TODO: check https://docs.djangoproject.com/en/5.0/topics/forms/#working-with-form-templates
 
 
 # Create choices tuples for choice model.
@@ -37,7 +36,6 @@ class TranscriptionForm(forms.Form):
 
 
    # Add form-control class to form fields.
-   # TODO: check out form-floating labels later
    def __init__(self, *args, **kwargs):
       super(TranscriptionForm, self).__init__(*args, **kwargs)
 

@@ -7,9 +7,8 @@ from .forms import *
 from .models import *
 from .media import *
 
-from pathlib import Path
-from django_q.tasks import async_task
 import mimetypes
+from django_q.tasks import async_task
 
 
 # Function: index
@@ -22,34 +21,35 @@ def index(request):
       form = TranscriptionForm(request.POST, request.FILES)
 
       if form.is_valid():
+         upload_url = None
+
+         saved_transcription = Transcription(
+            title = 'Processing...',
+            meta = {
+               'model': form.cleaned_data['model'],
+               'language': form.cleaned_data['language'],
+               'hotwords': form.cleaned_data['hotwords'],
+               'vad_filter': form.cleaned_data['vad_filter'],
+               'max_segment_length': form.cleaned_data['max_segment_length'],
+               'max_segment_time': form.cleaned_data['max_segment_time'],
+            },
+         )
+         saved_transcription.save()
+
          if request.FILES:
-            # TODO: check file type against valid array?
-            saved_transcription = Transcription(
-               title = Path(request.FILES['upload_file'].name).stem,
-               upload_file = form.cleaned_data['upload_file'],
-               meta = {
-                  'model': form.cleaned_data['model'],
-                  'language': form.cleaned_data['language'],
-                  'hotwords': form.cleaned_data['hotwords'],
-                  'vad_filter': form.cleaned_data['vad_filter'],
-                  'max_segment_length': form.cleaned_data['max_segment_length'],
-                  'max_segment_time': form.cleaned_data['max_segment_time'],
-               },
-            )
-            saved_transcription.save()
+            saved_transcription.title = Path(request.FILES['upload_file'].name).stem
+            saved_transcription.upload_file = form.cleaned_data['upload_file']
+            saved_transcription.save(update_fields=['title', 'upload_file'])
+         # Download media
          elif form.cleaned_data['upload_url']:
-            saved_transcription = handle_url_upload(form)
+            upload_url = form.cleaned_data['upload_url']
+         else:
+            return
 
          if settings.USE_DJANGO_Q:
-            async_task(transcribe_file, saved_transcription, hook=transcription_complete)
+            async_task(process_submission, saved_transcription.id, upload_url, form.cleaned_data['diarize'])
          else:
-            transcribe_file(saved_transcription)
-
-         if form.cleaned_data['diarize'] and settings.HUGGING_FACE_TOKEN:
-            if settings.USE_DJANGO_Q:
-               async_task(diarize_file, saved_transcription, hook=diarization_complete)
-            else:
-               diarize_file(saved_transcription)
+            process_submission(saved_transcription.id, upload_url, form.cleaned_data['diarize'])
 
          return HttpResponseRedirect(reverse('webui:index'))
 
@@ -85,7 +85,6 @@ def edit_transcription(request, transcription_id):
    if file_mimetype and file_mimetype.startswith('audio'):
       type = 'audio'
 
-   # TODO: send transcription along with properties?
    properties = {
       'id': transcription.id,
       'title': transcription.title,

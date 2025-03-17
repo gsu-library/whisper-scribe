@@ -12,18 +12,29 @@ import torch
 import uuid
 
 
-# Function: transcription_complete
-def transcription_complete(task):
-   print('transcription completed')
+# Function: process_submission
+def process_submission(transcription_id, upload_url, diarize):
+   # Download media
+   if upload_url:
+      download_media(transcription_id, upload_url)
+
+   # Transcribe file
+   transcribe_file(transcription_id)
+
+   # Diarize transcription
+   if diarize and settings.HUGGING_FACE_TOKEN:
+      diarize_file(transcription_id)
+
+   return
 
 
-# Function: diarization_complete
-def diarization_complete(task):
-   print('diarization completed')
+# Function: download_media
+def download_media(transcription_id, upload_url):
+   try:
+      transcription = Transcription.objects.get(pk=transcription_id)
+   except Transcription.DoesNotExist:
+      return None
 
-
-# Function: handle_url_upload
-def handle_url_upload(form):
    hex = '_' + uuid.uuid4().hex[:7]
 
    ydl_opts = {
@@ -33,25 +44,15 @@ def handle_url_upload(form):
       'outtmpl': '%(title)s' + hex,
    }
 
-   # TODO: configure this to work with playlists
    with YoutubeDL(ydl_opts) as ydl:
-      info = ydl.extract_info(form.cleaned_data['upload_url'])
+      info = ydl.extract_info(upload_url)
 
    file_path = Path(info['requested_downloads'][0]['filepath'])
 
-   transcription = Transcription(
-      title = info['title'],
-      upload_file = File(open(str(file_path), 'rb'), name=file_path.name),
-      meta = {
-         'model': form.cleaned_data['model'],
-         'language': form.cleaned_data['language'],
-         'hotwords': form.cleaned_data['hotwords'],
-         'vad_filter': form.cleaned_data['vad_filter'],
-         'max_segment_length': form.cleaned_data['max_segment_length'],
-         'max_segment_time': form.cleaned_data['max_segment_time'],
-      },
-   )
-   transcription.save()
+   transcription.title = info['title']
+   transcription.upload_file = File(open(str(file_path), 'rb'), name=file_path.name)
+   transcription.save(update_fields=['title', 'upload_file'])
+
    # Delete temp file
    Path(file_path).unlink(True)
 
@@ -103,7 +104,12 @@ def resegment_word_list(word_list, max_characters, max_time):
 
 
 # Function: transcribe_file
-def transcribe_file(transcription):
+def transcribe_file(transcription_id):
+   try:
+      transcription = Transcription.objects.get(pk=transcription_id)
+   except Transcription.DoesNotExist:
+      return None
+
    DESCRIPTION_MAX_LENGTH = 100
    word_list = []
    meta = transcription.meta
@@ -163,7 +169,6 @@ def transcribe_file(transcription):
 
 
 # Function: diarize_separate_overlaps
-# TODO: rework this function
 def diarize_separate_overlaps(diarization):
    # Sort the speaker ranges by their start time
    diarization = sorted(diarization, key=lambda x: x['start'])
@@ -246,7 +251,12 @@ def diarize_assign_speakers(transcription):
 
 
 # Function: diarize_file
-def diarize_file(transcription):
+def diarize_file(transcription_id):
+   try:
+      transcription = Transcription.objects.get(pk=transcription_id)
+   except Transcription.DoesNotExist:
+      return None
+
    result = []
    meta = transcription.meta
    pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)

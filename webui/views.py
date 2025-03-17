@@ -21,7 +21,10 @@ def index(request):
       form = TranscriptionForm(request.POST, request.FILES)
 
       if form.is_valid():
+         upload_url = None
+
          saved_transcription = Transcription(
+            title = 'Processing...',
             meta = {
                'model': form.cleaned_data['model'],
                'language': form.cleaned_data['language'],
@@ -39,24 +42,14 @@ def index(request):
             saved_transcription.save(update_fields=['title', 'upload_file'])
          # Download media
          elif form.cleaned_data['upload_url']:
-            saved_transcription.title = 'Downloading...'
-            saved_transcription.save(update_fields=['title'])
-            async_task(download_media, saved_transcription.id, form.cleaned_data['upload_url'])
+            upload_url = form.cleaned_data['upload_url']
          else:
             return
 
-         # Transcribe file
          if settings.USE_DJANGO_Q:
-            async_task(transcribe_file, saved_transcription.id) # remove async_task?
+            async_task(process_submission, saved_transcription.id, upload_url, form.cleaned_data['diarize'])
          else:
-            transcribe_file(saved_transcription.id)
-
-         # Diarize transcription
-         if form.cleaned_data['diarize'] and settings.HUGGING_FACE_TOKEN:
-            if settings.USE_DJANGO_Q:
-               async_task(diarize_file, saved_transcription.id) # remove async_task?
-            else:
-               diarize_file(saved_transcription.id)
+            process_submission(saved_transcription.id, upload_url, form.cleaned_data['diarize'])
 
          return HttpResponseRedirect(reverse('webui:index'))
 

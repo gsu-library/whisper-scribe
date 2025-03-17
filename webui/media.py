@@ -12,6 +12,22 @@ import torch
 import uuid
 
 
+# Function: process_submission
+def process_submission(transcription_id, upload_url, diarize):
+   # Download media
+   if upload_url:
+      download_media(transcription_id, upload_url)
+
+   # Transcribe file
+   transcribe_file(transcription_id)
+
+   # Diarize transcription
+   if diarize and settings.HUGGING_FACE_TOKEN:
+      diarize_file(transcription_id)
+
+   return
+
+
 # Function: download_media
 def download_media(transcription_id, upload_url):
    try:

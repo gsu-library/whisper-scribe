@@ -34,9 +34,9 @@ class Segment(models.Model):
       ordering = ['start', 'end']
 
 
-# Class: ProcessStatus
-class ProcessStatus(models.Model):
-   PROCESS_NAME = [
+# Class: TranscriptionStatus
+class TranscriptionStatus(models.Model):
+   PROCESS_CHOICES = [
       ('downloading', 'Downloading'),
       ('transcribing', 'Transcribing'),
       ('diarizing', 'Diarizing')
@@ -45,17 +45,17 @@ class ProcessStatus(models.Model):
       ('pending', 'Pending'),
       ('processing', 'Processing'),
       ('completed', 'Completed'),
-      ('failed', 'Failed'),
-    ]
-   transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE, related_name='process_statuses')
-   process_name = models.CharField(max_length=50, choices=PROCESS_NAME)
+      ('failed', 'Failed')
+   ]
+   transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE, related_name='statuses')
+   process = models.CharField(max_length=50, choices=PROCESS_CHOICES)
    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
    start_time = models.DateTimeField(auto_now_add=True)
    end_time = models.DateTimeField(null=True, default=None)
    error_message = models.TextField(null=True, default=None)
-   # TODO: what do we do with multiple error messages or do we have multiple processes per transcription?
 
    def __str__(self):
-      return f'{self.process_name} - {self.status}'
+      return f'{self.process} - {self.status}'
 
    # TODO: do we set the meta for ordering? sort by end_time, start_time, id?
+   # TODO: method to get latest status

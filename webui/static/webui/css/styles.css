@@ -1,3 +1,7 @@
+body {
+   background-color: #f8f9fa;
+}
+
 /* Show Bootstrap validation errors. */
 .invalid-feedback {
    display: inherit;

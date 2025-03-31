@@ -17,10 +17,8 @@ class Transcription(models.Model):
 
 
 # Class: Segment
-# TODO: set related_name on foreign key and update references?
-# https://docs.djangoproject.com/en/5.1/topics/db/queries/#backwards-related-objects
 class Segment(models.Model):
-   transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE)
+   transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE, related_name='segments')
    start = models.FloatField()
    end = models.FloatField()
    text = models.TextField()
@@ -36,26 +34,31 @@ class Segment(models.Model):
 
 # Class: TranscriptionStatus
 class TranscriptionStatus(models.Model):
+   DOWNLOADING = 10
+   TRANSCRIBING = 20
+   DIARIZING = 30
+   PENDING = 10
+   PROCESSING = 20
+   COMPLETED = 30
+   FAILED = 40
+
    PROCESS_CHOICES = [
-      ('downloading', 'Downloading'),
-      ('transcribing', 'Transcribing'),
-      ('diarizing', 'Diarizing')
+      (DOWNLOADING, 'Downloading'),
+      (TRANSCRIBING, 'Transcribing'),
+      (DIARIZING, 'Diarizing')
    ]
    STATUS_CHOICES = [
-      ('pending', 'Pending'),
-      ('processing', 'Processing'),
-      ('completed', 'Completed'),
-      ('failed', 'Failed')
+      (PENDING, 'Pending'),
+      (PROCESSING, 'Processing'),
+      (COMPLETED, 'Completed'),
+      (FAILED, 'Failed')
    ]
    transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE, related_name='statuses')
-   process = models.CharField(max_length=50, choices=PROCESS_CHOICES)
-   status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
+   process = models.IntegerField(choices=PROCESS_CHOICES)
+   status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
    start_time = models.DateTimeField(auto_now_add=True)
    end_time = models.DateTimeField(null=True, default=None)
    error_message = models.TextField(null=True, default=None)
 
    def __str__(self):
       return f'{self.process} - {self.status}'
-
-   # TODO: do we set the meta for ordering? sort by end_time, start_time, id?
-   # TODO: method to get latest status

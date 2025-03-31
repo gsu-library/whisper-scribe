@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1..] - 2025--
 - Add body color to stylesheet.
+- Add transcription status model.
 
 ## [1.3.0] - 2025-03-17
 - Use update_fields on model saves when able to.

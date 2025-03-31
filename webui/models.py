@@ -53,6 +53,7 @@ class TranscriptionStatus(models.Model):
       (COMPLETED, 'Completed'),
       (FAILED, 'Failed')
    ]
+
    transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE, related_name='statuses')
    process = models.IntegerField(choices=PROCESS_CHOICES)
    status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)

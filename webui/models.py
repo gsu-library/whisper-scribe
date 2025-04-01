@@ -63,3 +63,6 @@ class TranscriptionStatus(models.Model):
 
    def __str__(self):
       return f'{self.process} - {self.status}'
+
+   class Meta:
+      verbose_name_plural = 'transcription statuses'

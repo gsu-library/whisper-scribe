@@ -4,6 +4,7 @@ from django.conf import settings
 from .models import *
 from .utils import *
 
+from datetime import datetime
 from pathlib import Path
 from yt_dlp import YoutubeDL
 from faster_whisper import WhisperModel
@@ -35,6 +36,10 @@ def download_media(transcription_id, upload_url):
    except Transcription.DoesNotExist:
       return None
 
+   status = transcription.statuses.get(process = TranscriptionStatus.DOWNLOADING)
+   status.status = TranscriptionStatus.PROCESSING
+   status.save()
+
    hex = '_' + uuid.uuid4().hex[:7]
 
    ydl_opts = {
@@ -55,6 +60,10 @@ def download_media(transcription_id, upload_url):
 
    # Delete temp file
    Path(file_path).unlink(True)
+
+   status.status = TranscriptionStatus.COMPLETED
+   status.end_time = datetime.now()
+   status.save()
 
    return transcription
 
@@ -109,6 +118,10 @@ def transcribe_file(transcription_id):
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
       return None
+
+   status = transcription.statuses.get(process = TranscriptionStatus.TRANSCRIBING)
+   status.status = TranscriptionStatus.PROCESSING
+   status.save()
 
    DESCRIPTION_MAX_LENGTH = 100
    word_list = []
@@ -166,6 +179,10 @@ def transcribe_file(transcription_id):
    transcription.refresh_from_db()
    transcription.description = description[:DESCRIPTION_MAX_LENGTH].strip() + '...'
    transcription.save(update_fields=['description'])
+
+   status.status = TranscriptionStatus.COMPLETED
+   status.end_time = datetime.now()
+   status.save()
 
 
 # Function: diarize_separate_overlaps
@@ -257,6 +274,10 @@ def diarize_file(transcription_id):
    except Transcription.DoesNotExist:
       return None
 
+   status = transcription.statuses.get(process = TranscriptionStatus.DIARIZING)
+   status.status = TranscriptionStatus.PROCESSING
+   status.save()
+
    result = []
    meta = transcription.meta
    pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)
@@ -287,3 +308,7 @@ def diarize_file(transcription_id):
       diarized_segment['transcription'] = transcription
       segment = Segment(**diarized_segment)
       segment.save()
+
+   status.status = TranscriptionStatus.COMPLETED
+   status.end_time = datetime.now()
+   status.save()

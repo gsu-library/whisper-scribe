@@ -59,14 +59,14 @@ def index(request):
 # Function: view_transcription
 def view_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segment_set.all()
+   segments = transcription.segments.all()
    return render(request, 'webui/view.html', {'segments': segments})
 
 
 # Function: edit_transcription
 def edit_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segment_set.all()
+   segments = transcription.segments.all()
    speakers = set(segments.exclude(speaker__exact='').values_list('speaker', flat=True).distinct())
 
    if request.POST:

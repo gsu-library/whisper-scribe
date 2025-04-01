@@ -281,7 +281,7 @@ def diarize_file(transcription_id):
    word_list = diarize_assign_speakers(transcription)
    diarized_segments = resegment_word_list(word_list, meta['max_segment_length'], meta['max_segment_time'])
    # Remove existing segments
-   transcription.segment_set.all().delete()
+   transcription.segments.all().delete()
 
    for diarized_segment in diarized_segments:
       diarized_segment['transcription'] = transcription

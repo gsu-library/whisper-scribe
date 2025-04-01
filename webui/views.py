@@ -36,6 +36,16 @@ def index(request):
          )
          saved_transcription.save()
 
+         # Create transcription statuses
+         if form.cleaned_data['upload_url']:
+            TranscriptionStatus(transcription = saved_transcription, process = TranscriptionStatus.DOWNLOADING, status = TranscriptionStatus.PENDING).save()
+
+         TranscriptionStatus(transcription = saved_transcription, process = TranscriptionStatus.TRANSCRIBING, status = TranscriptionStatus.PENDING).save()
+
+         if form.cleaned_data['diarize']:
+            TranscriptionStatus(transcription = saved_transcription, process = TranscriptionStatus.DIARIZING, status = TranscriptionStatus.PENDING).save()
+         # End create transcription statuses
+
          if request.FILES:
             saved_transcription.title = Path(request.FILES['upload_file'].name).stem
             saved_transcription.upload_file = form.cleaned_data['upload_file']

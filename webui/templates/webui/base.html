@@ -17,6 +17,27 @@
    <div class="container">
       <header class="my-3 text-center"><h1>{% block header %}WhisperScribe{% endblock header %}</h1></header>
 
+      <nav class="navbar navbar-expand-lg border rounded">
+         <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+               <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbarCollapse" class="collapse navbar-collapse">
+               <ul class="navbar-nav">
+                  <li class="nav-item">
+                     <a class="nav-link{% if request.path == '/' %} active" aria-current="page{% endif %}" href="{% url 'webui:index' %}">Home</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link{% if request.path == '/list/' %} active" aria-current="page{% endif %}" href="{% url 'webui:list' %}">Transcriptions</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </nav>
+
       <main class="my-5 p-3 border">
          {% if messages %}
          <div class="messages">

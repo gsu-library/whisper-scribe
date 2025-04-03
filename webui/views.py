@@ -73,6 +73,11 @@ def view_transcription(request, transcription_id):
    return render(request, 'webui/view.html', {'segments': segments})
 
 
+# Function: list_transcriptions
+def list_transcriptions(request):
+   return render(request, 'webui/list.html')
+
+
 # Function: edit_transcription
 def edit_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)

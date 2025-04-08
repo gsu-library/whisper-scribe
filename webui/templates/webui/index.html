@@ -29,4 +29,10 @@
    </div>
    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+<ul>
+   {% for status in statuses %}
+   <li>{{ status.transcription.title }} - {{ status.print_process }} {{ status.print_status }} - {{ status.start_time }}</li>
+   {% endfor %}
+</ul>
 {% endblock content %}

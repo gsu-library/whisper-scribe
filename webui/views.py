@@ -14,6 +14,7 @@ from django_q.tasks import async_task
 # Function: index
 def index(request):
    form = TranscriptionForm()
+   statuses = TranscriptionStatus.objects.filter(status__in=[TranscriptionStatus.PENDING, TranscriptionStatus.PROCESSING]).order_by('start_time', 'process')
 
    # Form submission
    if request.method == 'POST':
@@ -62,7 +63,7 @@ def index(request):
 
          return HttpResponseRedirect(reverse('webui:index'))
 
-   return render(request, 'webui/index.html', {'form': form})
+   return render(request, 'webui/index.html', {'form': form, 'statuses': statuses})
 
 
 # Function: view_transcription

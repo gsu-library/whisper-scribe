@@ -22,16 +22,28 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                <span class="navbar-toggler-icon"></span>
             </button>
-            <div id="navbarCollapse" class="collapse navbar-collapse">
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+               <ul class="navbar-nav me-auto">
+                  <li class="nav-item">
+                     <a class="nav-link{% if request.resolver_match.url_name == 'index' %} active" aria-current="page{% endif %}" href="{% url 'webui:index' %}">Home</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link{% if request.resolver_match.url_name == 'list' %} active" aria-current="page{% endif %}" href="{% url 'webui:list' %}">Transcriptions</a>
+                  </li>
+               </ul>
+
                <ul class="navbar-nav">
                   <li class="nav-item">
-                     <a class="nav-link{% if request.path == '/' %} active" aria-current="page{% endif %}" href="{% url 'webui:index' %}">Home</a>
-                  </li>
-                  <li class="nav-item">
-                     <a class="nav-link{% if request.path == '/list/' %} active" aria-current="page{% endif %}" href="{% url 'webui:list' %}">Transcriptions</a>
-                  </li>
-                  <li class="nav-item">
                      <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Help</a>
+                     <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" target="_blank" href="https://github.com/gsu-library/whisper-scribe/blob/master/README.md">README</a></li>
+                        <li><a class="dropdown-item" target="_blank" href="https://github.com/gsu-library/whisper-scribe">GitHub Repository</a></li>
+                        <li><a class="dropdown-item" target="_blank" href="https://github.com/gsu-library/whisper-scribe/issues">Submit an Issue</a></li>
+                     </ul>
                   </li>
                </ul>
             </div>
@@ -54,7 +66,7 @@
          <div class="content">{% block content %}{% endblock content %}</div>
       </main>
 
-      <footer class="my-3 text-center"><a href="https://library.gsu.edu">GSU Library</a> | <a href="https://github.com/gsu-library/whisper-scribe">GitHub Repository</a> | <a href="https://github.com/gsu-library/whisper-scribe/issues">Submit an Issue</a></footer>
+      <footer class="my-3 text-center"><a href="https://library.gsu.edu">GSU Library</a></footer>
    </div>
 
    {% block body-end %}{% endblock body-end %}

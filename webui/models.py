@@ -64,5 +64,14 @@ class TranscriptionStatus(models.Model):
    def __str__(self):
       return f'{self.process} - {self.status}'
 
+   def print_process(self):
+      processes = dict(self.PROCESS_CHOICES)
+      return f'{processes[self.process]}'
+      # return f'{[x[1] for x in self.PROCESS_CHOICES if x[0] == self.process]}'
+
+   def print_status(self):
+      statuses = dict(self.STATUS_CHOICES)
+      return f'{statuses[self.status]}'
+
    class Meta:
       verbose_name_plural = 'transcription statuses'

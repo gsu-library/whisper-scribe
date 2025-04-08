@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1..] - 2025--
 - Add and implement transcription status model.
 - Move transcriptions to new page.
-- Add navbar.
-- Add body color.
+- Add navbar and body color.
 - Update footer.
 
 ## [1.3.0] - 2025-03-17

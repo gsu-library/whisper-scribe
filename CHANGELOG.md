@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1..] - 2025--
-- Add body color to stylesheet.
-- Add transcription status model.
+- Add and implement transcription status model.
+- Move transcriptions to new page.
+- Add navbar.
+- Add body color.
+- Update footer.
 
 ## [1.3.0] - 2025-03-17
 - Use update_fields on model saves when able to.

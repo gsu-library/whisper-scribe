@@ -14,7 +14,6 @@ from django_q.tasks import async_task
 # Function: index
 def index(request):
    form = TranscriptionForm()
-   transcriptions = Transcription.objects.all()
 
    # Form submission
    if request.method == 'POST':
@@ -63,7 +62,7 @@ def index(request):
 
          return HttpResponseRedirect(reverse('webui:index'))
 
-   return render(request, 'webui/index.html', {'form': form, 'transcriptions': transcriptions})
+   return render(request, 'webui/index.html', {'form': form})
 
 
 # Function: view_transcription
@@ -75,7 +74,8 @@ def view_transcription(request, transcription_id):
 
 # Function: list_transcriptions
 def list_transcriptions(request):
-   return render(request, 'webui/list.html')
+   transcriptions = Transcription.objects.all()
+   return render(request, 'webui/list.html', {'transcriptions': transcriptions})
 
 
 # Function: edit_transcription

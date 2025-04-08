@@ -26,10 +26,10 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                <ul class="navbar-nav me-auto">
                   <li class="nav-item">
-                     <a class="nav-link{% if request.resolver_match.url_name == 'index' %} active" aria-current="page{% endif %}" href="{% url 'webui:index' %}">Home</a>
+                     <a class="nav-link{% if request.resolver_match.view_name == 'webui:index' %} active" aria-current="page{% endif %}" href="{% url 'webui:index' %}">Home</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link{% if request.resolver_match.url_name == 'list' %} active" aria-current="page{% endif %}" href="{% url 'webui:list' %}">Transcriptions</a>
+                     <a class="nav-link{% if request.resolver_match.view_name == 'webui:list' %} active" aria-current="page{% endif %}" href="{% url 'webui:list' %}">Transcriptions</a>
                   </li>
                </ul>
 

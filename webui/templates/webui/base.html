@@ -50,7 +50,7 @@
          </div>
       </nav>
 
-      <main class="my-5 p-3 border">
+      <main class="my-5">
          {% if messages %}
          <div class="messages">
             {% for message in messages %}
@@ -63,10 +63,11 @@
             {% endfor %}
          </div>
          {% endif %}
+
          <div class="content">{% block content %}{% endblock content %}</div>
       </main>
 
-      <footer class="my-3 text-center"><a href="https://library.gsu.edu">GSU Library</a></footer>
+      <footer class="py-3 text-center border-top"><a target="_blank" href="https://library.gsu.edu">GSU Library</a></footer>
    </div>
 
    {% block body-end %}{% endblock body-end %}

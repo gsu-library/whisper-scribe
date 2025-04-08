@@ -118,4 +118,4 @@ def delete_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
    transcription.delete()
 
-   return HttpResponseRedirect(reverse('webui:index'))
+   return HttpResponseRedirect(reverse('webui:list'))

@@ -1,7 +1,49 @@
 {% extends 'webui/base.html' %}
 
 {% block content %}
-<div class="row">
-   Put list here
-</div>
+<!-- <div class="row mt-3">
+   <div class="col"> -->
+      <ul class="list-group">
+         {% if transcriptions %}
+            {% for transcription in transcriptions %}
+            <li class="list-group-item">
+               <div class="d-flex w-100 justify-content-between">
+                  <h5>{{ transcription.title }} - {{ transcription.submitted|date:'n/j/Y g:i a' }}</h5>
+
+                  <div class="float-end">
+                     <div class="btn-group" role="group">
+                        <a href="{% url 'webui:edit' transcription.id %}" class="btn btn-outline-secondary" title="Edit Transcription" aria-label="Edit Transcription">Edit</a>
+                        <a href="{% url 'webui:view' transcription.id %}" class="btn btn-outline-secondary" title="View Transcription" aria-label="View Transcription">Quick View</a>
+
+                        <div class="dropdown btn-group">
+                           <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="fileDownloadButton" data-bs-toggle="dropdown" aria-expanded="false">File Downloads</button>
+                           <ul class="dropdown-menu" aria-labelledby="fileDownloadButton">
+                              <li><a class="dropdown-item" href="{% url 'webui:download_text_blob' transcription.id %}">TXT Blob</a></li>
+                              <li><a class="dropdown-item" href="{% url 'webui:download_text' transcription.id %}">TXT</a></li>
+                              <li><a class="dropdown-item" href="{% url 'webui:download_srt' transcription.id %}">SRT</a></li>
+                              <li><a class="dropdown-item" href="{% url 'webui:download_vtt' transcription.id %}">VTT</a></li>
+                              <li><a class="dropdown-item" href="{% url 'webui:download_json' transcription.id %}">JSON</a></li>
+                              <li><a class="dropdown-item" href=""></a></li>
+                           </ul>
+                        </div>
+                     </div>
+
+                     <form class="float-end ms-3" action="{% url 'webui:delete' transcription.id %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-danger border-0 " type="submit" title="Delete Transcription" aria-label="Delete Transcription"><i class="bi bi-x-circle" aria-hidden="true"></i></button>
+                     </form>
+                  </div>
+               </div>
+
+               <p>{{ transcription.description }}</p>
+
+               <small class="text-body-secondary">duration: {{ transcription.meta.duration }}, size: {{ transcription.meta.size|filesizeformat }}, model: {{ transcription.meta.model }},{% if transcription.meta.language %} language: {{ transcription.meta.language }},{% endif %}{% if transcription.meta.hotwords %} hotwords: {{ transcription.meta.hotwords }},{% endif %} vad: {{ transcription.meta.vad_filter|lower }}, max segment length: {{ transcription.meta.max_segment_length }}, max segment time: {{ transcription.meta.max_segment_time }}</small>
+            </li>
+            {% endfor %}
+         {% else %}
+            <li class="list-group-item">Nothing to see here.</li>
+         {% endif %}
+      </ul>
+   <!-- </div>
+</div> -->
 {% endblock content %}

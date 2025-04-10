@@ -15,6 +15,19 @@ class Transcription(models.Model):
    def __str__(self):
       return f'{self.title}'
 
+   def current_status(self):
+      # If error.
+      status = self.statuses.filter(status=TranscriptionStatus.FAILED).order_by('start_time').first()
+      if status: return status
+      # If processing.
+      status = self.statuses.filter(status=TranscriptionStatus.PROCESSING).order_by('start_time').first()
+      if status: return status
+      # If pending.
+      status = self.statuses.filter(status=TranscriptionStatus.PENDING).order_by('start_time').first()
+      if status: return status
+      # Else must be completed.
+      return self.statuses.order_by('-start_time').first()
+
 
 # Class: Segment
 class Segment(models.Model):

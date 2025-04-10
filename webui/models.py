@@ -56,15 +56,15 @@ class TranscriptionStatus(models.Model):
    FAILED = 40
 
    PROCESS_CHOICES = [
-      (DOWNLOADING, 'Downloading'),
-      (TRANSCRIBING, 'Transcribing'),
-      (DIARIZING, 'Diarizing')
+      (DOWNLOADING, 'downloading'),
+      (TRANSCRIBING, 'transcribing'),
+      (DIARIZING, 'diarizing')
    ]
    STATUS_CHOICES = [
-      (PENDING, 'Pending'),
-      (PROCESSING, 'Processing'),
-      (COMPLETED, 'Completed'),
-      (FAILED, 'Failed')
+      (PENDING, 'pending'),
+      (PROCESSING, 'processing'),
+      (COMPLETED, 'completed'),
+      (FAILED, 'failed')
    ]
 
    transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE, related_name='statuses')
@@ -75,16 +75,17 @@ class TranscriptionStatus(models.Model):
    error_message = models.TextField(null=True, default=None)
 
    def __str__(self):
-      return f'{self.process} - {self.status}'
+      process = dict(TranscriptionStatus.PROCESS_CHOICES).get(self.process, 'unknown process')
+      status = dict(TranscriptionStatus.STATUS_CHOICES).get(self.status, 'unknown status')
+      return f'{process} - {status}'
 
    def print_process(self):
-      processes = dict(self.PROCESS_CHOICES)
-      return f'{processes[self.process]}'
-      # return f'{[x[1] for x in self.PROCESS_CHOICES if x[0] == self.process]}'
+      process = dict(TranscriptionStatus.PROCESS_CHOICES).get(self.process, 'unknown process')
+      return f'{process}'
 
    def print_status(self):
-      statuses = dict(self.STATUS_CHOICES)
-      return f'{statuses[self.status]}'
+      status = dict(TranscriptionStatus.STATUS_CHOICES).get(self.status, 'unknown status')
+      return f'{status}'
 
    class Meta:
       verbose_name_plural = 'transcription statuses'

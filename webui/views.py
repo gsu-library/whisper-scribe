@@ -31,7 +31,6 @@ def index(request):
          upload_url = None
 
          saved_transcription = Transcription(
-            title = 'Processing...',
             meta = {
                'model': form.cleaned_data['model'],
                'language': form.cleaned_data['language'],
@@ -60,6 +59,8 @@ def index(request):
          # Download media
          elif form.cleaned_data['upload_url']:
             upload_url = form.cleaned_data['upload_url']
+            saved_transcription.title = upload_url
+            saved_transcription.save(update_fields=['title'])
          else:
             return
 

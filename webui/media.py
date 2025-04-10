@@ -15,16 +15,30 @@ import uuid
 
 # Function: process_submission
 def process_submission(transcription_id, upload_url, diarize):
+   try:
+      transcription = Transcription.objects.get(pk=transcription_id)
+   except Transcription.DoesNotExist:
+      return None
+
    # Download media
    if upload_url:
-      download_media(transcription_id, upload_url)
+      try:
+         download_media(transcription_id, upload_url)
+      except:
+         transcription.fail_incomplete_statuses('Downloading media failed.')
 
    # Transcribe file
-   transcribe_file(transcription_id)
+   try:
+      transcribe_file(transcription_id)
+   except:
+      transcription.fail_incomplete_statuses('Transcribing media failed.')
 
    # Diarize transcription
    if diarize and settings.HUGGING_FACE_TOKEN:
-      diarize_file(transcription_id)
+      try:
+         diarize_file(transcription_id)
+      except:
+         transcription.fail_incomplete_statuses('Diarizing media failed.')
 
    return
 

@@ -18,7 +18,7 @@ def process_submission(transcription_id, upload_url, diarize):
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
-      return None
+      return
 
    # Download media
    if upload_url:
@@ -26,12 +26,14 @@ def process_submission(transcription_id, upload_url, diarize):
          download_media(transcription_id, upload_url)
       except:
          transcription.fail_incomplete_statuses('Downloading media failed.')
+         return
 
    # Transcribe file
    try:
       transcribe_file(transcription_id)
    except:
       transcription.fail_incomplete_statuses('Transcribing media failed.')
+      return
 
    # Diarize transcription
    if diarize and settings.HUGGING_FACE_TOKEN:
@@ -39,6 +41,7 @@ def process_submission(transcription_id, upload_url, diarize):
          diarize_file(transcription_id)
       except:
          transcription.fail_incomplete_statuses('Diarizing media failed.')
+         return
 
    return
 

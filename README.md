@@ -3,7 +3,7 @@ Code Repository: https://github.com/gsu-library/whisper-scribe
 Author: Matt Brooks <mbrooks34@gsu.edu>  
 Date Created: 2024-05-21  
 License: [GPLv3](LICENSE)  
-Version: 1.3.0
+Version: 1.4.0
 
 ## Description
 WhisperScribe is a Django-powered web application that simplifies audio analysis by using AI for speech recognition (Faster Whisper) and speaker diarization (Pyannote.Audio). Users can upload or link media, generate accurate transcripts with speaker identification, and easily edit the results. This project also leverages CUDA support for quicker processing.
@@ -127,13 +127,28 @@ sudo systemctl restart whisperscribe
 ```
 
 ## Updates
-Check the [CHANGELOG](CHANGELOG.md) and release notes to see if there are any major changes with the core/settings.sample.py file, if a migration is required, if the requirements-freeze.txt pip packages file has been updated, or if static files need to be migrated.
+Check the release notes to see if there are any major changes with the core/settings.sample.py file, if the requirements-freeze.txt pip packages file has been updated, if a migration is required, or if static files need to be migrated.
 
 It never hurts to run the commands below after an update (while in the Python virtual environment).
 
+### Update Python pip Packages
+When the requirements-freeze.txt file is updated, Python packages need to be updated.
+
 ```bash
 pip install -r requirements-freeze.txt
+```
+
+### Run Database Migration
+When a model in Django is updated a database migration needs to be run. Backing up your databases before running the migration is recommended in case of an issue.
+
+```bash
 python manage.py migrate
+```
+
+### Run Static File Collection
+When static files (CSS, JavaScript, etc.) are updated in the project they will need to be moved (collected) to your static file location. Running the command below will overwrite any local customizations on static files.
+
+```bash
 python manage.py collectstatic
 ```
 

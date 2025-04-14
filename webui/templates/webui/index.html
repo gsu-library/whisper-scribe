@@ -33,7 +33,7 @@
 {% if statuses %}
 <ul class="list-group my-5">
    {% for status in statuses %}
-   <li class="list-group-item{% if status.status == status.PROCESSING %} bg-warning" aria-current="true{% endif %}">{{ status.transcription.title }} - {{ status.print_process }} {{ status.print_status }} - {{ status.start_time }}</li>
+   <li class="list-group-item{% if status.status == status.PROCESSING %} bg-warning" aria-current="true{% endif %}" data-transcription-id="{{ status.transcription.id }}">{{ status.transcription.title }} - {{ status.print_process }} {{ status.print_status }} - {{ status.start_time }}</li>
    {% endfor %}
 </ul>
 {% endif %}

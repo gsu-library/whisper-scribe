@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.text import Truncator
 
-from .models import Transcription, Segment
+from .models import *
 
 
 # Class: TranscriptionAdmin
@@ -23,8 +23,14 @@ class TranscriptonAdmin(admin.ModelAdmin):
 
 # Class: SegmentAdmin
 class SegmentAdmin(admin.ModelAdmin):
-   pass
+   list_display = [field.name for field in Segment._meta.fields if field.name != 'id']
+
+
+# Class: TranscriptionStatusAdmin
+class TranscriptionStatusAdmin(admin.ModelAdmin):
+   list_display = [field.name for field in TranscriptionStatus._meta.fields if field.name != 'id']
 
 
 admin.site.register(Transcription, TranscriptonAdmin)
 admin.site.register(Segment, SegmentAdmin)
+admin.site.register(TranscriptionStatus, TranscriptionStatusAdmin)

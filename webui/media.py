@@ -4,6 +4,7 @@ from django.conf import settings
 from .models import *
 from .utils import *
 
+from datetime import datetime
 from pathlib import Path
 from yt_dlp import YoutubeDL
 from faster_whisper import WhisperModel
@@ -14,16 +15,33 @@ import uuid
 
 # Function: process_submission
 def process_submission(transcription_id, upload_url, diarize):
+   try:
+      transcription = Transcription.objects.get(pk=transcription_id)
+   except Transcription.DoesNotExist:
+      return
+
    # Download media
    if upload_url:
-      download_media(transcription_id, upload_url)
+      try:
+         download_media(transcription_id, upload_url)
+      except:
+         transcription.fail_incomplete_statuses('Downloading media failed.')
+         return
 
    # Transcribe file
-   transcribe_file(transcription_id)
+   try:
+      transcribe_file(transcription_id)
+   except:
+      transcription.fail_incomplete_statuses('Transcribing media failed.')
+      return
 
    # Diarize transcription
    if diarize and settings.HUGGING_FACE_TOKEN:
-      diarize_file(transcription_id)
+      try:
+         diarize_file(transcription_id)
+      except:
+         transcription.fail_incomplete_statuses('Diarizing media failed.')
+         return
 
    return
 
@@ -34,6 +52,10 @@ def download_media(transcription_id, upload_url):
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
       return None
+
+   status = transcription.statuses.get(process = TranscriptionStatus.DOWNLOADING)
+   status.status = TranscriptionStatus.PROCESSING
+   status.save()
 
    hex = '_' + uuid.uuid4().hex[:7]
 
@@ -55,6 +77,10 @@ def download_media(transcription_id, upload_url):
 
    # Delete temp file
    Path(file_path).unlink(True)
+
+   status.status = TranscriptionStatus.COMPLETED
+   status.end_time = datetime.now()
+   status.save()
 
    return transcription
 
@@ -109,6 +135,10 @@ def transcribe_file(transcription_id):
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
       return None
+
+   status = transcription.statuses.get(process = TranscriptionStatus.TRANSCRIBING)
+   status.status = TranscriptionStatus.PROCESSING
+   status.save()
 
    DESCRIPTION_MAX_LENGTH = 100
    word_list = []
@@ -166,6 +196,10 @@ def transcribe_file(transcription_id):
    transcription.refresh_from_db()
    transcription.description = description[:DESCRIPTION_MAX_LENGTH].strip() + '...'
    transcription.save(update_fields=['description'])
+
+   status.status = TranscriptionStatus.COMPLETED
+   status.end_time = datetime.now()
+   status.save()
 
 
 # Function: diarize_separate_overlaps
@@ -257,6 +291,10 @@ def diarize_file(transcription_id):
    except Transcription.DoesNotExist:
       return None
 
+   status = transcription.statuses.get(process = TranscriptionStatus.DIARIZING)
+   status.status = TranscriptionStatus.PROCESSING
+   status.save()
+
    result = []
    meta = transcription.meta
    pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)
@@ -281,9 +319,13 @@ def diarize_file(transcription_id):
    word_list = diarize_assign_speakers(transcription)
    diarized_segments = resegment_word_list(word_list, meta['max_segment_length'], meta['max_segment_time'])
    # Remove existing segments
-   transcription.segment_set.all().delete()
+   transcription.segments.all().delete()
 
    for diarized_segment in diarized_segments:
       diarized_segment['transcription'] = transcription
       segment = Segment(**diarized_segment)
       segment.save()
+
+   status.status = TranscriptionStatus.COMPLETED
+   status.end_time = datetime.now()
+   status.save()

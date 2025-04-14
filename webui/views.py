@@ -14,7 +14,14 @@ from django_q.tasks import async_task
 # Function: index
 def index(request):
    form = TranscriptionForm()
-   transcriptions = Transcription.objects.all()
+
+   current_statuses = []
+   for transcription in Transcription.objects.all():
+      current_status = transcription.current_status()
+      if current_status and current_status.status in [TranscriptionStatus.PENDING, TranscriptionStatus.PROCESSING]:
+         current_statuses.append(current_status)
+
+   current_statuses = sorted(current_statuses, key=lambda status: status.start_time)
 
    # Form submission
    if request.method == 'POST':
@@ -24,7 +31,6 @@ def index(request):
          upload_url = None
 
          saved_transcription = Transcription(
-            title = 'Processing...',
             meta = {
                'model': form.cleaned_data['model'],
                'language': form.cleaned_data['language'],
@@ -36,6 +42,16 @@ def index(request):
          )
          saved_transcription.save()
 
+         # Create transcription statuses
+         if form.cleaned_data['upload_url']:
+            TranscriptionStatus(transcription = saved_transcription, process = TranscriptionStatus.DOWNLOADING, status = TranscriptionStatus.PENDING).save()
+
+         TranscriptionStatus(transcription = saved_transcription, process = TranscriptionStatus.TRANSCRIBING, status = TranscriptionStatus.PENDING).save()
+
+         if form.cleaned_data['diarize']:
+            TranscriptionStatus(transcription = saved_transcription, process = TranscriptionStatus.DIARIZING, status = TranscriptionStatus.PENDING).save()
+         # End create transcription statuses
+
          if request.FILES:
             saved_transcription.title = Path(request.FILES['upload_file'].name).stem
             saved_transcription.upload_file = form.cleaned_data['upload_file']
@@ -43,6 +59,8 @@ def index(request):
          # Download media
          elif form.cleaned_data['upload_url']:
             upload_url = form.cleaned_data['upload_url']
+            saved_transcription.title = upload_url
+            saved_transcription.save(update_fields=['title'])
          else:
             return
 
@@ -53,20 +71,26 @@ def index(request):
 
          return HttpResponseRedirect(reverse('webui:index'))
 
-   return render(request, 'webui/index.html', {'form': form, 'transcriptions': transcriptions})
+   return render(request, 'webui/index.html', {'form': form, 'statuses': current_statuses})
 
 
 # Function: view_transcription
 def view_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segment_set.all()
+   segments = transcription.segments.all()
    return render(request, 'webui/view.html', {'segments': segments})
+
+
+# Function: list_transcriptions
+def list_transcriptions(request):
+   transcriptions = Transcription.objects.all()
+   return render(request, 'webui/list.html', {'transcriptions': transcriptions})
 
 
 # Function: edit_transcription
 def edit_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segment_set.all()
+   segments = transcription.segments.all()
    speakers = set(segments.exclude(speaker__exact='').values_list('speaker', flat=True).distinct())
 
    if request.POST:
@@ -103,4 +127,4 @@ def delete_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
    transcription.delete()
 
-   return HttpResponseRedirect(reverse('webui:index'))
+   return HttpResponseRedirect(reverse('webui:list'))

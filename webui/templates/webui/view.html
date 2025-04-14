@@ -1,14 +1,9 @@
 {% extends 'webui/base.html' %}
 
 {% block content %}
-<div class="row">
-   <div>
-      <a href="{% url 'webui:index' %}" class="link-primary"><i class="bi bi-arrow-left"></i> Transcript List</a>
-   </div>
-   <p class="col mt-4">
-      {% for segment in segments %}
-      {{ segment.text }}
-      {% endfor %}
-   </p>
-</div>
+<p>
+   {% for segment in segments %}
+   {{ segment.text }}
+   {% endfor %}
+</p>
 {% endblock content %}

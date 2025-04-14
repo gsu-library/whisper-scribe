@@ -19,7 +19,7 @@ def format_filename(name):
 # Function: download_text
 def download_text(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segment_set.all()
+   segments = transcription.segments.all()
    output = ''
 
    for segment in segments:
@@ -44,7 +44,7 @@ def download_text(request, transcription_id):
 # Function: download_text_blob
 def download_text_blob(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segment_set.all()
+   segments = transcription.segments.all()
    output = ''
 
    for segment in segments:
@@ -61,7 +61,7 @@ def download_text_blob(request, transcription_id):
 # Function: download_srt
 def download_srt(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segment_set.all()
+   segments = transcription.segments.all()
    output = ''
    count = 1
 
@@ -91,7 +91,7 @@ def download_srt(request, transcription_id):
 # Function: download_vtt
 def download_vtt(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segment_set.all()
+   segments = transcription.segments.all()
    output = 'WEBVTT\n\n'
 
    for segment in segments:
@@ -118,7 +118,7 @@ def download_vtt(request, transcription_id):
 # Function: download_json
 def download_json(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segment_set.all()
+   segments = transcription.segments.all()
    output = []
 
    for segment in segments:

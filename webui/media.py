@@ -57,6 +57,7 @@ def download_media(transcription_id, upload_url):
    status.status = TranscriptionStatus.PROCESSING
    status.save()
 
+   # Can the opts for yt-dlp use a function to generate hex codes on the fly?
    hex = '_' + uuid.uuid4().hex[:7]
 
    ydl_opts = {
@@ -64,14 +65,25 @@ def download_media(transcription_id, upload_url):
          'home': str(Path(settings.MEDIA_ROOT).joinpath('temp')),
       },
       'outtmpl': '%(title)s' + hex,
+      # This should force playlists to only download one item right now
+      'playlist_items': '1',
    }
 
    with YoutubeDL(ydl_opts) as ydl:
-      info = ydl.extract_info(upload_url)
+      all_info = ydl.extract_info(upload_url, download=True)
 
-   file_path = Path(info['requested_downloads'][0]['filepath'])
+   if '_type' in all_info and all_info['_type'] == 'playlist':
+      # This can eventually be the loop for processing multiple videos
+      for entry in all_info['entries']:
+         single_info = entry
+         # Only care about the first entry right now
+         break
+   else:
+      single_info = all_info
 
-   transcription.title = info['title']
+   file_path = Path(single_info['requested_downloads'][0]['filepath'])
+
+   transcription.title = single_info['title']
    transcription.upload_file = File(open(str(file_path), 'rb'), name=file_path.name)
    transcription.save(update_fields=['title', 'upload_file'])
 

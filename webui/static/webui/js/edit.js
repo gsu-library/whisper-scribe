@@ -32,6 +32,10 @@
       let buttons = segment.querySelectorAll('button');
       let startTime = document.querySelector('#start-' + segmentId);
 
+      // Enable tooltips
+      const tooltipTriggerList = segment.querySelectorAll('[data-bs-toggle="tooltip"]');
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl, {trigger : 'hover'}));
+
       // Update input fields on change
       inputs.forEach(input => {
          input.addEventListener('change', async obj => {
@@ -219,15 +223,15 @@
 
          <div>
             <div class="btn-group" role="group">
-               <button type="button" class="btn btn-outline-secondary" title="Play" aria-label="Play" data-type="play"><i class="bi bi-play-fill"></i></button>
-               <button type="button" class="btn btn-outline-secondary" title="Pause" aria-label="Pause" data-type="pause"><i class="bi bi-pause-fill"></i></button>
-               <button type="button" class="btn btn-outline-secondary" title="Quick Rewind" aria-label="Quick Rewind" data-type="rewind"><i class="bi bi-arrow-counterclockwise"></i></button>
-               <button type="button" class="btn btn-outline-secondary" title="Add Segment Before" aria-label="Add Segment Before" data-type="add-before"><i class="bi bi-arrow-bar-up"></i></button>
-               <button type="button" class="btn btn-outline-secondary" title="Add Segment After" aria-label="Add Segment After" data-type="add-after"><i class="bi bi-arrow-bar-down"></i></button>
+               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Play" data-bs-placement="bottom" aria-label="Play" data-type="play"><i class="bi bi-play-fill"></i></button>
+               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Pause" data-bs-placement="bottom" aria-label="Pause" data-type="pause"><i class="bi bi-pause-fill"></i></button>
+               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Quick Rewind" data-bs-placement="bottom" aria-label="Quick Rewind" data-type="rewind"><i class="bi bi-arrow-counterclockwise"></i></button>
+               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Add Segment Before" data-bs-placement="bottom" aria-label="Add Segment Before" data-type="add-before"><i class="bi bi-arrow-bar-up"></i></button>
+               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Add Segment After" data-bs-placement="bottom" aria-label="Add Segment After" data-type="add-after"><i class="bi bi-arrow-bar-down"></i></button>
             </div>
 
             <div class="float-end" role="group">
-               <button class="btn btn-outline-danger border-0 segment-delete" title="Delete Segment" aria-label="Delete Segment" data-type="delete"><i class="bi bi-x-lg"></i></button>
+               <button class="btn btn-outline-danger border-0 segment-delete" data-bs-title="Delete Segment" data-bs-placement="bottom" aria-label="Delete Segment" data-type="delete"><i class="bi bi-x-lg"></i></button>
             </div>
          </div>
       </div>`;

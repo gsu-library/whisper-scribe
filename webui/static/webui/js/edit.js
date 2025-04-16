@@ -34,7 +34,7 @@
 
       // Enable tooltips
       const tooltipTriggerList = segment.querySelectorAll('[data-bs-toggle="tooltip"]');
-      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl, {trigger : 'hover'}));
 
       // Update input fields on change
       inputs.forEach(input => {

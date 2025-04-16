@@ -57,6 +57,7 @@ def download_media(transcription_id, upload_url):
    status.status = TranscriptionStatus.PROCESSING
    status.save()
 
+   # Can the opts for yt-dlp use a function to generate hex codes on the fly?
    hex = '_' + uuid.uuid4().hex[:7]
 
    ydl_opts = {

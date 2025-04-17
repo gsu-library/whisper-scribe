@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .models import *
 from .utils import is_float
+from .templatetags.time_filters import seconds_to_segment_time
 
 import json
 
@@ -86,8 +87,8 @@ def api_segments(request):
       data = {
          'message': 'success',
          'id': new_segment.id,
-         'start': new_start,
-         'end': new_end,
+         'start': seconds_to_segment_time(new_start),
+         'end': seconds_to_segment_time(new_end),
       }
       return JsonResponse(data, status=200)
 
@@ -111,7 +112,10 @@ def api_segments_id(request, segment_id):
    if(request.method == 'POST'):
       data = json.loads(request.body)
       field = data.get('field')
-      value = data.get('value', '').strip()
+      value = data.get('value', '')
+      # If a string
+      if isinstance(value, (str)):
+         value = value.strip()
       method = data.get('method')
 
       if method == 'DELETE':

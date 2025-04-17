@@ -52,7 +52,7 @@
          // Autoplay
          textarea.addEventListener('focus', obj => {
             if(autoplay.checked) {
-               mediaPlayer.currentTime = startTime.value;
+               mediaPlayer.currentTime = segmentTimeToSeconds(startTime.value);
                mediaPlayer.play();
             }
          });
@@ -74,7 +74,7 @@
          button.addEventListener('click', () => {
             switch (buttonType) {
                case 'play':
-                  mediaPlayer.currentTime = startTime.value;
+                  mediaPlayer.currentTime = segmentTimeToSeconds(startTime.value);
                   mediaPlayer.play();
                   break;
                case 'pause':
@@ -82,7 +82,8 @@
                   break;
                case 'rewind':
                   let currentTime = mediaPlayer.currentTime;
-                  mediaPlayer.currentTime = currentTime - 1.0;
+                  let newTime = currentTime - 1.0;
+                  mediaPlayer.currentTime = (newTime < 0) ? 0 : newTime;
                   break;
                case 'add-before':
                   createSegment(segmentId, -1);
@@ -239,5 +240,46 @@
       let temp = document.createElement('div');
       temp.innerHTML = segmentCode;
       return temp;
+   }
+
+
+   // Function: segmentTimeToSeconds
+   // Converts segment time format to seconds.
+   function segmentTimeToSeconds(time) {
+      const parts = time.split(':');
+      let hours = 0;
+      let minutes = 0;
+      let seconds = 0;
+      let milliseconds = 0;
+
+      if(parts.length === 2) {
+         // Format is mm:ss or mm:ss.mill
+         minutes = parseInt(parts[0], 10);
+         const secondsParts = parts[1].split('.');
+         seconds = parseInt(secondsParts[0], 10);
+
+         if (secondsParts.length > 1) {
+            milliseconds = parseInt(secondsParts[1], 10);
+         }
+      }
+      else if(parts.length === 3) {
+         // Format is hh:mm:ss or hh:mm:ss.mill
+         hours = parseInt(parts[0], 10);
+         minutes = parseInt(parts[1], 10);
+         const secondsParts = parts[2].split('.');
+         seconds = parseInt(secondsParts[0], 10);
+
+         if(secondsParts.length > 1) {
+            milliseconds = parseInt(secondsParts[1], 10);
+         }
+      }
+      else {
+         console.log('Invalid time format.');
+         return null;
+      }
+
+      const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
+      console.log(totalSeconds);
+      return totalSeconds;
    }
 })();

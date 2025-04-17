@@ -13,7 +13,16 @@
             field: obj.target.dataset.field,
             value: obj.target.value
          };
-         let result = await callApi('/api/transcriptions/' + transcriptionId, data, 'POST');
+         const result = await callApi('/api/transcriptions/' + transcriptionId, data, 'POST');
+
+         if(result.status === 200) {
+            part.classList.remove('error');
+            part.classList.add('success');
+         }
+         else {
+            part.classList.remove('success');
+            part.classList.add('error');
+         }
       });
    });
 
@@ -39,11 +48,25 @@
       // Update input fields on change
       inputs.forEach(input => {
          input.addEventListener('change', async obj => {
-            const data = {
-               field: obj.target.dataset.field,
-               value: obj.target.value
-            };
-            let result = await callApi('/api/segments/' + segmentId, data, 'POST');
+            const data = { field: obj.target.dataset.field }
+
+            if(data.field === 'start' || data.field === 'end') {
+               data['value'] = segmentTimeToSeconds(obj.target.value).toString();
+            }
+            else {
+               data['value'] = obj.target.value;
+            }
+            console.log(data);
+            const result = await callApi('/api/segments/' + segmentId, data, 'POST');
+
+            if(result.status === 200) {
+               input.classList.remove('error');
+               input.classList.add('success');
+            }
+            else {
+               input.classList.remove('success');
+               input.classList.add('error');
+            }
          });
       });
 
@@ -63,7 +86,16 @@
                field: obj.target.dataset.field,
                value: obj.target.value
             };
-            let result = await callApi('/api/segments/' + segmentId, data, 'POST');
+            const result = await callApi('/api/segments/' + segmentId, data, 'POST');
+
+            if(result.status === 200) {
+               textarea.classList.remove('error');
+               textarea.classList.add('success');
+            }
+            else {
+               textarea.classList.remove('success');
+               textarea.classList.add('error');
+            }
          });
       });
 
@@ -129,7 +161,7 @@
          where: where
       };
 
-      let response = await callApi('/api/segments/', data, 'POST');
+      const response = await callApi('/api/segments/', data, 'POST');
 
       if(response.status == 200) {
          const json = await response.json();
@@ -154,7 +186,7 @@
       // segmentId should never be 0 due to autoincrement - if it ever is this will not work on segment 0
       if(segmentId && (segment = document.querySelector(`.segment[data-index='${segmentId}']`))) {
          const data = { method: 'DELETE' };
-         let response = await callApi('/api/segments/' + segmentId, data, 'POST');
+         const response = await callApi('/api/segments/' + segmentId, data, 'POST');
 
          if(response.status == 204) {
             segment.remove();
@@ -205,14 +237,14 @@
 
             <div class="col-2">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="start-${segmentId}" name="start-${segmentId}" value="${start.toFixed(3)}" placeholder="" data-field="start" />
+                  <input type="text" class="form-control border-0" id="start-${segmentId}" name="start-${segmentId}" value="${start}" placeholder="" data-field="start" />
                   <label for="start-${segmentId}">Start</label>
                </div>
             </div>
 
             <div class="col-2">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="end-${segmentId}" name="end-${segmentId}" value="${end.toFixed(3)}" placeholder="" data-field="end" />
+                  <input type="text" class="form-control border-0" id="end-${segmentId}" name="end-${segmentId}" value="${end}" placeholder="" data-field="end" />
                   <label for="end-${segmentId}">End</label>
                </div>
             </div>
@@ -252,18 +284,27 @@
       let seconds = 0;
       let milliseconds = 0;
 
-      if(parts.length === 2) {
-         // Format is mm:ss or mm:ss.mill
+      // Format is ss or ss.mill
+      if(parts.length === 1) {
+         const secondsParts = parts[0].split('.');
+         seconds = parseInt(secondsParts[0], 10);
+
+         if(secondsParts.length > 1) {
+            milliseconds = parseInt(secondsParts[1], 10);
+         }
+      }
+      // Format is mm:ss or mm:ss.mill
+      else if(parts.length === 2) {
          minutes = parseInt(parts[0], 10);
          const secondsParts = parts[1].split('.');
          seconds = parseInt(secondsParts[0], 10);
 
-         if (secondsParts.length > 1) {
+         if(secondsParts.length > 1) {
             milliseconds = parseInt(secondsParts[1], 10);
          }
       }
+      // Format is hh:mm:ss or hh:mm:ss.mill
       else if(parts.length === 3) {
-         // Format is hh:mm:ss or hh:mm:ss.mill
          hours = parseInt(parts[0], 10);
          minutes = parseInt(parts[1], 10);
          const secondsParts = parts[2].split('.');

@@ -1,5 +1,6 @@
 {% extends 'webui/base.html' %}
 {% load static %}
+{% load time_filters %}
 
 {% block content %}
 <div class="row">
@@ -79,14 +80,14 @@
 
             <div class="col-2">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="start-{{ segment.id }}" name="start-{{ segment.id }}" value="{{ segment.start|floatformat:3 }}" placeholder="" data-field="start" />
+                  <input type="text" class="form-control border-0" id="start-{{ segment.id }}" name="start-{{ segment.id }}" value="{{ segment.start|seconds_to_segment_time }}" placeholder="" data-field="start" />
                   <label for="start-{{ segment.id }}">Start</label>
                </div>
             </div>
 
             <div class="col-2">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="end-{{ segment.id }}" name="end-{{ segment.id }}" value="{{ segment.end|floatformat:3 }}" placeholder="" data-field="end" />
+                  <input type="text" class="form-control border-0" id="end-{{ segment.id }}" name="end-{{ segment.id }}" value="{{ segment.end|seconds_to_segment_time }}" placeholder="" data-field="end" />
                   <label for="end-{{ segment.id }}">End</label>
                </div>
             </div>

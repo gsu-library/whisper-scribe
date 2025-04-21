@@ -56,7 +56,7 @@
             else {
                data['value'] = obj.target.value;
             }
-            console.log(data);
+
             const result = await callApi('/api/segments/' + segmentId, data, 'POST');
 
             if(result.status === 200) {
@@ -127,7 +127,7 @@
                   deleteSegment(segmentId);
                   break;
                default:
-                  console.log('you should never see this');
+                  console.log('You should never see this.');
             }
          });
       });
@@ -147,7 +147,7 @@
          otherSegment = clickedSegment.nextElementSibling;
       }
       else {
-         console.log('segment creation failed');
+         console.log('Segment creation failed.');
          return;
       }
 
@@ -320,7 +320,6 @@
       }
 
       const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
-      console.log(totalSeconds);
       return totalSeconds;
    }
 })();

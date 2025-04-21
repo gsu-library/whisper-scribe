@@ -226,25 +226,26 @@
    // Function newSegment
    // Creates and returns segment code
    function newSegment(segmentId, start, end) {
+      // SEGMENT CHANGES MUST ALSO BE UPDATED IN EDIT.HTML!!!!
       let segmentCode = `<div class="segment mb-5" data-index="${segmentId}">
          <div class="row mb-3">
             <div class="col-3">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="speaker-${segmentId}" name="speaker-${segmentId}" value="" placeholder="" data-field="speaker" />
+                  <input type="text" class="form-control" id="speaker-${segmentId}" name="speaker-${segmentId}" value="" placeholder="" data-field="speaker" />
                   <label for="speaker-${segmentId}" >Speaker</label>
                </div>
             </div>
 
             <div class="col-2">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="start-${segmentId}" name="start-${segmentId}" value="${start}" placeholder="" data-field="start" />
+                  <input type="text" class="form-control" id="start-${segmentId}" name="start-${segmentId}" value="${start}" placeholder="" data-field="start" />
                   <label for="start-${segmentId}">Start</label>
                </div>
             </div>
 
             <div class="col-2">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="end-${segmentId}" name="end-${segmentId}" value="${end}" placeholder="" data-field="end" />
+                  <input type="text" class="form-control" id="end-${segmentId}" name="end-${segmentId}" value="${end}" placeholder="" data-field="end" />
                   <label for="end-${segmentId}">End</label>
                </div>
             </div>

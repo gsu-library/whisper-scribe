@@ -21,7 +21,6 @@ def api_transcriptions_id(request, transcription_id):
       data = json.loads(request.body)
       field = data.get('field')
       value = data.get('value', '')
-      # If a string
       if isinstance(value, (str)):
          value = value.strip()
 
@@ -116,10 +115,9 @@ def api_segments_id(request, segment_id):
       data = json.loads(request.body)
       field = data.get('field')
       value = data.get('value', '')
-      # If a string
+      method = data.get('method')
       if isinstance(value, (str)):
          value = value.strip()
-      method = data.get('method')
 
       if method == 'DELETE':
          segment.delete()

@@ -20,7 +20,10 @@ def api_transcriptions_id(request, transcription_id):
    if(request.method == 'POST'):
       data = json.loads(request.body)
       field = data.get('field')
-      value = data.get('value', '').strip()
+      value = data.get('value', '')
+      # If a string
+      if isinstance(value, (str)):
+         value = value.strip()
 
       # Do not allow a blank title to be submitted
       if field == 'title' and not value:

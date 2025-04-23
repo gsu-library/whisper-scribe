@@ -17,3 +17,11 @@ input.success,
 textarea.success {
    border: 1px solid #198754 !important;
 }
+
+#scrollToTop {
+   display: none;
+   position: fixed;
+   bottom: 40px;
+   right: 40px;
+   z-index: 1000;
+}

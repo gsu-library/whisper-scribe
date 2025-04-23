@@ -6,6 +6,32 @@
    let transcriptionParts = document.querySelectorAll('.transcription-part');
 
 
+   // Setup scroll to top button
+   document.addEventListener('DOMContentLoaded', () => {
+      const scrollButton = document.querySelector('#scrollToTop');
+      const scrollYHeight = 300;
+
+      // Initially show the button if scroll height is > scrollYHeight
+      if(window.scrollY > scrollYHeight) {
+         scrollButton.style.display = 'block';
+      }
+
+      window.addEventListener('scroll', () => {
+         if(window.scrollY > scrollYHeight) {
+            scrollButton.style.display = 'block';
+         }
+         else {
+            scrollButton.style.display = 'none';
+         }
+      });
+
+      scrollButton.addEventListener('click', e => {
+         e.preventDefault();
+         window.scrollTo({top: 0, behavior: 'smooth'});
+      });
+   });
+
+
    // Setup transcription part updates
    transcriptionParts.forEach(part => {
       part.addEventListener('change', async obj => {

@@ -200,7 +200,7 @@
          setupSegment(segment);
       }
       else {
-         // show some error
+         alert('Segment creation failed due to server error.')
       }
    }
 
@@ -218,7 +218,7 @@
             segment.remove();
          }
          else {
-            // placeholder
+            alert('Segment deletion failed due to server error.')
          }
       }
    }

@@ -124,7 +124,7 @@ def api_segments_id(request, segment_id):
          return HttpResponse(status=204)
 
       # Allow value of speaker to be an empty string
-      if field and value or field == 'speaker' and value == '':
+      if field and value is not None:
          if (field == 'start' or field == 'end') and not is_float(value):
             return JsonResponse({'message': f'{field} value is not numeric'}, status=400)
 

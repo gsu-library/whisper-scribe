@@ -179,7 +179,7 @@
          otherSegment = clickedSegment.nextElementSibling;
       }
       else {
-         console.log('Segment creation failed.');
+         alert('Segment creation failed due to placement issue.');
          return;
       }
 
@@ -206,7 +206,7 @@
          setupSegment(segment);
       }
       else {
-         alert('Segment creation failed due to server error.')
+         alert('Segment creation failed due to server error.');
       }
    }
 
@@ -224,7 +224,7 @@
             segment.remove();
          }
          else {
-            alert('Segment deletion failed due to server error.')
+            alert('Segment deletion failed due to server error.');
          }
       }
    }

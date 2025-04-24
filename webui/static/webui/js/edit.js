@@ -134,11 +134,9 @@
          const buttonType = button.dataset.type;
 
          button.addEventListener('click', () => {
-            let time = segmentTimeToSeconds(startTime.value) ? startTime.value : 0;
-
             switch (buttonType) {
                case 'play':
-                  mediaPlayer.currentTime = time;
+                  mediaPlayer.currentTime = segmentTimeToSeconds(startTime.value, false);
                   mediaPlayer.play();
                   break;
                case 'pause':
@@ -310,7 +308,7 @@
 
    // Function: segmentTimeToSeconds
    // Converts segment time format to seconds.
-   function segmentTimeToSeconds(time) {
+   function segmentTimeToSeconds(time, returnNull = true) {
       const parts = time.split(':');
       let hours = 0;
       let minutes = 0;
@@ -351,7 +349,12 @@
       const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
 
       if(isNaN(totalSeconds)) {
-         return null;
+         if(returnNull) {
+            return null;
+         }
+         else {
+            return 0;
+         }
       }
 
       return totalSeconds;

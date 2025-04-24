@@ -260,22 +260,22 @@
    function newSegment(segmentId, start, end) {
       // SEGMENT CHANGES MUST ALSO BE UPDATED IN EDIT.HTML!!!!
       let segmentCode = `<div class="segment mb-5" data-index="${segmentId}">
-         <div class="row mb-3">
-            <div class="col-3">
+         <div class="d-flex justify-content-start">
+            <div class="mb-3 me-2">
                <div class="form-floating">
                   <input type="text" class="form-control" id="speaker-${segmentId}" name="speaker-${segmentId}" value="" placeholder="" data-field="speaker" />
                   <label for="speaker-${segmentId}" >Speaker</label>
                </div>
             </div>
 
-            <div class="col-2">
+            <div class="mb-3 me-2">
                <div class="form-floating">
                   <input type="text" class="form-control" id="start-${segmentId}" name="start-${segmentId}" value="${start}" placeholder="" data-field="start" />
                   <label for="start-${segmentId}">Start</label>
                </div>
             </div>
 
-            <div class="col-2">
+            <div class="mb-3">
                <div class="form-floating">
                   <input type="text" class="form-control" id="end-${segmentId}" name="end-${segmentId}" value="${end}" placeholder="" data-field="end" />
                   <label for="end-${segmentId}">End</label>
@@ -283,8 +283,8 @@
             </div>
          </div>
 
-         <div class="row mb-3">
-            <textarea class="form-control" id="text-${segmentId}" name="text-${segmentId}" data-field="text"></textarea>
+         <div class="d-flex">
+            <textarea class="form-control mb-3" id="text-${segmentId}" name="text-${segmentId}" data-field="text"></textarea>
          </div>
 
          <div>

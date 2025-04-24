@@ -110,7 +110,6 @@
             }
          });
 
-         // Update
          textarea.addEventListener('change', async obj => {
             const data = {
                field: obj.target.dataset.field,

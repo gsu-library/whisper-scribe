@@ -77,7 +77,7 @@
             const data = { field: obj.target.dataset.field }
 
             if(data.field === 'start' || data.field === 'end') {
-               data['value'] = segmentTimeToSeconds(obj.target.value).toString();
+               data['value'] = segmentTimeToSeconds(obj.target.value);
             }
             else {
                data['value'] = obj.target.value;
@@ -101,8 +101,12 @@
          // Autoplay
          textarea.addEventListener('focus', obj => {
             if(autoplay.checked) {
-               mediaPlayer.currentTime = segmentTimeToSeconds(startTime.value);
-               mediaPlayer.play();
+               let time = segmentTimeToSeconds(startTime.value);
+
+               if(time) {
+                  mediaPlayer.currentTime = time;
+                  mediaPlayer.play();
+               }
             }
          });
 
@@ -130,9 +134,11 @@
          const buttonType = button.dataset.type;
 
          button.addEventListener('click', () => {
+            let time = segmentTimeToSeconds(startTime.value) ? startTime.value : 0;
+
             switch (buttonType) {
                case 'play':
-                  mediaPlayer.currentTime = segmentTimeToSeconds(startTime.value);
+                  mediaPlayer.currentTime = time;
                   mediaPlayer.play();
                   break;
                case 'pause':
@@ -341,12 +347,13 @@
             milliseconds = parseInt(secondsParts[1], 10);
          }
       }
-      else {
-         console.log('Invalid time format.');
+
+      const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
+
+      if(isNaN(totalSeconds)) {
          return null;
       }
 
-      const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
       return totalSeconds;
    }
 })();

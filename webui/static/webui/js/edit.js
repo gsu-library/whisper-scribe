@@ -198,8 +198,8 @@
       if(response.status == 200) {
          const json = await response.json();
          let segment = newSegment(json.id, json.start, json.end);
+         // segment has a wrapper div
          segment = segment.childNodes[0];
-         // TODO: should not have to select child node here
 
          if(where < 0) { clickedSegment.before(segment);  }
          else if( where > 0) { clickedSegment.after(segment); }
@@ -302,9 +302,9 @@
          </div>
       </div>`;
 
-      let temp = document.createElement('div');
-      temp.innerHTML = segmentCode;
-      return temp;
+      let wrapper = document.createElement('div');
+      wrapper.innerHTML = segmentCode;
+      return wrapper;
    }
 
 

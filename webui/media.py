@@ -159,7 +159,7 @@ def transcribe_file(transcription_id):
    language = None if not meta['language'] else meta['language']
 
    # Save audio duration and file size
-   transcription.meta['duration'] = format_timestamp(get_file_duration(transcription.upload_file.path), include_mill=False)
+   transcription.meta['duration'] = format_seconds(get_file_duration(transcription.upload_file.path), include_mill=False)
    transcription.meta['size'] = transcription.upload_file.size
    transcription.save(update_fields=['meta'])
 

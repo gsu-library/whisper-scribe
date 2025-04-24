@@ -73,22 +73,22 @@
          {% for segment in segments %}
          <!-- SEGMENT CHANGES MUST ALSO BE UPDATED IN EDIT.JS!!!! -->
          <div class="segment mb-5" data-index="{{ segment.id }}">
-            <div class="row mb-3">
-               <div class="col-3">
+            <div class="d-flex justify-content-start">
+               <div class="mb-3 me-2">
                   <div class="form-floating">
                      <input type="text" class="form-control" id="speaker-{{ segment.id }}" name="speaker-{{ segment.id }}" value="{{ segment.speaker }}" placeholder="" data-field="speaker" />
                      <label for="speaker-{{ segment.id }}" >Speaker</label>
                   </div>
                </div>
 
-               <div class="col-2">
+               <div class="mb-3 me-2">
                   <div class="form-floating">
                      <input type="text" class="form-control" id="start-{{ segment.id }}" name="start-{{ segment.id }}" value="{{ segment.start|seconds_to_segment_time }}" placeholder="" data-field="start" />
                      <label for="start-{{ segment.id }}">Start</label>
                   </div>
                </div>
 
-               <div class="col-2">
+               <div class="mb-3">
                   <div class="form-floating">
                      <input type="text" class="form-control" id="end-{{ segment.id }}" name="end-{{ segment.id }}" value="{{ segment.end|seconds_to_segment_time }}" placeholder="" data-field="end" />
                      <label for="end-{{ segment.id }}">End</label>
@@ -96,8 +96,8 @@
                </div>
             </div>
 
-            <div class="row mb-3">
-               <textarea class="form-control" id="text-{{ segment.id }}" name="text-{{ segment.id }}" data-field="text">{{ segment.text }}</textarea>
+            <div class="d-flex">
+               <textarea class="form-control mb-3" id="text-{{ segment.id }}" name="text-{{ segment.id }}" data-field="text">{{ segment.text }}</textarea>
             </div>
 
             <div>

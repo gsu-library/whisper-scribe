@@ -55,6 +55,7 @@ def download_media(transcription_id, upload_url):
 
    status = transcription.statuses.get(process = TranscriptionStatus.DOWNLOADING)
    status.status = TranscriptionStatus.PROCESSING
+   status.start_time = datetime.now()
    status.save()
 
    # Can the opts for yt-dlp use a function to generate hex codes on the fly?
@@ -150,6 +151,7 @@ def transcribe_file(transcription_id):
 
    status = transcription.statuses.get(process = TranscriptionStatus.TRANSCRIBING)
    status.status = TranscriptionStatus.PROCESSING
+   status.start_time = datetime.now()
    status.save()
 
    DESCRIPTION_MAX_LENGTH = 100
@@ -305,6 +307,7 @@ def diarize_file(transcription_id):
 
    status = transcription.statuses.get(process = TranscriptionStatus.DIARIZING)
    status.status = TranscriptionStatus.PROCESSING
+   status.start_time = datetime.now()
    status.save()
 
    result = []

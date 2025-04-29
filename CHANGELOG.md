@@ -4,8 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.] - 2025-
+## [1.5.0] - 2025-04-29
 - Add tooltips to buttons on edit page.
+- Update downloader to only process one video (for now).
+- Change start and end time format on edit page.
+- Add visual responses for successful/unsuccessful changes on edit page.
+- Add more checks for API calls.
+- Update general look and feel on edit page.
+- Add scroll to top button on edit page.
+- Add alert notifications to edit page if segment creation or deletion fails.
+- Add error checks and messaging on edit page if no file or segments are found.
+- Update transcription status model start time field to be null by default.
+- Update how transcriptions statuses work, start time now only applies when the status is not pending.
 
 ## [1.4.0] - 2025-04-14
 - Add and implement transcription status model.

@@ -6,8 +6,9 @@
    let transcriptionParts = document.querySelectorAll('.transcription-part');
 
 
-   // Setup scroll to top button
+   // On DOM load
    document.addEventListener('DOMContentLoaded', () => {
+      // Setup scroll to top button
       const scrollButton = document.querySelector('#scrollToTop');
       const scrollYHeight = 300;
 
@@ -25,8 +26,8 @@
          }
       });
 
-      scrollButton.addEventListener('click', e => {
-         e.preventDefault();
+      scrollButton.addEventListener('click', event => {
+         event.preventDefault();
          window.scrollTo({top: 0, behavior: 'smooth'});
       });
    });
@@ -34,10 +35,10 @@
 
    // Setup transcription part updates
    transcriptionParts.forEach(part => {
-      part.addEventListener('change', async obj => {
+      part.addEventListener('change', async event => {
          const data = {
-            field: obj.target.dataset.field,
-            value: obj.target.value
+            field: event.target.dataset.field,
+            value: event.target.value
          };
          const result = await callApi('/api/transcriptions/' + transcriptionId, data, 'POST');
 
@@ -73,14 +74,14 @@
 
       // Update input fields on change
       inputs.forEach(input => {
-         input.addEventListener('change', async obj => {
-            const data = { field: obj.target.dataset.field }
+         input.addEventListener('change', async event => {
+            const data = { field: event.target.dataset.field }
 
             if(data.field === 'start' || data.field === 'end') {
-               data['value'] = segmentTimeToSeconds(obj.target.value);
+               data['value'] = segmentTimeToSeconds(event.target.value);
             }
             else {
-               data['value'] = obj.target.value;
+               data['value'] = event.target.value;
             }
 
             const result = await callApi('/api/segments/' + segmentId, data, 'POST');
@@ -99,7 +100,7 @@
       // Update textarea on change and add autoplay
       textareas.forEach(textarea => {
          // Autoplay
-         textarea.addEventListener('focus', obj => {
+         textarea.addEventListener('focus', () => {
             if(autoplay.checked) {
                let time = segmentTimeToSeconds(startTime.value);
 
@@ -110,10 +111,10 @@
             }
          });
 
-         textarea.addEventListener('change', async obj => {
+         textarea.addEventListener('change', async event => {
             const data = {
-               field: obj.target.dataset.field,
-               value: obj.target.value
+               field: event.target.dataset.field,
+               value: event.target.value
             };
             const result = await callApi('/api/segments/' + segmentId, data, 'POST');
 

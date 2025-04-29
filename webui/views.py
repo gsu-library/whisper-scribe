@@ -16,12 +16,10 @@ def index(request):
    form = TranscriptionForm()
 
    current_statuses = []
-   for transcription in Transcription.objects.all():
+   for transcription in Transcription.objects.all().order_by('submitted'):
       current_status = transcription.current_status()
       if current_status and current_status.status in [TranscriptionStatus.PENDING, TranscriptionStatus.PROCESSING]:
          current_statuses.append(current_status)
-
-   current_statuses = sorted(current_statuses, key=lambda status: status.start_time)
 
    # Form submission
    if request.method == 'POST':

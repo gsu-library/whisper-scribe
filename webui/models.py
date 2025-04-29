@@ -18,16 +18,16 @@ class Transcription(models.Model):
       return f'{self.title}'
 
    def current_status(self):
-      # If error.
-      status = self.statuses.filter(status=TranscriptionStatus.FAILED).order_by('start_time').first()
+      # If failed, exclude processes that never started
+      status = self.statuses.filter(status=TranscriptionStatus.FAILED, start_time__isnull=False).order_by('start_time').first()
       if status: return status
-      # If processing.
+      # If processing, start time should be present if process statis is processing
       status = self.statuses.filter(status=TranscriptionStatus.PROCESSING).order_by('start_time').first()
       if status: return status
-      # If pending.
-      status = self.statuses.filter(status=TranscriptionStatus.PENDING).order_by('start_time').first()
+      # If pending, must order by process number
+      status = self.statuses.filter(status=TranscriptionStatus.PENDING).order_by('process').first()
       if status: return status
-      # Else must be completed.
+      # Else completed, start time should be present
       return self.statuses.order_by('-start_time').first()
 
    def fail_incomplete_statuses(self, error_message="Transcription processing failed.", processes_to_fail=None):
@@ -80,7 +80,7 @@ class TranscriptionStatus(models.Model):
    transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE, related_name='statuses')
    process = models.IntegerField(choices=PROCESS_CHOICES)
    status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
-   start_time = models.DateTimeField(auto_now_add=True)
+   start_time = models.DateTimeField(null=True, default=None)
    end_time = models.DateTimeField(null=True, default=None)
    error_message = models.TextField(null=True, default=None)
 

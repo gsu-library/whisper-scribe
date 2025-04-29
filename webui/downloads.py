@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.conf import settings
 
 from .models import Transcription
-from .utils import format_timestamp
+from .utils import format_seconds
 
 import json, re
 
@@ -67,7 +67,7 @@ def download_srt(request, transcription_id):
 
    for segment in segments:
       output += f'{count!s}\n'
-      output += f'{format_timestamp(segment.start, True, ",")} --> {format_timestamp(segment.end, True, ",")}\n'
+      output += f'{format_seconds(segment.start, True, ",")} --> {format_seconds(segment.end, True, ",")}\n'
 
       if segment.speaker:
          if settings.UPPERCASE_SPEAKER_NAMES:
@@ -95,7 +95,7 @@ def download_vtt(request, transcription_id):
    output = 'WEBVTT\n\n'
 
    for segment in segments:
-      output += f'{format_timestamp(segment.start)} --> {format_timestamp(segment.end)}\n'
+      output += f'{format_seconds(segment.start)} --> {format_seconds(segment.end)}\n'
 
       if segment.speaker:
          if settings.UPPERCASE_SPEAKER_NAMES:

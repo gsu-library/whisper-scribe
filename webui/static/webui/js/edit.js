@@ -6,14 +6,50 @@
    let transcriptionParts = document.querySelectorAll('.transcription-part');
 
 
+   // On DOM load
+   document.addEventListener('DOMContentLoaded', () => {
+      // Setup scroll to top button
+      const scrollButton = document.querySelector('#scrollToTop');
+      const scrollYHeight = 300;
+
+      // Initially show the button if scroll height is > scrollYHeight
+      if(window.scrollY > scrollYHeight) {
+         scrollButton.style.display = 'block';
+      }
+
+      window.addEventListener('scroll', () => {
+         if(window.scrollY > scrollYHeight) {
+            scrollButton.style.display = 'block';
+         }
+         else {
+            scrollButton.style.display = 'none';
+         }
+      });
+
+      scrollButton.addEventListener('click', event => {
+         event.preventDefault();
+         window.scrollTo({top: 0, behavior: 'smooth'});
+      });
+   });
+
+
    // Setup transcription part updates
    transcriptionParts.forEach(part => {
-      part.addEventListener('change', async obj => {
+      part.addEventListener('change', async event => {
          const data = {
-            field: obj.target.dataset.field,
-            value: obj.target.value
+            field: event.target.dataset.field,
+            value: event.target.value
          };
-         let result = await callApi('/api/transcriptions/' + transcriptionId, data, 'POST');
+         const result = await callApi('/api/transcriptions/' + transcriptionId, data, 'POST');
+
+         if(result.status === 200) {
+            part.classList.remove('error');
+            part.classList.add('success');
+         }
+         else {
+            part.classList.remove('success');
+            part.classList.add('error');
+         }
       });
    });
 
@@ -38,32 +74,58 @@
 
       // Update input fields on change
       inputs.forEach(input => {
-         input.addEventListener('change', async obj => {
-            const data = {
-               field: obj.target.dataset.field,
-               value: obj.target.value
-            };
-            let result = await callApi('/api/segments/' + segmentId, data, 'POST');
+         input.addEventListener('change', async event => {
+            const data = { field: event.target.dataset.field }
+
+            if(data.field === 'start' || data.field === 'end') {
+               data['value'] = segmentTimeToSeconds(event.target.value);
+            }
+            else {
+               data['value'] = event.target.value;
+            }
+
+            const result = await callApi('/api/segments/' + segmentId, data, 'POST');
+
+            if(result.status === 200) {
+               input.classList.remove('error');
+               input.classList.add('success');
+            }
+            else {
+               input.classList.remove('success');
+               input.classList.add('error');
+            }
          });
       });
 
       // Update textarea on change and add autoplay
       textareas.forEach(textarea => {
          // Autoplay
-         textarea.addEventListener('focus', obj => {
+         textarea.addEventListener('focus', () => {
             if(autoplay.checked) {
-               mediaPlayer.currentTime = startTime.value;
-               mediaPlayer.play();
+               let time = segmentTimeToSeconds(startTime.value);
+
+               if(time) {
+                  mediaPlayer.currentTime = time;
+                  mediaPlayer.play();
+               }
             }
          });
 
-         // Update
-         textarea.addEventListener('change', async obj => {
+         textarea.addEventListener('change', async event => {
             const data = {
-               field: obj.target.dataset.field,
-               value: obj.target.value
+               field: event.target.dataset.field,
+               value: event.target.value
             };
-            let result = await callApi('/api/segments/' + segmentId, data, 'POST');
+            const result = await callApi('/api/segments/' + segmentId, data, 'POST');
+
+            if(result.status === 200) {
+               textarea.classList.remove('error');
+               textarea.classList.add('success');
+            }
+            else {
+               textarea.classList.remove('success');
+               textarea.classList.add('error');
+            }
          });
       });
 
@@ -74,7 +136,7 @@
          button.addEventListener('click', () => {
             switch (buttonType) {
                case 'play':
-                  mediaPlayer.currentTime = startTime.value;
+                  mediaPlayer.currentTime = segmentTimeToSeconds(startTime.value, false);
                   mediaPlayer.play();
                   break;
                case 'pause':
@@ -82,7 +144,8 @@
                   break;
                case 'rewind':
                   let currentTime = mediaPlayer.currentTime;
-                  mediaPlayer.currentTime = currentTime - 1.0;
+                  let newTime = currentTime - 1.0;
+                  mediaPlayer.currentTime = (newTime < 0) ? 0 : newTime;
                   break;
                case 'add-before':
                   createSegment(segmentId, -1);
@@ -94,7 +157,7 @@
                   deleteSegment(segmentId);
                   break;
                default:
-                  console.log('you should never see this');
+                  console.log('You should never see this.');
             }
          });
       });
@@ -114,7 +177,7 @@
          otherSegment = clickedSegment.nextElementSibling;
       }
       else {
-         console.log('segment creation failed');
+         alert('Segment creation failed due to placement issue.');
          return;
       }
 
@@ -128,20 +191,20 @@
          where: where
       };
 
-      let response = await callApi('/api/segments/', data, 'POST');
+      const response = await callApi('/api/segments/', data, 'POST');
 
       if(response.status == 200) {
          const json = await response.json();
          let segment = newSegment(json.id, json.start, json.end);
+         // segment has a wrapper div
          segment = segment.childNodes[0];
-         // TODO: should not have to select child node here
 
          if(where < 0) { clickedSegment.before(segment);  }
          else if( where > 0) { clickedSegment.after(segment); }
          setupSegment(segment);
       }
       else {
-         // show some error
+         alert('Segment creation failed due to server error.');
       }
    }
 
@@ -153,13 +216,13 @@
       // segmentId should never be 0 due to autoincrement - if it ever is this will not work on segment 0
       if(segmentId && (segment = document.querySelector(`.segment[data-index='${segmentId}']`))) {
          const data = { method: 'DELETE' };
-         let response = await callApi('/api/segments/' + segmentId, data, 'POST');
+         const response = await callApi('/api/segments/' + segmentId, data, 'POST');
 
          if(response.status == 204) {
             segment.remove();
          }
          else {
-            // placeholder
+            alert('Segment deletion failed due to server error.');
          }
       }
    }
@@ -193,32 +256,33 @@
    // Function newSegment
    // Creates and returns segment code
    function newSegment(segmentId, start, end) {
+      // SEGMENT CHANGES MUST ALSO BE UPDATED IN EDIT.HTML!!!!
       let segmentCode = `<div class="segment mb-5" data-index="${segmentId}">
-         <div class="row mb-3">
-            <div class="col-3">
+         <div class="d-flex justify-content-start">
+            <div class="mb-3 me-2">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="speaker-${segmentId}" name="speaker-${segmentId}" value="" placeholder="" data-field="speaker" />
+                  <input type="text" class="form-control" id="speaker-${segmentId}" name="speaker-${segmentId}" value="" placeholder="" data-field="speaker" />
                   <label for="speaker-${segmentId}" >Speaker</label>
                </div>
             </div>
 
-            <div class="col-2">
+            <div class="mb-3 me-2">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="start-${segmentId}" name="start-${segmentId}" value="${start.toFixed(3)}" placeholder="" data-field="start" />
+                  <input type="text" class="form-control" id="start-${segmentId}" name="start-${segmentId}" value="${start}" placeholder="" data-field="start" />
                   <label for="start-${segmentId}">Start</label>
                </div>
             </div>
 
-            <div class="col-2">
+            <div class="mb-3">
                <div class="form-floating">
-                  <input type="text" class="form-control border-0" id="end-${segmentId}" name="end-${segmentId}" value="${end.toFixed(3)}" placeholder="" data-field="end" />
+                  <input type="text" class="form-control" id="end-${segmentId}" name="end-${segmentId}" value="${end}" placeholder="" data-field="end" />
                   <label for="end-${segmentId}">End</label>
                </div>
             </div>
          </div>
 
-         <div class="row mb-3">
-            <textarea class="form-control" id="text-${segmentId}" name="text-${segmentId}" data-field="text"></textarea>
+         <div class="d-flex">
+            <textarea class="form-control mb-3" id="text-${segmentId}" name="text-${segmentId}" data-field="text"></textarea>
          </div>
 
          <div>
@@ -236,8 +300,63 @@
          </div>
       </div>`;
 
-      let temp = document.createElement('div');
-      temp.innerHTML = segmentCode;
-      return temp;
+      let wrapper = document.createElement('div');
+      wrapper.innerHTML = segmentCode;
+      return wrapper;
+   }
+
+
+   // Function: segmentTimeToSeconds
+   // Converts segment time format to seconds.
+   function segmentTimeToSeconds(time, returnNull = true) {
+      const parts = time.split(':');
+      let hours = 0;
+      let minutes = 0;
+      let seconds = 0;
+      let milliseconds = 0;
+
+      // Format is ss or ss.mill
+      if(parts.length === 1) {
+         const secondsParts = parts[0].split('.');
+         seconds = parseInt(secondsParts[0], 10);
+
+         if(secondsParts.length > 1) {
+            milliseconds = parseInt(secondsParts[1], 10);
+         }
+      }
+      // Format is mm:ss or mm:ss.mill
+      else if(parts.length === 2) {
+         minutes = parseInt(parts[0], 10);
+         const secondsParts = parts[1].split('.');
+         seconds = parseInt(secondsParts[0], 10);
+
+         if(secondsParts.length > 1) {
+            milliseconds = parseInt(secondsParts[1], 10);
+         }
+      }
+      // Format is hh:mm:ss or hh:mm:ss.mill
+      else if(parts.length === 3) {
+         hours = parseInt(parts[0], 10);
+         minutes = parseInt(parts[1], 10);
+         const secondsParts = parts[2].split('.');
+         seconds = parseInt(secondsParts[0], 10);
+
+         if(secondsParts.length > 1) {
+            milliseconds = parseInt(secondsParts[1], 10);
+         }
+      }
+
+      const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
+
+      if(isNaN(totalSeconds)) {
+         if(returnNull) {
+            return null;
+         }
+         else {
+            return 0;
+         }
+      }
+
+      return totalSeconds;
    }
 })();

@@ -55,6 +55,7 @@ def download_media(transcription_id, upload_url):
 
    status = transcription.statuses.get(process = TranscriptionStatus.DOWNLOADING)
    status.status = TranscriptionStatus.PROCESSING
+   status.start_time = datetime.now()
    status.save()
 
    # Can the opts for yt-dlp use a function to generate hex codes on the fly?
@@ -150,6 +151,7 @@ def transcribe_file(transcription_id):
 
    status = transcription.statuses.get(process = TranscriptionStatus.TRANSCRIBING)
    status.status = TranscriptionStatus.PROCESSING
+   status.start_time = datetime.now()
    status.save()
 
    DESCRIPTION_MAX_LENGTH = 100
@@ -159,7 +161,7 @@ def transcribe_file(transcription_id):
    language = None if not meta['language'] else meta['language']
 
    # Save audio duration and file size
-   transcription.meta['duration'] = format_timestamp(get_file_duration(transcription.upload_file.path), include_mill=False)
+   transcription.meta['duration'] = format_seconds(get_file_duration(transcription.upload_file.path), include_mill=False)
    transcription.meta['size'] = transcription.upload_file.size
    transcription.save(update_fields=['meta'])
 
@@ -305,6 +307,7 @@ def diarize_file(transcription_id):
 
    status = transcription.statuses.get(process = TranscriptionStatus.DIARIZING)
    status.status = TranscriptionStatus.PROCESSING
+   status.start_time = datetime.now()
    status.save()
 
    result = []

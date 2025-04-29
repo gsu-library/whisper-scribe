@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .models import *
 from .utils import is_float
+from .templatetags.time_filters import seconds_to_segment_time
 
 import json
 
@@ -19,7 +20,9 @@ def api_transcriptions_id(request, transcription_id):
    if(request.method == 'POST'):
       data = json.loads(request.body)
       field = data.get('field')
-      value = data.get('value', '').strip()
+      value = data.get('value', '')
+      if isinstance(value, (str)):
+         value = value.strip()
 
       # Do not allow a blank title to be submitted
       if field == 'title' and not value:
@@ -86,8 +89,8 @@ def api_segments(request):
       data = {
          'message': 'success',
          'id': new_segment.id,
-         'start': new_start,
-         'end': new_end,
+         'start': seconds_to_segment_time(new_start),
+         'end': seconds_to_segment_time(new_end),
       }
       return JsonResponse(data, status=200)
 
@@ -111,15 +114,17 @@ def api_segments_id(request, segment_id):
    if(request.method == 'POST'):
       data = json.loads(request.body)
       field = data.get('field')
-      value = data.get('value', '').strip()
+      value = data.get('value', '')
       method = data.get('method')
+      if isinstance(value, (str)):
+         value = value.strip()
 
       if method == 'DELETE':
          segment.delete()
          return HttpResponse(status=204)
 
       # Allow value of speaker to be an empty string
-      if field and value or field == 'speaker' and value == '':
+      if field and value is not None:
          if (field == 'start' or field == 'end') and not is_float(value):
             return JsonResponse({'message': f'{field} value is not numeric'}, status=400)
 

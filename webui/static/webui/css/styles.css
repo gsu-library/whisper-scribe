@@ -6,3 +6,22 @@ body {
 .invalid-feedback {
    display: inherit;
 }
+
+input.error,
+textarea.error {
+ border: 1px solid #dc3545 !important;
+ color: #dc3545;
+}
+
+input.success,
+textarea.success {
+   border: 1px solid #198754 !important;
+}
+
+#scrollToTop {
+   display: none;
+   position: fixed;
+   bottom: 40px;
+   right: 40px;
+   z-index: 1000;
+}

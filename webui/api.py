@@ -2,7 +2,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .models import *
 from .utils import is_float
-from .templatetags.time_filters import seconds_to_segment_time
+from .templatetags.filters import seconds_to_segment_time
 
 import json
 

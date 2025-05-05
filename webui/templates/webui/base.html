@@ -1,17 +1,17 @@
-{% load static %}<!DOCTYPE html>
+{% load static %}{% load filters %}<!DOCTYPE html>
 <html lang="en">
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>{% block title %}WhisperScribe{% endblock title %}</title>
 
-   <link rel="shortcut icon" type="image/png" href="{% static 'webui/images/favicon.ico' %}"/>
+   <link rel="shortcut icon" type="image/png" href="{% static 'webui/images/favicon.ico' %}{{ '?v='|version }}"/>
 
-   <link href="{% static 'webui/css/bootstrap.min.css' %}" rel="stylesheet">
-   <link href="{% static 'webui/css/bootstrap-icons/bootstrap-icons.min.css' %}" rel="stylesheet">
-   <link href="{% static 'webui/css/styles.css' %}" rel="stylesheet">
+   <link href="{% static 'webui/css/bootstrap.min.css' %}{{ '?v='|version }}" rel="stylesheet">
+   <link href="{% static 'webui/css/bootstrap-icons/bootstrap-icons.min.css' %}{{ '?v='|version }}" rel="stylesheet">
+   <link href="{% static 'webui/css/styles.css' %}{{ '?v='|version }}" rel="stylesheet">
 
-   <script src="{% static 'webui/js/bootstrap.bundle.min.js' %}"></script>
+   <script src="{% static 'webui/js/bootstrap.bundle.min.js' %}{{ '?v='|version }}"></script>
 </head>
 <body>
    <div class="container">

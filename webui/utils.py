@@ -33,8 +33,10 @@ def get_version(prefix = ''):
                cache.set(CACHE_NAME, version, CACHE_TIMEOUT)
                return prefix + version
    except FileNotFoundError:
+      cache.set(CACHE_NAME, '', CACHE_TIMEOUT)
       print(f'README file not found.')
 
+   cache.set(CACHE_NAME, '', CACHE_TIMEOUT)
    return prefix
 
 

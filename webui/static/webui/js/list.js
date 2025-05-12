@@ -19,6 +19,7 @@
 
    // Initialize and configure DataTables
    let transcriptionsTable = new DataTable('#transcriptions', {
+      order: [[1, 'asc']],
       columns: [
          null,
          null,

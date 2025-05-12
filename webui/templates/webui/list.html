@@ -1,4 +1,10 @@
 {% extends 'webui/base.html' %}
+{% load static %}{% load filters %}
+
+{% block head %}
+<link href="{% static 'webui/css/datatables.min.css' %}{{ '?v='|version }}" rel="stylesheet">
+<script src="{% static 'webui/js/datatables.min.js' %}{{ '?v='|version }}"></script>
+{% endblock head %}
 
 {% block content %}
 <ul class="list-group">

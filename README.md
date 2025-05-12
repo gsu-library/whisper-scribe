@@ -172,4 +172,4 @@ The Django project folder is 'core' and the application folder is 'webui'.
 - [NVIDIA cuBLAS v12.1.3.1](https://developer.nvidia.com/cublas)
 - [NVIDIA cuDNN v8.9.2.26](https://developer.nvidia.com/cudnn)
 - [Bootstrap v5.3.6](https://getbootstrap.com/)
-- [Bootstrap Icons v1.11.3](https://icons.getbootstrap.com/)
+- [Bootstrap Icons v1.13.1](https://icons.getbootstrap.com/)

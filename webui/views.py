@@ -81,8 +81,12 @@ def view_transcription(request, transcription_id):
 
 # Function: list_transcriptions
 def list_transcriptions(request):
-   transcriptions = Transcription.objects.all()
-   return render(request, 'webui/list.html', {'transcriptions': transcriptions})
+   completed_transcriptions = [
+      transcription for transcription in Transcription.objects.all()
+      if transcription.current_status() and transcription.current_status().status == TranscriptionStatus.COMPLETED
+   ]
+
+   return render(request, 'webui/list.html', {'transcriptions': completed_transcriptions})
 
 
 # Function: edit_transcription

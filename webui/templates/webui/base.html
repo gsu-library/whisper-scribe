@@ -32,7 +32,11 @@
                   <li class="nav-item">
                      <a class="nav-link{% if request.resolver_match.view_name == 'webui:list' %} active" aria-current="page{% endif %}" href="{% url 'webui:list' %}">Transcriptions</a>
                   </li>
-                  {% if request.resolver_match.view_name == 'webui:edit' %}
+                  {% if request.resolver_match.view_name == 'webui:view' %}
+                  <li class="nav-item">
+                     <a class="nav-link active" aria-current="page" href="{{ request.path }}">View Text</a>
+                  </li>
+                  {% elif request.resolver_match.view_name == 'webui:edit' %}
                   <li class="nav-item">
                      <a class="nav-link active" aria-current="page" href="{{ request.path }}">Transcript Editor</a>
                   </li>

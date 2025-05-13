@@ -15,9 +15,9 @@
          <th><span class="visually-hidden">Expander</span></th>
          <th>Title</th>
          <th>Submitted</th>
-         <th>DL</th>
-         <th>TR</th>
-         <th>DZ</th>
+         <th class="dt-center">Download</th>
+         <th class="dt-center">Transcribe</th>
+         <th class="dt-center">Diarize</th>
          <th><span class="visually-hidden">Menu<span></th>
          <th><span class="visually-hidden">Delete<span></th>
       </tr>
@@ -25,8 +25,8 @@
    <tbody>
       {% for transcription in transcriptions %}
       <tr>
-         <td class="expand">
-            <i class="bi bi-plus-lg" role="button"></i>
+         <td class="expand dt-center">
+            <i class="bi bi-plus" role="button"></i>
             <div class="child d-none">
                <small class="text-body-secondary ps-5">duration: {{ transcription.meta.duration }}, size: {{ transcription.meta.size|filesizeformat }}, model: {{ transcription.meta.model }},{% if transcription.meta.language %} language: {{ transcription.meta.language }},{% endif %}{% if transcription.meta.hotwords %} hotwords: {{ transcription.meta.hotwords }},{% endif %} vad: {{ transcription.meta.vad_filter|lower }}, max segment length: {{ transcription.meta.max_segment_length }}, max segment time: {{ transcription.meta.max_segment_time }}</small>
             </div>
@@ -34,7 +34,7 @@
          <td class="title"><a href="{% url 'webui:edit' transcription.id %}">{{ transcription.title }}</a></td>
          <td>{{ transcription.submitted|date:'n/j/Y g:i a' }}</td>
          {% for status in transcription.shown_statuses %}
-         <td>
+         <td class="dt-center">
             {% if status == transcriptionstatus.COMPLETED %}
             <i class="bi bi-check-circle text-success"></i>
             {% elif status == transcriptionstatus.FAILED %}
@@ -44,7 +44,7 @@
             {% endif %}
          </td>
          {% endfor %}
-         <td>
+         <td class="dt-center">
             <div class="dropdown dropdown-center">
                <a role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="bi bi-three-dots-vertical"></i></a>
                <ul class="dropdown-menu">
@@ -57,7 +57,7 @@
                </ul>
             </div>
          </td>
-         <td><a class="icon-link link-danger delete-transcription" href="{% url 'webui:delete' transcription.id %}"><i class="bi bi-trash"></i></a></td>
+         <td class="dt-center"><a class="icon-link link-danger delete-transcription" href="{% url 'webui:delete' transcription.id %}"><i class="bi bi-trash"></i></a></td>
       </tr>
       {% endfor %}
    </tbody>

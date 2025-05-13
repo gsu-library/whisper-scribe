@@ -30,6 +30,12 @@ class Transcription(models.Model):
       # Else completed, start time should be present
       return self.statuses.order_by('-start_time').first()
 
+   def get_status_of(self, process):
+      try:
+         return self.statuses.get(process=process).status
+      except TranscriptionStatus.DoesNotExist:
+         return None
+
    def fail_incomplete_statuses(self, error_message="Transcription processing failed.", processes_to_fail=None):
       if processes_to_fail is None:
          incomplete_statuses = self.statuses.exclude(status=TranscriptionStatus.COMPLETED)

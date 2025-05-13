@@ -28,7 +28,7 @@
          <td class="expand">
             <i class="bi bi-plus-lg" role="button"></i>
             <div class="child d-none">
-               <small class="text-body-secondary">duration: {{ transcription.meta.duration }}, size: {{ transcription.meta.size|filesizeformat }}, model: {{ transcription.meta.model }},{% if transcription.meta.language %} language: {{ transcription.meta.language }},{% endif %}{% if transcription.meta.hotwords %} hotwords: {{ transcription.meta.hotwords }},{% endif %} vad: {{ transcription.meta.vad_filter|lower }}, max segment length: {{ transcription.meta.max_segment_length }}, max segment time: {{ transcription.meta.max_segment_time }}</small>
+               <small class="text-body-secondary ps-5">duration: {{ transcription.meta.duration }}, size: {{ transcription.meta.size|filesizeformat }}, model: {{ transcription.meta.model }},{% if transcription.meta.language %} language: {{ transcription.meta.language }},{% endif %}{% if transcription.meta.hotwords %} hotwords: {{ transcription.meta.hotwords }},{% endif %} vad: {{ transcription.meta.vad_filter|lower }}, max segment length: {{ transcription.meta.max_segment_length }}, max segment time: {{ transcription.meta.max_segment_time }}</small>
             </div>
          </td>
          <td class="title"><a href="{% url 'webui:edit' transcription.id %}">{{ transcription.title }}</a></td>

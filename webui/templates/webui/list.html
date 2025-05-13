@@ -26,9 +26,33 @@
       <tr>
          <td class="title"><a href="{% url 'webui:edit' transcription.id %}">{{ transcription.title }}</a></td>
          <td>{{ transcription.submitted|date:'n/j/Y g:i a' }}</td>
-         <td>{{ transcription.statuses }}</td>
-         <td>stat</td>
-         <td>stat</td>
+         <td>
+            {% if transcription.downloading is None %}
+            <i class="bi bi-dash"></i>
+            {% elif transcription.downloading == transcriptionstatus.COMPLETED %}
+            <i class="bi bi-check-circle text-success"></i>
+            {% elif transcription.downloading == transcriptionstatus.FAILED %}
+            <i class="bi bi-x-circle text-danger"></i>
+            {% endif %}
+         </td>
+         <td>
+            {% if transcription.transcribing is None %}
+            <i class="bi bi-dash"></i>
+            {% elif transcription.transcribing == transcriptionstatus.COMPLETED %}
+            <i class="bi bi-check-circle text-success"></i>
+            {% elif transcription.transcribing == transcriptionstatus.FAILED %}
+            <i class="bi bi-x-circle text-danger"></i>
+            {% endif %}
+         </td>
+         <td>
+            {% if transcription.diarizing is None %}
+            <i class="bi bi-dash"></i>
+            {% elif transcription.diarizing == transcriptionstatus.COMPLETED %}
+            <i class="bi bi-check-circle text-success"></i>
+            {% elif transcription.diarizing == transcriptionstatus.FAILED %}
+            <i class="bi bi-x-circle text-danger"></i>
+            {% endif %}
+         </td>
          <td>
             <div class="dropdown dropdown-center">
                <a role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="bi bi-three-dots-vertical"></i></a>

@@ -12,6 +12,7 @@
 <table id="transcriptions">
    <thead>
       <tr>
+         <th><span class="visually-hidden">Expander</span></th>
          <th>Title</th>
          <th>Submitted</th>
          <th>DL</th>
@@ -24,6 +25,10 @@
    <tbody>
       {% for transcription in transcriptions %}
       <tr>
+         <td class="expand">
+            <i class="bi bi-plus-lg" role="button"></i>
+            <div class="child d-none">{{ transcription.meta }}</div>
+         </td>
          <td class="title"><a href="{% url 'webui:edit' transcription.id %}">{{ transcription.title }}</a></td>
          <td>{{ transcription.submitted|date:'n/j/Y g:i a' }}</td>
          <td>

@@ -33,33 +33,17 @@
          </td>
          <td class="title"><a href="{% url 'webui:edit' transcription.id %}">{{ transcription.title }}</a></td>
          <td>{{ transcription.submitted|date:'n/j/Y g:i a' }}</td>
+         {% for status in transcription.shown_statuses %}
          <td>
-            {% if transcription.downloading is None %}
+            {% if status is None %}
             <i class="bi bi-dash"></i>
-            {% elif transcription.downloading == transcriptionstatus.COMPLETED %}
+            {% elif status == transcriptionstatus.COMPLETED %}
             <i class="bi bi-check-circle text-success"></i>
-            {% elif transcription.downloading == transcriptionstatus.FAILED %}
+            {% elif status == transcriptionstatus.FAILED %}
             <i class="bi bi-x-circle text-danger"></i>
             {% endif %}
          </td>
-         <td>
-            {% if transcription.transcribing is None %}
-            <i class="bi bi-dash"></i>
-            {% elif transcription.transcribing == transcriptionstatus.COMPLETED %}
-            <i class="bi bi-check-circle text-success"></i>
-            {% elif transcription.transcribing == transcriptionstatus.FAILED %}
-            <i class="bi bi-x-circle text-danger"></i>
-            {% endif %}
-         </td>
-         <td>
-            {% if transcription.diarizing is None %}
-            <i class="bi bi-dash"></i>
-            {% elif transcription.diarizing == transcriptionstatus.COMPLETED %}
-            <i class="bi bi-check-circle text-success"></i>
-            {% elif transcription.diarizing == transcriptionstatus.FAILED %}
-            <i class="bi bi-x-circle text-danger"></i>
-            {% endif %}
-         </td>
+         {% endfor %}
          <td>
             <div class="dropdown dropdown-center">
                <a role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="bi bi-three-dots-vertical"></i></a>

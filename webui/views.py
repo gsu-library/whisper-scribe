@@ -85,9 +85,11 @@ def list_transcriptions(request):
 
    for transcription in Transcription.objects.all().prefetch_related('statuses'):
       if transcription.current_status() and transcription.current_status().status in [TranscriptionStatus.COMPLETED, TranscriptionStatus.FAILED]:
-         transcription.downloading = transcription.get_status_of(TranscriptionStatus.DOWNLOADING)
-         transcription.transcribing = transcription.get_status_of(TranscriptionStatus.TRANSCRIBING)
-         transcription.diarizing = transcription.get_status_of(TranscriptionStatus.DIARIZING)
+         shown_statuses = []
+         shown_statuses.append(transcription.get_status_of(TranscriptionStatus.DOWNLOADING))
+         shown_statuses.append(transcription.get_status_of(TranscriptionStatus.TRANSCRIBING))
+         shown_statuses.append(transcription.get_status_of(TranscriptionStatus.DIARIZING))
+         transcription.shown_statuses = shown_statuses
          completed_transcriptions.append(transcription)
 
    return render(request, 'webui/list.html', {'transcriptions': completed_transcriptions, 'transcriptionstatus': TranscriptionStatus})

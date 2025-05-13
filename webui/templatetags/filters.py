@@ -1,6 +1,6 @@
 from django import template
 
-from webui.utils import format_seconds, get_version
+from ..utils import format_seconds, get_version
 
 
 register = template.Library()

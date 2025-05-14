@@ -35,10 +35,10 @@
          <td>{{ transcription.submitted|date:'n/j/Y g:i a' }}</td>
          {% for status in transcription.shown_statuses %}
          <td class="dt-center">
-            {% if status == transcriptionstatus.COMPLETED %}
+            {% if status.status == transcriptionstatus.COMPLETED %}
             <i class="bi bi-check-circle text-success"></i>
-            {% elif status == transcriptionstatus.FAILED %}
-            <i class="bi bi-x-circle text-danger"></i>
+            {% elif status.status == transcriptionstatus.FAILED %}
+            <i class="bi bi-x-circle text-danger" data-bs-toggle="tooltip" data-bs-title="{{ status.error_message }}"></i>
             {% else %}
             <i class="bi bi-dash"></i>
             {% endif %}

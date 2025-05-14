@@ -2,6 +2,11 @@
    'use strict';
 
 
+   // Enable tooltips
+   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl, {trigger : 'hover'}));
+
+
    // Initialize and configure DataTables
    let transcriptionsTable = new DataTable('#transcriptions', {
       order: [[2, 'asc']],

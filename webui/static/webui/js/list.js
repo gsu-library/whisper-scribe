@@ -24,20 +24,19 @@
 
 
    // Setup child rows
-   const rowExpand = document.querySelectorAll('#transcriptions .expand');
-   rowExpand.forEach(row => {
-      row.addEventListener('click', event => {
-         let tr = event.target.closest('tr');
-         let dtRow = transcriptionsTable.row(tr);
+   transcriptionsTable.on('click', 'td.expand', event => {
+      let tr = event.target.closest('tr');
+      let row = transcriptionsTable.row(tr);
+      console.log(event.target);
+      console.log(tr);
+      console.log(row);
 
-         if(dtRow.child.isShown()) {
-            dtRow.child.hide();
-         }
-         else {
-            console.log(tr.querySelector('.child'));
-            dtRow.child(tr.querySelector('.child').innerHTML).show();
-         }
-      });
+      if(row.child.isShown()) {
+         row.child.hide();
+      }
+      else {
+         row.child(tr.querySelector('.child').innerHTML).show();
+      }
    });
 
 

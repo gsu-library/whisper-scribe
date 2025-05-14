@@ -32,7 +32,7 @@ class Transcription(models.Model):
 
    def get_status_of(self, process):
       try:
-         return self.statuses.get(process=process).status
+         return self.statuses.get(process=process)
       except TranscriptionStatus.DoesNotExist:
          return None
 

@@ -31,13 +31,13 @@
                <p class="ps-5">{{ transcription.description }}</p>
                <p class="ps-5"><small class="text-body-secondary">
                   {% for key,value in transcription.meta.items %}
-                     {% if value != '' %}
+                     {% if value %}
                         {% if key == 'size' %}
-                           {{ key }}: {{ value|filesizeformat }}<br />
+                           {{ key }}: {{ value|filesizeformat }}<br>
                         {% elif key == 'vad_filter' %}
-                           {{ key }}: {{ value|lower }}<br />
+                           {{ key }}: {{ value|lower }}<br>
                         {% else %}
-                           {{ key }}: {{ value }}<br />
+                           {{ key }}: {{ value }}<br>
                         {% endif %}
                      {% endif %}
                   {% endfor %}

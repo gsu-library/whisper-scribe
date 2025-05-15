@@ -32,7 +32,7 @@
             </div>
          </td>
          <td class="title"><a href="{% url 'webui:edit' transcription.id %}">{{ transcription.title }}</a></td>
-         <td>{{ transcription.submitted|date:'n/j/Y g:i a' }}</td>
+         <td>{{ transcription.submitted|date:'Y-m-d H:i:s' }}</td>
          {% for status in transcription.shown_statuses %}
          <td class="dt-center">
             {% if status.status == transcriptionstatus.COMPLETED %}

@@ -19,7 +19,11 @@
          { searchable: false, orderable: false },
          { searchable: false, orderable: false },
          { searchable: false, orderable: false }
-      ]
+      ],
+      columnDefs: [{
+         targets: 2,
+         render: DataTable.render.datetime('M/DD/YYYY h:mm a')
+      }]
    });
 
 

@@ -31,9 +31,6 @@
    transcriptionsTable.on('click', 'td.expand', event => {
       let tr = event.target.closest('tr');
       let row = transcriptionsTable.row(tr);
-      console.log(event.target);
-      console.log(tr);
-      console.log(row);
 
       if(row.child.isShown()) {
          row.child.hide();

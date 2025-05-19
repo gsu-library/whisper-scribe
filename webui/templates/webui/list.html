@@ -28,7 +28,9 @@
          <td class="expand dt-center">
             <i class="bi bi-plus" role="button"></i>
             <div class="child d-none">
+               {% if transcription.description %}
                <p class="ps-5">{{ transcription.description }}</p>
+               {% endif %}
                <p class="ps-5"><small class="text-body-secondary">
                   {% for key,value in transcription.meta.items %}
                      {% if value %}

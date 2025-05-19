@@ -173,5 +173,6 @@ The Django project folder is 'core' and the application folder is 'webui'.
 - [NVIDIA cuDNN v8.9.2.26](https://developer.nvidia.com/cudnn)
 - [Bootstrap v5.3.6](https://getbootstrap.com/)
 - [Bootstrap Icons v1.13.1](https://icons.getbootstrap.com/)
-- [DataTables v2.3.0](https://datatables.net/)
-- [Moment.js v2.30.1](https://momentjs.com/)
+- [DataTables v2.3.1](https://datatables.net/)
+- [jQuery v3.7.0](https://jquery.com/)
+- [Moment.js v2.29.4](https://momentjs.com/)

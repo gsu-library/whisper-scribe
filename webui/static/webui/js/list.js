@@ -13,11 +13,14 @@
       button.addEventListener('click', event => {
          const titleLink = event.target.closest('tr').querySelector('.title a');
          const confirmation = confirm('Are you sure you want to delete the transcription "' + titleLink.textContent + '"?');
+         const deleteUrl = event.target.parentElement.dataset.url;
 
-         if(!confirmation) {
-            event.stopPropagation();
-            event.preventDefault();
+         if(confirmation && deleteUrl) {
+            window.location.href = deleteUrl;
          }
+
+         event.stopPropagation();
+         event.preventDefault();
       });
    });
 

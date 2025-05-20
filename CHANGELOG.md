@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.1] - 2025-05-20
+- Fix for transcriptions not showing on the list page if they were created before the TranscriptionStatus model existed.
+
 ## [1.6.0] - 2025-05-19
 - Update transcription list page with DataTables, transcriptions can now be searched and sorted.
 - Only completed transcriptions are now shown on list page.

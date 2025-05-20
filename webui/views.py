@@ -84,7 +84,10 @@ def list_transcriptions(request):
    completed_transcriptions = []
 
    for transcription in Transcription.objects.all().prefetch_related('statuses'):
-      if transcription.current_status() and transcription.current_status().status in [TranscriptionStatus.COMPLETED, TranscriptionStatus.FAILED]:
+      status = transcription.current_status()
+
+      # Check for status is None is if transcription was created before the TranscriptionStatus model existed
+      if status is None or status.status in [TranscriptionStatus.COMPLETED, TranscriptionStatus.FAILED]:
          shown_statuses = []
          shown_statuses.append(transcription.get_status_of(TranscriptionStatus.DOWNLOADING))
          shown_statuses.append(transcription.get_status_of(TranscriptionStatus.TRANSCRIBING))

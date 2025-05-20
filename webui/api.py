@@ -1,8 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 
 from .models import *
-from .utils import is_float
-from .templatetags.time_filters import seconds_to_segment_time
+from .utils import is_float, format_seconds
 
 import json
 
@@ -89,8 +88,8 @@ def api_segments(request):
       data = {
          'message': 'success',
          'id': new_segment.id,
-         'start': seconds_to_segment_time(new_start),
-         'end': seconds_to_segment_time(new_end),
+         'start': format_seconds(new_start, segment_time=True),
+         'end': format_seconds(new_end, segment_time=True),
       }
       return JsonResponse(data, status=200)
 

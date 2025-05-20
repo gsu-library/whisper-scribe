@@ -81,8 +81,18 @@ def view_transcription(request, transcription_id):
 
 # Function: list_transcriptions
 def list_transcriptions(request):
-   transcriptions = Transcription.objects.all()
-   return render(request, 'webui/list.html', {'transcriptions': transcriptions})
+   completed_transcriptions = []
+
+   for transcription in Transcription.objects.all().prefetch_related('statuses'):
+      if transcription.current_status() and transcription.current_status().status in [TranscriptionStatus.COMPLETED, TranscriptionStatus.FAILED]:
+         shown_statuses = []
+         shown_statuses.append(transcription.get_status_of(TranscriptionStatus.DOWNLOADING))
+         shown_statuses.append(transcription.get_status_of(TranscriptionStatus.TRANSCRIBING))
+         shown_statuses.append(transcription.get_status_of(TranscriptionStatus.DIARIZING))
+         transcription.shown_statuses = shown_statuses
+         completed_transcriptions.append(transcription)
+
+   return render(request, 'webui/list.html', {'transcriptions': completed_transcriptions, 'transcriptionstatus': TranscriptionStatus})
 
 
 # Function: edit_transcription

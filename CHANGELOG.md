@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2025-05-19
+- Update transcription list page with DataTables, transcriptions can now be searched and sorted.
+- Only completed transcriptions are now shown on list page.
+- Show process statuses on transcription list page.
+- Add confirmation before deleting transcriptions.
+- Change seconds_to_segment_time function to format_seconds.
+- Change time_filters file to filters.
+- Add get_status_of method to transcription model.
+- Add versioning template filter for static web files.
+- Use cache for versioning.
+- Update versions of Bootstrap and Bootstrap Icons.
+
 ## [1.5.0] - 2025-04-29
 - Add tooltips to buttons on edit page.
 - Update downloader to only process one video (for now).

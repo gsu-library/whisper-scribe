@@ -1,45 +1,87 @@
 {% extends 'webui/base.html' %}
+{% load static %}
+{% load filters %}
+
+{% block head %}
+<link href="{% static 'webui/css/datatables.min.css' %}{{ '?v='|version }}" rel="stylesheet">
+<script src="{% static 'webui/js/datatables.min.js' %}{{ '?v='|version }}"></script>
+{% endblock head %}
 
 {% block content %}
-<ul class="list-group">
-   {% if transcriptions %}
+{% if transcriptions %}
+<table id="transcriptions" class="table table-hover">
+   <thead>
+      <tr>
+         <th><span class="visually-hidden">Expander</span></th>
+         <th>Title</th>
+         <th>Submitted</th>
+         <th class="dt-center">Download</th>
+         <th class="dt-center">Transcribe</th>
+         <th class="dt-center">Diarize</th>
+         <th><span class="visually-hidden">Menu<span></th>
+         <th><span class="visually-hidden">Delete<span></th>
+      </tr>
+   </thead>
+   <tbody>
       {% for transcription in transcriptions %}
-      <li class="list-group-item">
-         <div class="d-flex w-100 justify-content-between">
-            <h5>{{ transcription.title }} - {{ transcription.submitted|date:'n/j/Y g:i a' }}</h5>
-
-            <div class="float-end">
-               <div class="btn-group" role="group">
-                  <a href="{% url 'webui:edit' transcription.id %}" class="btn btn-outline-secondary" title="Edit Transcription" aria-label="Edit Transcription">Edit</a>
-                  <a href="{% url 'webui:view' transcription.id %}" class="btn btn-outline-secondary" title="View Transcription" aria-label="View Transcription">Quick View</a>
-
-                  <div class="dropdown btn-group">
-                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="fileDownloadButton" data-bs-toggle="dropdown" aria-expanded="false">File Downloads</button>
-                     <ul class="dropdown-menu" aria-labelledby="fileDownloadButton">
-                        <li><a class="dropdown-item" href="{% url 'webui:download_text_blob' transcription.id %}">TXT Blob</a></li>
-                        <li><a class="dropdown-item" href="{% url 'webui:download_text' transcription.id %}">TXT</a></li>
-                        <li><a class="dropdown-item" href="{% url 'webui:download_srt' transcription.id %}">SRT</a></li>
-                        <li><a class="dropdown-item" href="{% url 'webui:download_vtt' transcription.id %}">VTT</a></li>
-                        <li><a class="dropdown-item" href="{% url 'webui:download_json' transcription.id %}">JSON</a></li>
-                        <li><a class="dropdown-item" href=""></a></li>
-                     </ul>
-                  </div>
-               </div>
-
-               <form class="float-end ms-3" action="{% url 'webui:delete' transcription.id %}" method="post">
-                  {% csrf_token %}
-                  <button class="btn btn-outline-danger border-0 " type="submit" title="Delete Transcription" aria-label="Delete Transcription"><i class="bi bi-x-circle" aria-hidden="true"></i></button>
-               </form>
+      <tr>
+         <td class="expand dt-center">
+            <i class="bi bi-plus" role="button"></i>
+            <div class="child d-none">
+               {% if transcription.description %}
+               <p class="ps-5">{{ transcription.description }}</p>
+               {% endif %}
+               <p class="ps-5"><small class="text-body-secondary">
+                  {% for key,value in transcription.meta.items %}
+                     {% if value %}
+                        {% if key == 'size' %}
+                           {{ key }}: {{ value|filesizeformat }}<br>
+                        {% elif key == 'vad_filter' %}
+                           {{ key }}: {{ value|lower }}<br>
+                        {% else %}
+                           {{ key }}: {{ value }}<br>
+                        {% endif %}
+                     {% endif %}
+                  {% endfor %}
+               </small></p>
             </div>
-         </div>
-
-         <p>{{ transcription.description }}</p>
-
-         <small class="text-body-secondary">duration: {{ transcription.meta.duration }}, size: {{ transcription.meta.size|filesizeformat }}, model: {{ transcription.meta.model }},{% if transcription.meta.language %} language: {{ transcription.meta.language }},{% endif %}{% if transcription.meta.hotwords %} hotwords: {{ transcription.meta.hotwords }},{% endif %} vad: {{ transcription.meta.vad_filter|lower }}, max segment length: {{ transcription.meta.max_segment_length }}, max segment time: {{ transcription.meta.max_segment_time }}</small>
-      </li>
+         </td>
+         <td class="title"><a href="{% url 'webui:edit' transcription.id %}">{{ transcription.title }}</a></td>
+         <td>{{ transcription.submitted|date:'Y-m-d H:i:s' }}</td>
+         {% for status in transcription.shown_statuses %}
+         <td class="dt-center">
+            {% if status.status == transcriptionstatus.COMPLETED %}
+            <i class="bi bi-check-circle text-success"></i>
+            {% elif status.status == transcriptionstatus.FAILED %}
+            <i class="bi bi-x-circle text-danger" data-bs-toggle="tooltip" data-bs-title="{{ status.error_message }}"></i>
+            {% else %}
+            <i class="bi bi-dash"></i>
+            {% endif %}
+         </td>
+         {% endfor %}
+         <td class="dt-center">
+            <div class="dropdown dropdown-center">
+               <a role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="bi bi-three-dots-vertical"></i></a>
+               <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'webui:view' transcription.id %}">View Text</a></li>
+                  <li><a class="dropdown-item" href="{% url 'webui:download_text_blob' transcription.id %}">Download TXT Blob</a></li>
+                  <li><a class="dropdown-item" href="{% url 'webui:download_text' transcription.id %}">Download TXT</a></li>
+                  <li><a class="dropdown-item" href="{% url 'webui:download_srt' transcription.id %}">Download SRT</a></li>
+                  <li><a class="dropdown-item" href="{% url 'webui:download_vtt' transcription.id %}">Download VTT</a></li>
+                  <li><a class="dropdown-item" href="{% url 'webui:download_json' transcription.id %}">Download JSON</a></li>
+               </ul>
+            </div>
+         </td>
+         <td class="dt-center"><a class="icon-link link-danger delete-transcription" href="{% url 'webui:delete' transcription.id %}"><i class="bi bi-trash"></i></a></td>
+      </tr>
       {% endfor %}
-   {% else %}
-      <li class="list-group-item">Nothing to see here, <a href="{% url 'webui:index' %}">go home</a>.</li>
-   {% endif %}
-</ul>
+   </tbody>
+</table>
+{% else %}
+<p>Nothing to see here, <a href="{% url 'webui:index' %}">go home</a>.</p>
+{% endif %}
 {% endblock content %}
+
+{% block body-end %}
+<script src="{% static 'webui/js/list.js' %}{{ '?v='|version }}"></script>
+{% endblock body-end %}

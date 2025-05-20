@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.cache import cache
 
 from pathlib import Path
 import subprocess
@@ -12,6 +13,31 @@ def is_float(number):
       return True
    except ValueError:
       return False
+
+
+# Function: get_version
+def get_version(prefix = ''):
+   README = 'README.md'
+   CACHE_NAME = 'readme_version'
+   CACHE_TIMEOUT = 300
+   version = cache.get(CACHE_NAME)
+
+   if version:
+      return prefix + version
+
+   try:
+      with open(settings.BASE_DIR / README, 'r') as f:
+         for line in f:
+            if line.startswith('Version:'):
+               version = line[len('Version:'):].strip()
+               cache.set(CACHE_NAME, version, CACHE_TIMEOUT)
+               return prefix + version
+   except FileNotFoundError:
+      cache.set(CACHE_NAME, '', CACHE_TIMEOUT)
+      print(f'README file not found.')
+
+   cache.set(CACHE_NAME, '', CACHE_TIMEOUT)
+   return prefix
 
 
 # Function: format_seconds

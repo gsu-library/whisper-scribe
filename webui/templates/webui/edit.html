@@ -1,6 +1,6 @@
 {% extends 'webui/base.html' %}
 {% load static %}
-{% load time_filters %}
+{% load filters %}
 
 {% block content %}
 <div class="row">
@@ -127,5 +127,5 @@
 {% endblock content %}
 
 {% block body-end %}
-<script src="{% static 'webui/js/edit.js' %}"></script>
+<script src="{% static 'webui/js/edit.js' %}{{ '?v='|version }}"></script>
 {% endblock body-end %}

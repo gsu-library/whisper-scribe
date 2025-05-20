@@ -27,8 +27,11 @@ class Transcription(models.Model):
       # If pending, must order by process number
       status = self.statuses.filter(status=TranscriptionStatus.PENDING).order_by('process').first()
       if status: return status
-      # Else completed, start time should be present
-      return self.statuses.order_by('-start_time').first()
+      # If completed, get last completed
+      status = self.statuses.filter(status=TranscriptionStatus.COMPLETED).order_by('-start_time').first()
+      if status: return status
+      # If no statuses found (pre TranscriptionStatus model)
+      return None
 
    def get_status_of(self, process):
       try:

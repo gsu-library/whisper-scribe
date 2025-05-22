@@ -139,3 +139,23 @@ def delete_transcription(request, transcription_id):
    transcription.delete()
 
    return HttpResponseRedirect(reverse('webui:list'))
+
+
+# Function: custom_400
+def custom_400(request, exception):
+   return render(request, 'webui/400.html', {}, status=400)
+
+
+# Function: custom_403
+def custom_403(request, exception):
+   return render(request, 'webui/403.html', {}, status=403)
+
+
+# Function: custom_404
+def custom_404(request, exception):
+   return render(request, 'webui/404.html', {}, status=404)
+
+
+# Function: custom_500
+def custom_500(request):
+   return render(request, 'webui/500.html', {}, status=500)

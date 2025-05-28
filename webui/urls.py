@@ -29,3 +29,9 @@ urlpatterns = [
 
 if settings.DEBUG:
    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+   urlpatterns += [
+        path('400', views.custom_400),
+        path('403', views.custom_403),
+        path('404', views.custom_404),
+        path('500', views.custom_500)
+    ]

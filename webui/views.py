@@ -142,17 +142,17 @@ def delete_transcription(request, transcription_id):
 
 
 # Function: custom_400
-def custom_400(request, exception):
+def custom_400(request, exception = None):
    return render(request, 'webui/400.html', {}, status=400)
 
 
 # Function: custom_403
-def custom_403(request, exception):
+def custom_403(request, exception = None):
    return render(request, 'webui/403.html', {}, status=403)
 
 
 # Function: custom_404
-def custom_404(request, exception):
+def custom_404(request, exception = None):
    return render(request, 'webui/404.html', {}, status=404)
 
 

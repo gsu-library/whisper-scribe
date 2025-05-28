@@ -3,7 +3,9 @@
 {% block content %}
 <p>
    {% for segment in segments %}
-   {{ segment.text }}
+      {{ segment.text }}
+   {% empty %}
+      No text was found.
    {% endfor %}
 </p>
 {% endblock content %}

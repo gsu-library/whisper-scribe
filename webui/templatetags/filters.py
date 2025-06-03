@@ -15,3 +15,9 @@ def seconds_to_segment_time(value):
 @register.filter(name='version')
 def version(prefix = ''):
    return get_version(prefix)
+
+
+# Function: spacify
+@register.filter(name='spacify')
+def spacify(value):
+   return value.replace('_', ' ')

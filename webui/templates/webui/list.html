@@ -35,11 +35,11 @@
                   {% for key,value in transcription.meta.items %}
                      {% if value %}
                         {% if key == 'size' %}
-                           {{ key }}: {{ value|filesizeformat }}<br>
+                           {{ key|spacify }}: {{ value|filesizeformat }}<br>
                         {% elif key == 'vad_filter' %}
-                           {{ key }}: {{ value|lower }}<br>
+                           {{ key|spacify }}: {{ value|lower }}<br>
                         {% else %}
-                           {{ key }}: {{ value }}<br>
+                           {{ key|spacify }}: {{ value }}<br>
                         {% endif %}
                      {% endif %}
                   {% endfor %}

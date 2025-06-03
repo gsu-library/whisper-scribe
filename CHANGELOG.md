@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1] - 2025
 - Fix bug that caused confirmation for transcription deletion to not show.
+- Add templated custom 400, 403, 404, and 500 error pages.
+- Add a template filter that converts underscores to spaces and use on list page.
 
 ## [1.6.1] - 2025-05-20
 - Fix for transcriptions not showing on the list page if they were created before the TranscriptionStatus model existed.

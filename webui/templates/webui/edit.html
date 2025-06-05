@@ -114,7 +114,7 @@
          </div>
       </div>
       {% empty %}
-         <p>Nothing to see here. Either the file is still processing or there was an error.</p>
+         <p>Either the file is still processing or there was an error. <a href="{% url 'webui:add_segment' properties.id %}">Add a blank segment?</a></p>
       {% endfor %}
    </div>
 </div>

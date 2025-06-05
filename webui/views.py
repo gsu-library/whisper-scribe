@@ -98,6 +98,20 @@ def list_transcriptions(request):
    return render(request, 'webui/list.html', {'transcriptions': completed_transcriptions, 'transcriptionstatus': TranscriptionStatus})
 
 
+#Function: add_segment
+def add_segment(request, transcription_id):
+   transcription = get_object_or_404(Transcription, pk=transcription_id)
+
+   Segment(
+      transcription=transcription,
+      start=0,
+      end=0,
+      text=''
+   ).save()
+
+   return HttpResponseRedirect(reverse('webui:edit', args=[transcription_id]))
+
+
 # Function: edit_transcription
 def edit_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)

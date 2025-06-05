@@ -225,6 +225,13 @@
             alert('Segment deletion failed due to server error.');
          }
       }
+
+      // If there are no more segments reload the page to show the add segment code
+      const segments = document.querySelectorAll('.segment');
+
+      if(segments.length === 0) {
+         window.location.reload();
+      }
    }
 
 

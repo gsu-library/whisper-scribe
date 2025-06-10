@@ -75,8 +75,7 @@ def index(request):
 # Function: view_transcription
 def view_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segments.all()
-   return render(request, 'webui/view.html', {'segments': segments})
+   return render(request, 'webui/view.html', {'transcription': transcription})
 
 
 # Function: list_transcriptions

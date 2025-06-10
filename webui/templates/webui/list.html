@@ -3,8 +3,8 @@
 {% load filters %}
 
 {% block head %}
-<link href="{% static 'webui/css/datatables.min.css' %}{{ '?v='|version }}" rel="stylesheet">
-<script src="{% static 'webui/js/datatables.min.js' %}{{ '?v='|version }}"></script>
+<link href="{% static 'webui/css/datatables.min.css' %}?v={{ version }}" rel="stylesheet">
+<script src="{% static 'webui/js/datatables.min.js' %}?v={{ version }}"></script>
 {% endblock head %}
 
 {% block content %}
@@ -83,5 +83,5 @@
 {% endblock content %}
 
 {% block body-end %}
-<script src="{% static 'webui/js/list.js' %}{{ '?v='|version }}"></script>
+<script src="{% static 'webui/js/list.js' %}?v={{ version }}"></script>
 {% endblock body-end %}

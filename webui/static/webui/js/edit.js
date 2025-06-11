@@ -219,6 +219,13 @@
          const response = await callApi('/api/segments/' + segmentId, data, 'POST');
 
          if(response.status == 204) {
+            let button = segment.querySelector('.segment-delete');
+            let tooltip = bootstrap.Tooltip.getInstance(button);
+
+            if(tooltip) {
+               tooltip.dispose();
+            }
+
             segment.remove();
          }
          else {
@@ -302,7 +309,7 @@
             </div>
 
             <div class="float-end" role="group">
-               <button class="btn btn-outline-danger border-0 segment-delete" data-bs-title="Delete Segment" data-bs-placement="bottom" aria-label="Delete Segment" data-type="delete"><i class="bi bi-x-lg"></i></button>
+               <button class="btn btn-outline-danger border-0 segment-delete" data-bs-toggle="tooltip" data-bs-title="Delete Segment" data-bs-placement="bottom" aria-label="Delete Segment" data-type="delete"><i class="bi bi-x-lg"></i></button>
             </div>
          </div>
       </div>`;

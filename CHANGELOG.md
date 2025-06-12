@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add a template filter that converts underscores to spaces and use on list page.
 - Can now add segment to a segmentless transcription.
 - Move version output from template filter to context processor.
+- Fix delete segment tooltip.
+- Move segments into template part.
 
 ## [1.6.1] - 2025-05-20
 - Fix for transcriptions not showing on the list page if they were created before the TranscriptionStatus model existed.

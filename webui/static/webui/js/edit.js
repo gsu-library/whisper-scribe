@@ -276,8 +276,6 @@
       let seconds = 0;
       let milliseconds = 0;
 
-      console.log('start func time ' + time);
-
       // Helper function to parse seconds and milliseconds
       const parseSecondsAndMills = (secondsAndMills) => {
          let samParts = secondsAndMills.split('.');
@@ -325,11 +323,8 @@
       const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
 
       if(isNaN(totalSeconds)) {
-         console.log('isNaN');
          return returnNull ? null : 0;
       }
-
-      console.log('end func totalseconds ' + totalSeconds);
 
       return totalSeconds;
    }

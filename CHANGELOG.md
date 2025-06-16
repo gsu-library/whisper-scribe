@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.] - 2025-
+- Disable media controls on edit page if no media exists.
+
 ## [1.7.0] - 2025-06-16
 - Fix bug that caused confirmation for transcription deletion to not show.
 - Add templated custom 400, 403, 404, and 500 error pages.

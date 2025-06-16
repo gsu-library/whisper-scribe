@@ -1,6 +1,6 @@
 {
   "name": "whisperscribe",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "devDependencies": {
     "minify": "^11.4.0"
   }

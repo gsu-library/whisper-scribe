@@ -280,6 +280,7 @@
       const parseSecondsAndMills = (secondsAndMills) => {
          const samParts = secondsAndMills.split('.');
          let seconds = parseInt(samParts[0], 10);
+         if(!seconds) { seconds = 0 } // Fix for if seconds = ''
          let milliseconds = 0;
 
          if(samParts.length > 1) {

@@ -154,6 +154,13 @@ def delete_transcription(request, transcription_id):
    return HttpResponseRedirect(reverse('webui:list'))
 
 
+# Function: cancel_transcription
+def cancel_transcription(request, transcription_id):
+   transcription = get_object_or_404(Transcription, pk=transcription_id)
+
+   return HttpResponseRedirect(reverse('webui:index'))
+
+
 # Function: custom_400
 def custom_400(request, exception = None):
    return render(request, 'webui/400.html', {}, status=400)

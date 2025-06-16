@@ -276,11 +276,13 @@
       let seconds = 0;
       let milliseconds = 0;
 
+      console.log('start func time ' + time);
+
       // Helper function to parse seconds and milliseconds
       const parseSecondsAndMills = (secondsAndMills) => {
-         const samParts = secondsAndMills.split('.');
+         let samParts = secondsAndMills.split('.');
+         if(samParts[0] === '') { samParts[0] = '0'; }
          let seconds = parseInt(samParts[0], 10);
-         if(!seconds) { seconds = 0 } // Fix for if seconds = ''
          let milliseconds = 0;
 
          if(samParts.length > 1) {
@@ -323,8 +325,11 @@
       const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
 
       if(isNaN(totalSeconds)) {
+         console.log('isNaN');
          return returnNull ? null : 0;
       }
+
+      console.log('end func totalseconds ' + totalSeconds);
 
       return totalSeconds;
    }

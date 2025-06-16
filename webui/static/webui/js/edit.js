@@ -277,13 +277,13 @@
       let milliseconds = 0;
 
       // Helper function to parse seconds and milliseconds
-      const parseSecondsAndMills = (seconds) => {
-         const secondsParts = seconds.split('.');
-         let seconds = parseInt(secondsParts[0], 10);
+      const parseSecondsAndMills = (secondsAndMills) => {
+         const samParts = secondsAndMills.split('.');
+         let seconds = parseInt(samParts[0], 10);
          let milliseconds = 0;
 
-         if(secondsParts.length > 1) {
-            let msString = secondsParts[1];
+         if(samParts.length > 1) {
+            let msString = samParts[1];
 
             if (msString.length === 1) {
                 milliseconds = parseInt(msString + '00', 10);
@@ -299,33 +299,24 @@
 
       // Format is ss or ss.mill
       if(parts.length === 1) {
-         const secondsParts = parts[0].split('.');
-         seconds = parseInt(secondsParts[0], 10);
-
-         if(secondsParts.length > 1) {
-            milliseconds = parseInt(secondsParts[1], 10);
-         }
+         const { seconds: s, milliseconds: ms } = parseSecondsAndMills(parts[0]);
+         seconds = s;
+         milliseconds = ms;
       }
       // Format is mm:ss or mm:ss.mill
       else if(parts.length === 2) {
          minutes = parseInt(parts[0], 10);
-         const secondsParts = parts[1].split('.');
-         seconds = parseInt(secondsParts[0], 10);
-
-         if(secondsParts.length > 1) {
-            milliseconds = parseInt(secondsParts[1], 10);
-         }
+         const { seconds: s, milliseconds: ms } = parseSecondsAndMills(parts[1]);
+         seconds = s;
+         milliseconds = ms;
       }
       // Format is hh:mm:ss or hh:mm:ss.mill
       else if(parts.length === 3) {
          hours = parseInt(parts[0], 10);
          minutes = parseInt(parts[1], 10);
-         const secondsParts = parts[2].split('.');
-         seconds = parseInt(secondsParts[0], 10);
-
-         if(secondsParts.length > 1) {
-            milliseconds = parseInt(secondsParts[1], 10);
-         }
+         const { seconds: s, milliseconds: ms } = parseSecondsAndMills(parts[2]);
+         seconds = s;
+         milliseconds = ms;
       }
 
       const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);

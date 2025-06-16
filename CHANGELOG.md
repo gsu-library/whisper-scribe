@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1] - 2025
+## [1.7.0] - 2025-06-16
 - Fix bug that caused confirmation for transcription deletion to not show.
 - Add templated custom 400, 403, 404, and 500 error pages.
 - Add a template filter that converts underscores to spaces and use on list page.
@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move version output from template filter to context processor.
 - Fix delete segment tooltip.
 - Move segments into template part.
+- Fix start and end time parsing bug on edit page.
 
 ## [1.6.1] - 2025-05-20
 - Fix for transcriptions not showing on the list page if they were created before the TranscriptionStatus model existed.

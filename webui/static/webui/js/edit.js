@@ -133,8 +133,20 @@
       buttons.forEach(button => {
          const buttonType = button.dataset.type;
 
+         // Disable media buttons if no media
+         if(!mediaPlayer) {
+            switch(buttonType) {
+               case 'play':
+               case 'pause':
+               case 'rewind':
+                  button.disabled = true;
+                  break;
+            }
+         }
+
+         // Add button click functions
          button.addEventListener('click', () => {
-            switch (buttonType) {
+            switch(buttonType) {
                case 'play':
                   mediaPlayer.currentTime = segmentTimeToSeconds(startTime.value, false);
                   mediaPlayer.play();

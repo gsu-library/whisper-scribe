@@ -5,17 +5,17 @@
 <div class="row">
    <div class="col-4">
       <div class="sticky-top">
+         {% if properties.file %}
          <div class="row">
-            {% if properties.file %}
-               <{{ properties.type }} controls id="media" class="w-100">
-                  <source src="{{ properties.file.url }}" />
-               </{{ properties.type }}>
-            {% endif %}
+            <{{ properties.type }} controls id="media" class="w-100">
+               <source src="{{ properties.file.url }}" />
+            </{{ properties.type }}>
          </div>
+         {% endif %}
 
          <div class="row mt-4">
             <div class="form-check m-3">
-               <input type="checkbox" class="form-check-input" id="autoplay" name="autoplay" value="" />
+               <input type="checkbox" class="form-check-input" id="autoplay" name="autoplay" value="" {% if not properties.file %}disabled{% endif %} />
                <label class="form-check-label" for="autoplay">Autoplay Segments</label>
             </div>
          </div>

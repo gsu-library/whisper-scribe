@@ -7,6 +7,24 @@
    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl, {trigger : 'hover'}));
 
 
+   // Check before deleting transcription
+   const deleteButtons = document.querySelectorAll('.delete-transcription');
+   deleteButtons.forEach(button => {
+      button.addEventListener('click', event => {
+         const titleLink = event.target.closest('tr').querySelector('.title a');
+         const confirmation = confirm('Are you sure you want to delete the transcription "' + titleLink.textContent + '"?');
+         const deleteUrl = event.target.parentElement.dataset.url;
+
+         if(confirmation && deleteUrl) {
+            window.location.href = deleteUrl;
+         }
+
+         event.stopPropagation();
+         event.preventDefault();
+      });
+   });
+
+
    // Initialize and configure DataTables
    let transcriptionsTable = new DataTable('#transcriptions', {
       order: [[2, 'asc']],
@@ -38,20 +56,5 @@
       else {
          row.child(tr.querySelector('.child').innerHTML).show();
       }
-   });
-
-
-   // Check before deleting transcription
-   const deleteButtons = document.querySelectorAll('.delete-transcription');
-   deleteButtons.forEach(button => {
-      button.addEventListener('click', event => {
-         const titleLink = event.target.closest('tr').querySelector('.title a');
-         const confirmation = confirm('Are you sure you want to delete the transcription "' + titleLink.textContent + '"?');
-
-         if(!confirmation) {
-            event.stopPropagation();
-            event.preventDefault();
-         }
-      });
    });
 })();

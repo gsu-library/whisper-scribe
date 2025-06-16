@@ -3,8 +3,8 @@
 {% load filters %}
 
 {% block head %}
-<link href="{% static 'webui/css/datatables.min.css' %}{{ '?v='|version }}" rel="stylesheet">
-<script src="{% static 'webui/js/datatables.min.js' %}{{ '?v='|version }}"></script>
+<link href="{% static 'webui/css/datatables.min.css' %}?v={{ version }}" rel="stylesheet">
+<script src="{% static 'webui/js/datatables.min.js' %}?v={{ version }}"></script>
 {% endblock head %}
 
 {% block content %}
@@ -35,11 +35,11 @@
                   {% for key,value in transcription.meta.items %}
                      {% if value %}
                         {% if key == 'size' %}
-                           {{ key }}: {{ value|filesizeformat }}<br>
+                           {{ key|spacify }}: {{ value|filesizeformat }}<br>
                         {% elif key == 'vad_filter' %}
-                           {{ key }}: {{ value|lower }}<br>
+                           {{ key|spacify }}: {{ value|lower }}<br>
                         {% else %}
-                           {{ key }}: {{ value }}<br>
+                           {{ key|spacify }}: {{ value }}<br>
                         {% endif %}
                      {% endif %}
                   {% endfor %}
@@ -72,7 +72,7 @@
                </ul>
             </div>
          </td>
-         <td class="dt-center"><a class="icon-link link-danger delete-transcription" href="{% url 'webui:delete' transcription.id %}"><i class="bi bi-trash"></i></a></td>
+         <td class="dt-center"><a class="icon-link link-danger delete-transcription" href="#" data-url="{% url 'webui:delete' transcription.id %}"><i class="bi bi-trash"></i></a></td>
       </tr>
       {% endfor %}
    </tbody>
@@ -83,5 +83,5 @@
 {% endblock content %}
 
 {% block body-end %}
-<script src="{% static 'webui/js/list.js' %}{{ '?v='|version }}"></script>
+<script src="{% static 'webui/js/list.js' %}?v={{ version }}"></script>
 {% endblock body-end %}

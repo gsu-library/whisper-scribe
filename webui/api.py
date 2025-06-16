@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
 
 from .models import *
 from .utils import is_float, format_seconds
@@ -85,12 +86,11 @@ def api_segments(request):
       )
 
       new_segment.save()
-      data = {
-         'message': 'success',
-         'id': new_segment.id,
-         'start': format_seconds(new_start, segment_time=True),
-         'end': format_seconds(new_end, segment_time=True),
-      }
+
+      # Create segment from template part
+      rendered_segment = render_to_string('webui/_segment.html', {'segment': new_segment})
+      data = { 'segment': rendered_segment }
+
       return JsonResponse(data, status=200)
 
    else:

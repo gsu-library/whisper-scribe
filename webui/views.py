@@ -75,8 +75,7 @@ def index(request):
 # Function: view_transcription
 def view_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   segments = transcription.segments.all()
-   return render(request, 'webui/view.html', {'segments': segments})
+   return render(request, 'webui/view.html', {'transcription': transcription})
 
 
 # Function: list_transcriptions
@@ -96,6 +95,20 @@ def list_transcriptions(request):
          completed_transcriptions.append(transcription)
 
    return render(request, 'webui/list.html', {'transcriptions': completed_transcriptions, 'transcriptionstatus': TranscriptionStatus})
+
+
+#Function: add_segment
+def add_segment(request, transcription_id):
+   transcription = get_object_or_404(Transcription, pk=transcription_id)
+
+   Segment(
+      transcription=transcription,
+      start=0,
+      end=0,
+      text=''
+   ).save()
+
+   return HttpResponseRedirect(reverse('webui:edit', args=[transcription_id]))
 
 
 # Function: edit_transcription
@@ -139,3 +152,23 @@ def delete_transcription(request, transcription_id):
    transcription.delete()
 
    return HttpResponseRedirect(reverse('webui:list'))
+
+
+# Function: custom_400
+def custom_400(request, exception = None):
+   return render(request, 'webui/400.html', {}, status=400)
+
+
+# Function: custom_403
+def custom_403(request, exception = None):
+   return render(request, 'webui/403.html', {}, status=403)
+
+
+# Function: custom_404
+def custom_404(request, exception = None):
+   return render(request, 'webui/404.html', {}, status=404)
+
+
+# Function: custom_500
+def custom_500(request):
+   return render(request, 'webui/500.html', {}, status=500)

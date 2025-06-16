@@ -22,3 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('webui.urls')),
 ]
+
+handler400 = 'webui.views.custom_400'
+handler403 = 'webui.views.custom_403'
+handler404 = 'webui.views.custom_404'
+handler500 = 'webui.views.custom_500'

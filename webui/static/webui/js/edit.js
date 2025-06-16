@@ -195,9 +195,9 @@
 
       if(response.status == 200) {
          const json = await response.json();
-         let segment = newSegment(json.id, json.start, json.end);
-         // segment has a wrapper div
-         segment = segment.childNodes[0];
+         let wrapper = document.createElement('div');
+         wrapper.innerHTML = json.segment.trim();
+         let segment = wrapper.childNodes[0];
 
          if(where < 0) { clickedSegment.before(segment);  }
          else if( where > 0) { clickedSegment.after(segment); }
@@ -219,11 +219,25 @@
          const response = await callApi('/api/segments/' + segmentId, data, 'POST');
 
          if(response.status == 204) {
+            let button = segment.querySelector('.segment-delete');
+            let tooltip = bootstrap.Tooltip.getInstance(button);
+
+            if(tooltip) {
+               tooltip.dispose();
+            }
+
             segment.remove();
          }
          else {
             alert('Segment deletion failed due to server error.');
          }
+      }
+
+      // If there are no more segments reload the page to show the add segment code
+      const segments = document.querySelectorAll('.segment');
+
+      if(segments.length === 0) {
+         window.location.reload();
       }
    }
 
@@ -253,59 +267,6 @@
    }
 
 
-   // Function newSegment
-   // Creates and returns segment code
-   function newSegment(segmentId, start, end) {
-      // SEGMENT CHANGES MUST ALSO BE UPDATED IN EDIT.HTML!!!!
-      let segmentCode = `<div class="segment mb-5" data-index="${segmentId}">
-         <div class="d-flex justify-content-start">
-            <div class="mb-3 me-2">
-               <div class="form-floating">
-                  <input type="text" class="form-control" id="speaker-${segmentId}" name="speaker-${segmentId}" value="" placeholder="" data-field="speaker" />
-                  <label for="speaker-${segmentId}" >Speaker</label>
-               </div>
-            </div>
-
-            <div class="mb-3 me-2">
-               <div class="form-floating">
-                  <input type="text" class="form-control" id="start-${segmentId}" name="start-${segmentId}" value="${start}" placeholder="" data-field="start" />
-                  <label for="start-${segmentId}">Start</label>
-               </div>
-            </div>
-
-            <div class="mb-3">
-               <div class="form-floating">
-                  <input type="text" class="form-control" id="end-${segmentId}" name="end-${segmentId}" value="${end}" placeholder="" data-field="end" />
-                  <label for="end-${segmentId}">End</label>
-               </div>
-            </div>
-         </div>
-
-         <div class="d-flex">
-            <textarea class="form-control mb-3" id="text-${segmentId}" name="text-${segmentId}" data-field="text"></textarea>
-         </div>
-
-         <div>
-            <div class="btn-group" role="group">
-               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Play" data-bs-placement="bottom" aria-label="Play" data-type="play"><i class="bi bi-play-fill"></i></button>
-               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Pause" data-bs-placement="bottom" aria-label="Pause" data-type="pause"><i class="bi bi-pause-fill"></i></button>
-               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Quick Rewind" data-bs-placement="bottom" aria-label="Quick Rewind" data-type="rewind"><i class="bi bi-arrow-counterclockwise"></i></button>
-               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Add Segment Before" data-bs-placement="bottom" aria-label="Add Segment Before" data-type="add-before"><i class="bi bi-arrow-bar-up"></i></button>
-               <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Add Segment After" data-bs-placement="bottom" aria-label="Add Segment After" data-type="add-after"><i class="bi bi-arrow-bar-down"></i></button>
-            </div>
-
-            <div class="float-end" role="group">
-               <button class="btn btn-outline-danger border-0 segment-delete" data-bs-title="Delete Segment" data-bs-placement="bottom" aria-label="Delete Segment" data-type="delete"><i class="bi bi-x-lg"></i></button>
-            </div>
-         </div>
-      </div>`;
-
-      let wrapper = document.createElement('div');
-      wrapper.innerHTML = segmentCode;
-      return wrapper;
-   }
-
-
    // Function: segmentTimeToSeconds
    // Converts segment time format to seconds.
    function segmentTimeToSeconds(time, returnNull = true) {
@@ -315,35 +276,48 @@
       let seconds = 0;
       let milliseconds = 0;
 
+      // Helper function to parse seconds and milliseconds
+      const parseSecondsAndMills = (secondsAndMills) => {
+         let samParts = secondsAndMills.split('.');
+         if(samParts[0] === '') { samParts[0] = '0'; }
+         let seconds = parseInt(samParts[0], 10);
+         let milliseconds = 0;
+
+         if(samParts.length > 1) {
+            let msString = samParts[1];
+
+            if (msString.length === 1) {
+                milliseconds = parseInt(msString + '00', 10);
+            } else if (msString.length === 2) {
+                milliseconds = parseInt(msString + '0', 10);
+            } else {
+                milliseconds = parseInt(msString.substring(0, 3), 10);
+            }
+         }
+
+         return { seconds: seconds, milliseconds: milliseconds };
+      };
+
       // Format is ss or ss.mill
       if(parts.length === 1) {
-         const secondsParts = parts[0].split('.');
-         seconds = parseInt(secondsParts[0], 10);
-
-         if(secondsParts.length > 1) {
-            milliseconds = parseInt(secondsParts[1], 10);
-         }
+         const { seconds: s, milliseconds: ms } = parseSecondsAndMills(parts[0]);
+         seconds = s;
+         milliseconds = ms;
       }
       // Format is mm:ss or mm:ss.mill
       else if(parts.length === 2) {
          minutes = parseInt(parts[0], 10);
-         const secondsParts = parts[1].split('.');
-         seconds = parseInt(secondsParts[0], 10);
-
-         if(secondsParts.length > 1) {
-            milliseconds = parseInt(secondsParts[1], 10);
-         }
+         const { seconds: s, milliseconds: ms } = parseSecondsAndMills(parts[1]);
+         seconds = s;
+         milliseconds = ms;
       }
       // Format is hh:mm:ss or hh:mm:ss.mill
       else if(parts.length === 3) {
          hours = parseInt(parts[0], 10);
          minutes = parseInt(parts[1], 10);
-         const secondsParts = parts[2].split('.');
-         seconds = parseInt(secondsParts[0], 10);
-
-         if(secondsParts.length > 1) {
-            milliseconds = parseInt(secondsParts[1], 10);
-         }
+         const { seconds: s, milliseconds: ms } = parseSecondsAndMills(parts[2]);
+         seconds = s;
+         milliseconds = ms;
       }
 
       const totalSeconds = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);

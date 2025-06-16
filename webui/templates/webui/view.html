@@ -2,8 +2,10 @@
 
 {% block content %}
 <p>
-   {% for segment in segments %}
-   {{ segment.text }}
+   {% for segment in transcription.segments.all %}
+      {{ segment }}
+   {% empty %}
+      No text was found.
    {% endfor %}
 </p>
 {% endblock content %}

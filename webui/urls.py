@@ -13,6 +13,7 @@ urlpatterns = [
    path('', views.index, name='index'),
    path('view/<int:transcription_id>', views.view_transcription, name='view'),
    path('list/', views.list_transcriptions, name='list'),
+   path('add_segment/<int:transcription_id>', views.add_segment, name='add_segment'),
    path('edit/<int:transcription_id>', views.edit_transcription, name='edit'),
    path('delete/<int:transcription_id>', views.delete_transcription, name='delete'),
    # Download routes
@@ -29,3 +30,9 @@ urlpatterns = [
 
 if settings.DEBUG:
    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+   urlpatterns += [
+        path('400', views.custom_400),
+        path('403', views.custom_403),
+        path('404', views.custom_404),
+        path('500', views.custom_500)
+    ]

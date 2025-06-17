@@ -152,7 +152,7 @@
                   mediaPlayer.play();
                   break;
                case 'pause':
-                  mediaPlayer.pause();
+                  mediaPlayer.paused ? mediaPlayer.play() : mediaPlayer.pause();
                   break;
                case 'rewind':
                   let currentTime = mediaPlayer.currentTime;

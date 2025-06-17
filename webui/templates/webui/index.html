@@ -39,7 +39,7 @@
       {% if status.status != status.PROCESSING %}
       <a href="{% url 'webui:cancel' status.transcription.id %}" class="btn btn-outline-danger border-0 ms-auto" role="button" data-bs-toggle="tooltip" data-bs-title="Cancel Submission" aria-label="Cancel Submission">
          <i class="bi bi-x-lg"></i>
-      </button>
+      </a>
       {% endif %}
    </li>
    {% endfor %}

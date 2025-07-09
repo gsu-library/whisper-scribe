@@ -51,12 +51,13 @@ def download_media(transcription_id, upload_url):
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
-      return None
+      return
 
-   status = transcription.statuses.get(process = TranscriptionStatus.DOWNLOADING)
-   status.status = TranscriptionStatus.PROCESSING
-   status.start_time = datetime.now()
-   status.save()
+   download_status = transcription.statuses.get(process=TranscriptionStatus.DOWNLOADING)
+   if download_status.status == TranscriptionStatus.FAILED: return
+   download_status.status = TranscriptionStatus.PROCESSING
+   download_status.start_time = datetime.now()
+   download_status.save()
 
    # Can the opts for yt-dlp use a function to generate hex codes on the fly?
    hex = '_' + uuid.uuid4().hex[:7]
@@ -91,11 +92,10 @@ def download_media(transcription_id, upload_url):
    # Delete temp file
    Path(file_path).unlink(True)
 
-   status.status = TranscriptionStatus.COMPLETED
-   status.end_time = datetime.now()
-   status.save()
-
-   return transcription
+   download_status.status = TranscriptionStatus.COMPLETED
+   download_status.end_time = datetime.now()
+   download_status.save()
+   return
 
 
 # Function: resegment_words
@@ -147,12 +147,13 @@ def transcribe_file(transcription_id):
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
-      return None
+      return
 
-   status = transcription.statuses.get(process = TranscriptionStatus.TRANSCRIBING)
-   status.status = TranscriptionStatus.PROCESSING
-   status.start_time = datetime.now()
-   status.save()
+   transcription_status = transcription.statuses.get(process=TranscriptionStatus.TRANSCRIBING)
+   if transcription_status.status == TranscriptionStatus.FAILED: return
+   transcription_status.status = TranscriptionStatus.PROCESSING
+   transcription_status.start_time = datetime.now()
+   transcription_status.save()
 
    DESCRIPTION_MAX_LENGTH = 100
    word_list = []
@@ -211,9 +212,10 @@ def transcribe_file(transcription_id):
    transcription.description = description[:DESCRIPTION_MAX_LENGTH].strip() + '...'
    transcription.save(update_fields=['description'])
 
-   status.status = TranscriptionStatus.COMPLETED
-   status.end_time = datetime.now()
-   status.save()
+   transcription_status.status = TranscriptionStatus.COMPLETED
+   transcription_status.end_time = datetime.now()
+   transcription_status.save()
+   return
 
 
 # Function: diarize_separate_overlaps
@@ -303,12 +305,13 @@ def diarize_file(transcription_id):
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
-      return None
+      return
 
-   status = transcription.statuses.get(process = TranscriptionStatus.DIARIZING)
-   status.status = TranscriptionStatus.PROCESSING
-   status.start_time = datetime.now()
-   status.save()
+   diarize_status = transcription.statuses.get(process=TranscriptionStatus.DIARIZING)
+   if diarize_status.status == TranscriptionStatus.FAILED: return
+   diarize_status.status = TranscriptionStatus.PROCESSING
+   diarize_status.start_time = datetime.now()
+   diarize_status.save()
 
    result = []
    meta = transcription.meta
@@ -341,6 +344,7 @@ def diarize_file(transcription_id):
       segment = Segment(**diarized_segment)
       segment.save()
 
-   status.status = TranscriptionStatus.COMPLETED
-   status.end_time = datetime.now()
-   status.save()
+   diarize_status.status = TranscriptionStatus.COMPLETED
+   diarize_status.end_time = datetime.now()
+   diarize_status.save()
+   return

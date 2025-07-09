@@ -160,7 +160,7 @@ def cancel_transcription(request, transcription_id):
    current_status = transcription.current_status()
 
    if current_status and current_status.status == TranscriptionStatus.PENDING:
-      transcription.fail_incomplete_statuses(error_message='Task cancelled by user.')
+      transcription.fail_incomplete_statuses(error_message='Submission cancelled by user.')
 
    return HttpResponseRedirect(reverse('webui:index'))
 

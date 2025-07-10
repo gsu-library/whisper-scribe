@@ -157,10 +157,7 @@ def delete_transcription(request, transcription_id):
 # Function: cancel_transcription
 def cancel_transcription(request, transcription_id):
    transcription = get_object_or_404(Transcription, pk=transcription_id)
-   # current_status = transcription.current_status()
-
-   # if current_status and current_status.status == TranscriptionStatus.PENDING:
-   transcription.fail_incomplete_statuses(error_message='Submission cancelled by user.', processes_to_fail=[TranscriptionStatus.PENDING])
+   transcription.fail_pending_statuses(error_message='Submission cancelled by user.')
 
    return HttpResponseRedirect(reverse('webui:index'))
 

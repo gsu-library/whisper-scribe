@@ -39,13 +39,19 @@ class Transcription(models.Model):
       except TranscriptionStatus.DoesNotExist:
          return None
 
-   def fail_incomplete_statuses(self, error_message="Transcription processing failed.", processes_to_fail=None):
+   def fail_incomplete_statuses(self, error_message='Transcription processing failed.', processes_to_fail=None):
       if processes_to_fail is None:
          incomplete_statuses = self.statuses.exclude(status=TranscriptionStatus.COMPLETED)
       else:
          incomplete_statuses = self.statuses.exclude(status=TranscriptionStatus.COMPLETED).filter(process__in=processes_to_fail)
 
-      incomplete_statuses.update(status=TranscriptionStatus.FAILED, error_message=error_message, end_time = datetime.now())
+      incomplete_statuses.update(status=TranscriptionStatus.FAILED, error_message=error_message, end_time=datetime.now())
+
+   def fail_pending_statuses(self, error_message='Transcription processing failed.'):
+      self.statuses.filter(status=TranscriptionStatus.PENDING).update(
+         status=TranscriptionStatus.FAILED,
+         error_message=error_message,
+         end_time=datetime.now())
 
 
 # Class: Segment

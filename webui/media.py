@@ -292,7 +292,7 @@ def diarize_assign_speakers(transcription):
          word['speaker'] = speaker_bucket['speaker']
       else:
          last_speaker = speaker_bucket['speaker']
-         speaker_bucket = next(bucket_iter)
+         speaker_bucket = next(bucket_iter, None)
          continue
 
       word_list_index += 1

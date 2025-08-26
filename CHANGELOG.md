@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.7.] - 2025-
 - Disable media controls on edit page if no media exists.
 - Add ability to cancel submissions.
+- Fix for some diarization errors.
 
 ## [1.7.0] - 2025-06-16
 - Fix bug that caused confirmation for transcription deletion to not show.

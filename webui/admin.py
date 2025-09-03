@@ -8,7 +8,6 @@ class TranscriptonAdmin(admin.ModelAdmin):
    """
    ModelAdmin class to customize the display of Transcription objects in the admin interface.
    """
-
    _max_chars = 200
    list_display = ('title', 'get_description', 'get_notes', 'upload_file', 'meta', 'submitted')
 
@@ -16,7 +15,6 @@ class TranscriptonAdmin(admin.ModelAdmin):
       """
       Truncates and returns description.
       """
-
       trunc = Truncator(obj.description)
       return trunc.chars(self._max_chars)
 
@@ -24,7 +22,6 @@ class TranscriptonAdmin(admin.ModelAdmin):
       """
       Truncates and returns notes.
       """
-
       trunc = Truncator(obj.notes)
       return trunc.chars(self._max_chars)
 

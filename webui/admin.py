@@ -4,16 +4,27 @@ from django.utils.text import Truncator
 from .models import *
 
 
-# Class: TranscriptionAdmin
 class TranscriptonAdmin(admin.ModelAdmin):
+   """
+   ModelAdmin class to customize the display of Transcription objects in the admin interface.
+   """
+
    _max_chars = 200
    list_display = ('title', 'get_description', 'get_notes', 'upload_file', 'meta', 'submitted')
 
    def get_description(self, obj):
+      """
+      Truncates and returns description.
+      """
+
       trunc = Truncator(obj.description)
       return trunc.chars(self._max_chars)
 
    def get_notes(self, obj):
+      """
+      Truncates and returns notes.
+      """
+
       trunc = Truncator(obj.notes)
       return trunc.chars(self._max_chars)
 
@@ -21,13 +32,17 @@ class TranscriptonAdmin(admin.ModelAdmin):
    get_notes.short_description = 'notes'
 
 
-# Class: SegmentAdmin
 class SegmentAdmin(admin.ModelAdmin):
+   """
+   ModelAdmin class to customize the display of Segment objects in the admin interface.
+   """
    list_display = [field.name for field in Segment._meta.fields if field.name != 'id']
 
 
-# Class: TranscriptionStatusAdmin
 class TranscriptionStatusAdmin(admin.ModelAdmin):
+   """
+   ModelAdmin class to customize the display of TranscriptionStatus objects in the admin interface.
+   """
    list_display = [field.name for field in TranscriptionStatus._meta.fields if field.name != 'id']
 
 

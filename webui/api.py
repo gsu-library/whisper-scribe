@@ -7,8 +7,16 @@ from .utils import is_float, format_seconds
 import json
 
 
-# Function: api_transcriptions_id
 def api_transcriptions_id(request, transcription_id):
+   """
+   Handles API POST requests to update transcriptions.
+
+   Args:
+      transcription_id (int): ID of the transcription to update.
+
+   Returns:
+      JsonResponse: JSON message and status of the result.
+   """
    if 'X-Requested-With' not in request.headers or request.headers['X-Requested-With'] != 'XMLHttpRequest':
       return JsonResponse({'message': 'malformed header'}, status=400)
 
@@ -37,8 +45,14 @@ def api_transcriptions_id(request, transcription_id):
    return JsonResponse({'message': 'bad request'}, status=400)
 
 
-# Function: api_segments
 def api_segments(request):
+   """
+   Handles API POST requests for segment creation.
+
+   Returns:
+      JsonResponse: JSON message of a newly rendered segment (if successfull) and the
+      status of the result.
+   """
    if 'X-Requested-With' not in request.headers or request.headers['X-Requested-With'] != 'XMLHttpRequest':
       return JsonResponse({'message': 'malformed header'}, status=400)
 
@@ -100,8 +114,16 @@ def api_segments(request):
    return JsonResponse({'message': 'bad request'}, status=400)
 
 
-# Function: api_segments_id
 def api_segments_id(request, segment_id):
+   """
+   Handles API POST requests to update segments.
+
+   Args:
+      segment_id (int): ID of the segment to update.
+
+   Returns:
+      JsonResponse: JSON message and status of the result..
+   """
    if 'X-Requested-With' not in request.headers or request.headers['X-Requested-With'] != 'XMLHttpRequest':
       return JsonResponse({'message': 'malformed header'}, status=400)
 

@@ -13,8 +13,16 @@ import torch
 import uuid
 
 
-# Function: process_submission
 def process_submission(transcription_id, upload_url, diarize):
+   """
+   Processes a transcription submission by downloading media, transcribing it, and
+   optionally diarizing the transcription.
+
+   Args:
+      transcription_id (int): The ID of the transcription to process.
+      upload_url (str): The URL from which to download the media file (optional).
+      diarize (bool): Whether to perform diarization on the transcription.
+   """
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
@@ -43,11 +51,18 @@ def process_submission(transcription_id, upload_url, diarize):
          transcription.fail_incomplete_statuses('Diarizing media failed.')
          return
 
-   return
 
-
-# Function: download_media
 def download_media(transcription_id, upload_url):
+   """
+   This function retrieves a transcription object by its ID, downloads the media file
+   from the provided URL using yt-dlp, and saves the downloaded file to the
+   transcription record.
+
+   Args:
+      transcription_id (int): The ID of the transcription object to associate the media
+         with.
+      upload_url (str): The URL of the media to be downloaded.
+   """
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
@@ -95,11 +110,23 @@ def download_media(transcription_id, upload_url):
    download_status.status = TranscriptionStatus.COMPLETED
    download_status.end_time = datetime.now()
    download_status.save()
-   return
 
 
-# Function: resegment_words
 def resegment_word_list(word_list, max_characters, max_time):
+   """
+   Resegments a list of words into segments based on character length, time duration,
+   and speaker consistency.
+
+   Args:
+      word_list (list of dict): A list of words to resegment with word, speaker, start,
+         and end attributes.
+      max_characters (int): The maximum number of characters allowed in a segment.
+      max_time (float): The maximum time duration (in seconds) allowed for a segment.
+
+   Returns:
+      list of dict: A list of segments, where each segment is represented as a dictionary.
+   """
+
    # Better than param defaults as checks for ''
    # Segments will get the first word, do not need to check for minimum length or time
    if not max_characters: max_characters = settings.MAX_SEGMENT_LENGTH
@@ -142,8 +169,15 @@ def resegment_word_list(word_list, max_characters, max_time):
    return segments
 
 
-# Function: transcribe_file
 def transcribe_file(transcription_id):
+   """
+   This function retrieves a transcription object from the database, processes the
+   associated audio file using a Whisper model, and saves the transcription results,
+   including word-level timestamps and segmented text, back to the database.
+
+   Args:
+      transcription_id (int): The ID of the transcription object to process.
+   """
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
@@ -215,11 +249,20 @@ def transcribe_file(transcription_id):
    transcription_status.status = TranscriptionStatus.COMPLETED
    transcription_status.end_time = datetime.now()
    transcription_status.save()
-   return
 
 
-# Function: diarize_separate_overlaps
 def diarize_separate_overlaps(diarization):
+   """
+   Adjusts a list of speaker diarization segments to handle overlapping ranges by
+   splitting them into non-overlapping segments. Overlapping portions are marked with a
+   special 'OVERLAP' speaker.
+
+   Args:
+      diarization (list of dict): A list of dictionaries representing speaker segments.
+
+   Returns:
+      list of dict: A list of dictionaries representing the adjusted speaker segments.
+   """
    # Sort the speaker ranges by their start time
    diarization = sorted(diarization, key=lambda x: x['start'])
 
@@ -228,48 +271,59 @@ def diarize_separate_overlaps(diarization):
 
    # Iterate through the speaker ranges
    for i in range(len(diarization)):
-         # If this is the first range, add it to the separated ranges list
+      # If this is the first range, add it to the separated ranges list
+      if i == 0:
+         final_segments.append(diarization[i])
+      else:
+         # Get the previous range
+         previous_segment = dict(final_segments[-1])
 
-         if i == 0:
-               final_segments.append(diarization[i])
+         # If the current range starts after the previous range ends add it to the final segments list
+         if diarization[i]['start'] >= previous_segment['end'] or diarization[i]['speaker'] == previous_segment['speaker']:
+            final_segments.append(diarization[i])
+         # Otherwise split the ranges
          else:
-               # Get the previous range
-               previous_segment = dict(final_segments[-1])
-
-               # If the current range starts after the previous range ends, add it to the separated ranges list
-               if diarization[i]['start'] >= previous_segment['end'] or diarization[i]['speaker'] == previous_segment['speaker']:
-                     final_segments.append(diarization[i])
-               else:
-                     # Otherwise, there is an overlap, so split the ranges
-                     # First, add the part of the previous range that doesn't overlap
-                     final_segments[-1]['end'] = diarization[i]['start']
-                     # Then add the overlap as a new range
-                     overlap = {
-                        'speaker': 'OVERLAP',
-                        'start': diarization[i]['start'],
-                        'end': min(diarization[i]['end'], previous_segment['end'])
-                     }
-                     final_segments.append(overlap)
-                     # Finally, add the part of the current range that doesn't overlap
-                     if diarization[i]['end'] > previous_segment['end']:
-                        non_overlap = {
-                           'speaker': diarization[i]['speaker'],
-                           'start': overlap['end'],
-                           'end': diarization[i]['end']
-                        }
-                     else:
-                        non_overlap = {
-                           'speaker': previous_segment['speaker'],
-                           'start': overlap['end'],
-                           'end': previous_segment['end']
-                        }
-                     final_segments.append(non_overlap)
+            # First add the part of the previous range that doesn't overlap
+            final_segments[-1]['end'] = diarization[i]['start']
+            # Then add the overlap as a new range
+            overlap = {
+               'speaker': 'OVERLAP',
+               'start': diarization[i]['start'],
+               'end': min(diarization[i]['end'], previous_segment['end'])
+            }
+            final_segments.append(overlap)
+            # Finally, add the part of the current range that doesn't overlap
+            if diarization[i]['end'] > previous_segment['end']:
+               non_overlap = {
+                  'speaker': diarization[i]['speaker'],
+                  'start': overlap['end'],
+                  'end': diarization[i]['end']
+               }
+            else:
+               non_overlap = {
+                  'speaker': previous_segment['speaker'],
+                  'start': overlap['end'],
+                  'end': previous_segment['end']
+               }
+            final_segments.append(non_overlap)
 
    return final_segments
 
 
-# Function: diarize_assign_speakers
 def diarize_assign_speakers(transcription):
+   """
+   This function processes a transcription object, which contains a list of words and
+   diarization data. It assigns a speaker label to each word in the word list based on
+   the diarization information, ensuring that each word is associated with the correct
+   speaker.
+
+   Args:
+      transcription (object): A transcription object.
+
+   Returns:
+      list: A list of words with updated dictionaries, where each word dictionary
+         includes a 'speaker' key indicating the assigned speaker label.
+   """
    word_list = []
    if not transcription: return word_list
    speaker_buckets = diarize_separate_overlaps(transcription.diarization)
@@ -300,8 +354,16 @@ def diarize_assign_speakers(transcription):
    return word_list
 
 
-# Function: diarize_file
 def diarize_file(transcription_id):
+   """
+   This function retrieves a transcription object, processes the associated audio file
+   to perform speaker diarization, and updates the transcription with the diarization
+   results. It also handles the segmentation of the diarized audio and updates the
+   transcription's segments accordingly.
+
+   Args:
+      transcription_id (int): The ID of the transcription to be diarized.
+   """
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
    except Transcription.DoesNotExist:
@@ -347,4 +409,3 @@ def diarize_file(transcription_id):
    diarize_status.status = TranscriptionStatus.COMPLETED
    diarize_status.end_time = datetime.now()
    diarize_status.save()
-   return

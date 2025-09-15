@@ -27,8 +27,8 @@ def format_filename(name):
 
 def download_text(request, transcription_id):
    """
-   Downloads a formatted text file of the requested transcription, including speaker names
-   if available.
+   Downloads a formatted text file of the requested transcription, including speaker
+   names if available.
 
    Args:
       transcription_id (int): ID of the transcription to download.
@@ -125,8 +125,7 @@ def download_srt(request, transcription_id):
 
 def download_vtt(request, transcription_id):
    """
-   Downloads a VTT of the requested transcription, including speaker names if
-   available.
+   Downloads a VTT of the requested transcription, including speaker names if available.
 
    Args:
       transcription_id (int): ID of the transcription to download.

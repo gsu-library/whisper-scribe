@@ -11,8 +11,11 @@ import mimetypes
 from django_q.tasks import async_task
 
 
-# Function: index
 def index(request):
+   """
+   Renders the main page of the web UI, displaying the transcription form and a list of
+   current transcription statuses. Handles form submissions for new transcriptions.
+   """
    form = TranscriptionForm()
 
    current_statuses = []
@@ -72,14 +75,19 @@ def index(request):
    return render(request, 'webui/index.html', {'form': form, 'statuses': current_statuses})
 
 
-# Function: view_transcription
 def view_transcription(request, transcription_id):
+   """
+   Renders the view page for a specific transcription, displaying its details and
+   associated segments.
+   """
    transcription = get_object_or_404(Transcription, pk=transcription_id)
    return render(request, 'webui/view.html', {'transcription': transcription})
 
 
-# Function: list_transcriptions
 def list_transcriptions(request):
+   """
+   Renders a list of completed or failed transcriptions.
+   """
    completed_transcriptions = []
 
    for transcription in Transcription.objects.all().prefetch_related('statuses'):
@@ -97,8 +105,11 @@ def list_transcriptions(request):
    return render(request, 'webui/list.html', {'transcriptions': completed_transcriptions, 'transcriptionstatus': TranscriptionStatus})
 
 
-#Function: add_segment
 def add_segment(request, transcription_id):
+   """
+   Adds an empty segment to the specified transcription and redirects to the edit page.
+   This is used on a transcript that has no segments.
+   """
    transcription = get_object_or_404(Transcription, pk=transcription_id)
 
    Segment(
@@ -107,12 +118,14 @@ def add_segment(request, transcription_id):
       end=0,
       text=''
    ).save()
-
    return HttpResponseRedirect(reverse('webui:edit', args=[transcription_id]))
 
 
-# Function: edit_transcription
 def edit_transcription(request, transcription_id):
+   """
+   Renders the edit page for a specific transcription, allowing users to modify segments
+   and speaker assignments. Also handles POST requests for mass updating speaker names.
+   """
    transcription = get_object_or_404(Transcription, pk=transcription_id)
    segments = transcription.segments.all()
    speakers = set(segments.exclude(speaker__exact='').values_list('speaker', flat=True).distinct())
@@ -127,7 +140,6 @@ def edit_transcription(request, transcription_id):
       return HttpResponseRedirect(reverse('webui:edit', args=[transcription_id]))
 
    type = 'video'
-
    file_mimetype = mimetypes.guess_type(str(transcription.upload_file))[0]
 
    if file_mimetype and file_mimetype.startswith('audio'):
@@ -142,41 +154,50 @@ def edit_transcription(request, transcription_id):
       'type': type,
       'speakers': speakers,
    }
-
    return render(request, 'webui/edit.html', {'segments': segments, 'properties': properties})
 
 
-# Function: delete_transcription
 def delete_transcription(request, transcription_id):
+   """
+   Deletes a transcription and all associated data.
+   """
    transcription = get_object_or_404(Transcription, pk=transcription_id)
    transcription.delete()
-
    return HttpResponseRedirect(reverse('webui:list'))
 
 
-# Function: cancel_transcription
 def cancel_transcription(request, transcription_id):
+   """
+   Cancels a transcription.
+   """
    transcription = get_object_or_404(Transcription, pk=transcription_id)
    transcription.fail_pending_statuses(error_message='Submission cancelled by user.')
-
    return HttpResponseRedirect(reverse('webui:index'))
 
 
-# Function: custom_400
 def custom_400(request, exception = None):
+   """
+   Renders the custom 400 error page.
+   """
    return render(request, 'webui/400.html', {}, status=400)
 
 
-# Function: custom_403
 def custom_403(request, exception = None):
+   """
+   Renders the custom 403 error page.
+   """
    return render(request, 'webui/403.html', {}, status=403)
 
 
-# Function: custom_404
 def custom_404(request, exception = None):
+   """
+   Renders the custom 404 error page.
+   """
    return render(request, 'webui/404.html', {}, status=404)
 
 
-# Function: custom_500
 def custom_500(request):
+   """
+   Renders the custom 500 error page.
+   """
    return render(request, 'webui/500.html', {}, status=500)

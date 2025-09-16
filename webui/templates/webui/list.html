@@ -83,5 +83,6 @@
 {% endblock content %}
 
 {% block body-end %}
-<script src="{% static 'webui/js/list.js' %}?v={{ version }}"></script>
+{% if debug %}<script src="{% static 'webui/js/list.js' %}?v={{ version }}"></script>
+{% else %}<script src="{% static 'webui/js/list.min.js' %}?v={{ version }}"></script>{% endif %}
 {% endblock body-end %}

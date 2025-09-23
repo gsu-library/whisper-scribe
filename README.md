@@ -159,6 +159,12 @@ At some point you will want to reverse proxy a web server to WhisperScribe in or
 ## Developer Notes
 The Django project folder is 'core' and the application folder is 'webui'.
 
+### Minification
+
+To load unminified CSS/JS `DEBUG` must be set to true and `INTERNAL_IPS` must be set in the settings file.
+
+To minify the CSS and JS files run `npm run minify`.
+
 ## Dependencies
 - [Python v3.10.12](https://www.python.org/)
 - [Faster-Whisper v1.1.1](https://github.com/SYSTRAN/faster-whisper)

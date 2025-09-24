@@ -263,54 +263,50 @@ def diarize_separate_overlaps(diarization):
    Returns:
       list of dict: A list of dictionaries representing the adjusted speaker segments.
    """
+   if not diarization:
+      return []
+
    # Sort the speaker ranges by their start time
-   diarization = sorted(diarization, key=lambda x: x['start'])
+   sorted_diarization = sorted(diarization, key=lambda x: x['start'])
+   separated_segments = []
 
-   # Initialize an empty list to store the separated ranges
-   final_segments = []
+   for current_segment in sorted_diarization:
+      if not separated_segments:
+         separated_segments.append(current_segment)
+         continue
 
-   # Iterate through the speaker ranges
-   for i in range(len(diarization)):
-      # If this is the first range, add it to the separated ranges list
-      if i == 0:
-         final_segments.append(diarization[i])
+      last_segment = separated_segments[-1]
+
+       # No overlap or same speaker
+      if current_segment['start'] >= last_segment['end'] or current_segment['speaker'] == last_segment['speaker']:
+         separated_segments.append(current_segment)
       else:
-         # Get the previous range
-         previous_segment = dict(final_segments[-1])
+         # There's an overlap. Split the segments.
+         # First, add the non-overlapping part of the last segment
+         original_end_time = last_segment['end']
+         last_segment['end'] = current_segment['start']
 
-         # If the current range starts after the previous range ends add it to the final segments list
-         if diarization[i]['start'] >= previous_segment['end'] or diarization[i]['speaker'] == previous_segment['speaker']:
-            final_segments.append(diarization[i])
-         # Otherwise split the ranges
-         else:
-            # First add the part of the previous range that doesn't overlap
-            final_segments[-1]['end'] = diarization[i]['start']
-            # Then add the overlap as a new range
-            overlap = {
-               'speaker': 'OVERLAP',
-               'start': diarization[i]['start'],
-               'end': min(diarization[i]['end'], previous_segment['end'])
+         # Then, add the overlap segment
+         overlap_segment = {
+            'speaker': 'OVERLAP',
+            'start': current_segment['start'],
+            'end': min(current_segment['end'], original_end_time)
+         }
+         separated_segments.append(overlap_segment)
+
+         # If the current segment extends beyond the original last segment, add the remaining part
+         if current_segment['end'] > original_end_time:
+            remaining_segment = {
+                  'speaker': current_segment['speaker'],
+                  'start': original_end_time,
+                  'end': current_segment['end']
             }
-            final_segments.append(overlap)
-            # Finally, add the part of the current range that doesn't overlap
-            if diarization[i]['end'] > previous_segment['end']:
-               non_overlap = {
-                  'speaker': diarization[i]['speaker'],
-                  'start': overlap['end'],
-                  'end': diarization[i]['end']
-               }
-            else:
-               non_overlap = {
-                  'speaker': previous_segment['speaker'],
-                  'start': overlap['end'],
-                  'end': previous_segment['end']
-               }
-            final_segments.append(non_overlap)
+            separated_segments.append(remaining_segment)
 
-   return final_segments
+   return separated_segments
 
 
-def diarize_assign_speakers(transcription):
+def diarize_assign_speakers(transcription_id):
    """
    This function processes a transcription object, which contains a list of words and
    diarization data. It assigns a speaker label to each word in the word list based on
@@ -318,15 +314,19 @@ def diarize_assign_speakers(transcription):
    speaker.
 
    Args:
-      transcription (object): A transcription object.
+      transcription_id (int): The ID of the transcription to be diarized.
 
    Returns:
       list: A list of words with updated dictionaries, where each word dictionary
          includes a 'speaker' key indicating the assigned speaker label.
    """
-   word_list = []
-   if not transcription: return word_list
+   try:
+      transcription = Transcription.objects.get(pk=transcription_id)
+   except Transcription.DoesNotExist:
+      return
+
    speaker_buckets = diarize_separate_overlaps(transcription.diarization)
+   word_list = []
    transcription.refresh_from_db()
    word_list = transcription.word_list
    word_list = sorted(word_list, key=lambda x: x['start'])
@@ -396,7 +396,7 @@ def diarize_file(transcription_id):
    # Delete temp audio file
    temp_audio.unlink()
 
-   word_list = diarize_assign_speakers(transcription)
+   word_list = diarize_assign_speakers(transcription_id)
    diarized_segments = resegment_word_list(word_list, meta['max_segment_length'], meta['max_segment_time'])
    # Remove existing segments
    transcription.segments.all().delete()

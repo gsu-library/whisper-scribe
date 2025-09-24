@@ -281,12 +281,12 @@ def diarize_separate_overlaps(diarization):
       if current_segment['start'] >= last_segment['end'] or current_segment['speaker'] == last_segment['speaker']:
          separated_segments.append(current_segment)
       else:
-         # There's an overlap. Split the segments.
-         # First, add the non-overlapping part of the last segment
+         # There's an overlap, split the segments
+         # Add the non-overlapping part of the last segment
          original_end_time = last_segment['end']
          last_segment['end'] = current_segment['start']
 
-         # Then, add the overlap segment
+         # Add the overlapping segment
          overlap_segment = {
             'speaker': 'OVERLAP',
             'start': current_segment['start'],
@@ -294,14 +294,20 @@ def diarize_separate_overlaps(diarization):
          }
          separated_segments.append(overlap_segment)
 
-         # If the current segment extends beyond the original last segment, add the remaining part
+         # Add the remaining part of the segment that doesn't overlap
          if current_segment['end'] > original_end_time:
             remaining_segment = {
                   'speaker': current_segment['speaker'],
                   'start': original_end_time,
                   'end': current_segment['end']
             }
-            separated_segments.append(remaining_segment)
+         else:
+            remaining_segment = {
+                  'speaker': last_segment['speaker'],
+                  'start': current_segment['end'],
+                  'end': original_end_time
+            }
+         separated_segments.append(remaining_segment)
 
    return separated_segments
 

@@ -314,10 +314,9 @@ def diarize_separate_overlaps(diarization):
 
 def diarize_assign_speakers(transcription_id):
    """
-   This function processes a transcription object, which contains a list of words and
-   diarization data. It assigns a speaker label to each word in the word list based on
-   the diarization information, ensuring that each word is associated with the correct
-   speaker.
+   This function processes a transcription object's word list and diarization data. It
+   assigns a speaker label to each word in the word list based on the diarization
+   information, ensuring that each word is associated with the correct speaker.
 
    Args:
       transcription_id (int): The ID of the transcription to be diarized.
@@ -332,30 +331,21 @@ def diarize_assign_speakers(transcription_id):
       return
 
    speaker_buckets = diarize_separate_overlaps(transcription.diarization)
-   word_list = []
-   transcription.refresh_from_db()
-   word_list = transcription.word_list
-   word_list = sorted(word_list, key=lambda x: x['start'])
-   bucket_iter = iter(speaker_buckets)
-   speaker_bucket = next(bucket_iter, None)
-   last_speaker = speaker_bucket.get('speaker', '') if speaker_bucket else ''
-   word_list_index = 0
+   word_list = sorted(transcription.word_list, key=lambda x: x['start'])
+   bucket_index = 0
+   last_speaker = ''
 
-   # Assign speakers to words in the word_list
-   while word_list_index < len(word_list):
-      word = word_list[word_list_index]
+   for word in word_list:
+      # Move to the next speaker bucket if the current word's start time exceeds the bucket's end time.
+      while bucket_index < len(speaker_buckets) and word['start'] >= speaker_buckets[bucket_index]['end']:
+         last_speaker = speaker_buckets[bucket_index]['speaker']
+         bucket_index += 1
 
-      # Words are left after buckets are exhausted
-      if not speaker_bucket:
-         word['speaker'] = last_speaker
-      elif word['start'] < speaker_bucket['end']:
-         word['speaker'] = speaker_bucket['speaker']
+      # Assign the speaker from the current bucket.
+      if bucket_index < len(speaker_buckets):
+         word['speaker'] = speaker_buckets[bucket_index]['speaker']
       else:
-         last_speaker = speaker_bucket['speaker']
-         speaker_bucket = next(bucket_iter, None)
-         continue
-
-      word_list_index += 1
+         word['speaker'] = last_speaker
 
    return word_list
 

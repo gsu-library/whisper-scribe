@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rework diarization code.
 - Add failed status return on current_status method for Transcription model if entire transcription was cancelled.
 - Remove prefix from get_version.
+- Update pip packages.
 
 ## [1.7.0] - 2025-06-16
 - Fix bug that caused confirmation for transcription deletion to not show.

@@ -25,3 +25,8 @@ textarea.success {
    right: 40px;
    z-index: 1000;
 }
+
+.cancel-button {
+   background-color: #dc3545;
+   color: #fff;
+}

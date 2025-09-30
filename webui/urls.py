@@ -16,6 +16,7 @@ urlpatterns = [
    path('add_segment/<int:transcription_id>', views.add_segment, name='add_segment'),
    path('edit/<int:transcription_id>', views.edit_transcription, name='edit'),
    path('delete/<int:transcription_id>', views.delete_transcription, name='delete'),
+   path('cancel/<int:transcription_id>', views.cancel_transcription, name='cancel'),
    # Download routes
    path('download/text/<int:transcription_id>', downloads.download_text, name='download_text'),
    path('download/text_blob/<int:transcription_id>', downloads.download_text_blob, name='download_text_blob'),

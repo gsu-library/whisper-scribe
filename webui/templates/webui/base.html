@@ -9,7 +9,8 @@
 
    <link href="{% static 'webui/css/bootstrap.min.css' %}?v={{ version }}" rel="stylesheet">
    <link href="{% static 'webui/css/bootstrap-icons/bootstrap-icons.min.css' %}?v={{ version }}" rel="stylesheet">
-   <link href="{% static 'webui/css/styles.css' %}?v={{ version }}" rel="stylesheet">
+   {% if debug %}<link href="{% static 'webui/css/styles.css' %}?v={{ version }}" rel="stylesheet">
+   {% else %}<link href="{% static 'webui/css/styles.min.css' %}?v={{ version }}" rel="stylesheet">{% endif %}
 
    <script src="{% static 'webui/js/bootstrap.bundle.min.js' %}?v={{ version }}"></script>
    {% block head %}{% endblock head %}

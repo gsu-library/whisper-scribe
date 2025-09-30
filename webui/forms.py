@@ -2,8 +2,13 @@ from django import forms
 from django.conf import settings
 
 
-# Create choices tuples for choice model.
 def create_model_choices():
+   """
+   Helper function that returns tuples of model choices defined in the settings.
+
+   Returns:
+      tuple: A tuple of (model, model) pairs for available Whisper models.
+   """
    choices = []
 
    for model in settings.WHISPER_MODELS:
@@ -12,8 +17,24 @@ def create_model_choices():
    return tuple(choices)
 
 
-# Class: TranscriptionForm
 class TranscriptionForm(forms.Form):
+   """
+   A Django form for handling transcription requests.
+
+   Fields:
+      upload_file: Optional file upload field for the audio file.
+      upload_url: Optional URL field for the audio file.
+      model: Choice field for selecting the transcription model.
+      language: Optional field for specifying the language of the audio.
+      diarize: Optional boolean field to enable speaker diarization.
+      hotwords: Optional field for providing hint phrases to the model.
+      vad_filter: Optional boolean field to enable voice activity detection.
+      max_segment_length: Optional field for specifying the maximum segment length.
+      max_segment_time: Optional field for specifying the maximum segment time.
+
+   Validation:
+      Ensures that at least one of 'upload_file' or 'upload_url' is provided.
+   """
    upload_file = forms.FileField(required=False)
    upload_url = forms.URLField(required=False)
    model = forms.ChoiceField(
@@ -37,6 +58,10 @@ class TranscriptionForm(forms.Form):
 
    # Add form-control class to form fields.
    def __init__(self, *args, **kwargs):
+      """
+      Initializes the TranscriptionForm class and applies custom CSS classes to form
+      widgets based on their input type.
+      """
       super(TranscriptionForm, self).__init__(*args, **kwargs)
 
       for visible in self.visible_fields():
@@ -48,8 +73,12 @@ class TranscriptionForm(forms.Form):
             visible.field.widget.attrs['class'] = 'form-control'
 
 
-   # Validation for providing one the two fields: upload_file and upload_url.
    def clean(self):
+      """
+      Perform custom validation to ensure that at least one of 'upload_file' or
+      'upload_url' is provided in the form data. If neither is provided, validation
+      errors are added to both fields.
+      """
       cleaned_data = super().clean()
       upload_file = cleaned_data.get('upload_file')
       upload_url = cleaned_data.get('upload_url')

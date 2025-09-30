@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2025-09-30
+- Disable media controls on edit page if no media exists.
+- Add button to cancel submissions. Hide button if transcription cannot be cancelled.
+- Fix for some diarization errors.
+- Minify CSS and JS. Add debugging code to templates for non-minified versions.
+- Rework diarization code.
+- Add failed status return on current_status method for Transcription model if entire transcription was cancelled.
+- Remove prefix from get_version.
+- Update pip packages.
+
 ## [1.7.0] - 2025-06-16
 - Fix bug that caused confirmation for transcription deletion to not show.
 - Add templated custom 400, 403, 404, and 500 error pages.

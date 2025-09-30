@@ -36,9 +36,11 @@
    <li class="list-group-item d-flex align-items-center{% if status.status == status.PROCESSING %} bg-warning" aria-current="true{% endif %}" data-transcription-id="{{ status.transcription.id }}">
       {{ status.transcription.title }} - {{ status.print_process }} {{ status.print_status }}
       {% if status.start_time %}- {{ status.start_time }}{% endif %}
-      <a href="{% url 'webui:cancel' status.transcription.id %}" class="btn btn-outline-danger border-0 ms-auto" role="button" data-bs-toggle="tooltip" data-bs-title="Cancel Submission" aria-label="Cancel Submission">
-         <i class="bi bi-x-lg"></i>
-      </a>
+      {% if status.show_cancel %}
+         <a href="{% url 'webui:cancel' status.transcription.id %}" class="btn btn-outline-danger border-0 ms-auto" role="button" data-bs-toggle="tooltip" data-bs-title="Cancel Submission" aria-label="Cancel Submission">
+            <i class="bi bi-x-lg"></i>
+         </a>
+      {% endif %}
    </li>
    {% endfor %}
 </ul>

@@ -4,7 +4,7 @@
   "scripts": {
     "minify": "npm run minifyCss && npm run minifyJs",
     "minifyCss": "minify webui/static/webui/css/styles.css > webui/static/webui/css/styles.min.css",
-    "minifyJs": "minify webui/static/webui/js/edit.js > webui/static/webui/js/edit.min.js && minify webui/static/webui/js/list.js > webui/static/webui/js/list.min.js"
+    "minifyJs": "minify webui/static/webui/js/edit.js > webui/static/webui/js/edit.min.js && minify webui/static/webui/js/list.js > webui/static/webui/js/list.min.js && minify webui/static/webui/js/index.js > webui/static/webui/js/index.min.js"
   },
   "devDependencies": {
     "minify": "latest"

@@ -1,4 +1,6 @@
 {% extends 'webui/base.html' %}
+{% load static %}
+{% load filters %}
 
 {% block content %}
 <form action="{% url 'webui:index' %}" method="post" enctype="multipart/form-data">
@@ -37,7 +39,7 @@
       {{ status.transcription.title }} - {{ status.print_process }} {{ status.print_status }}
       {% if status.start_time %}- {{ status.start_time }}{% endif %}
       {% if status.show_cancel %}
-         <a href="{% url 'webui:cancel' status.transcription.id %}" class="btn btn-outline-danger border-0 ms-auto" role="button" data-bs-toggle="tooltip" data-bs-title="Cancel Submission" aria-label="Cancel Submission">
+         <a href="{% url 'webui:cancel' status.transcription.id %}" class="btn btn-outline-danger border-0 ms-auto cancel-button" role="button" data-bs-toggle="tooltip" data-bs-title="Cancel Submission" aria-label="Cancel Submission">
             <i class="bi bi-x-lg"></i>
          </a>
       {% endif %}
@@ -46,3 +48,8 @@
 </ul>
 {% endif %}
 {% endblock content %}
+
+{% block body-end %}
+{% if debug %}<script src="{% static 'webui/js/index.js' %}?v={{ version }}"></script>
+{% else %}<script src="{% static 'webui/js/index.min.js' %}?v={{ version }}"></script>{% endif %}
+{% endblock body-end %}

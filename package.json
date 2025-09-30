@@ -1,6 +1,6 @@
 {
   "name": "whisperscribe",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "scripts": {
     "minify": "npm run minifyCss && npm run minifyJs",
     "minifyCss": "minify webui/static/webui/css/styles.css > webui/static/webui/css/styles.min.css",

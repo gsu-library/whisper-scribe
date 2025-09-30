@@ -23,15 +23,12 @@ def is_float(number):
       return False
 
 
-def get_version(prefix = ''):
+def get_version():
    """
    Retrieves the version from the README.md file and caches it.
 
-   Args:
-      prefix (str): A string to prepend to the version number.
-
    Returns:
-      str: The version string with the optional prefix.
+      str: The version.
    """
    README = 'README.md'
    CACHE_NAME = 'readme_version'
@@ -39,7 +36,7 @@ def get_version(prefix = ''):
    version = cache.get(CACHE_NAME)
 
    if version:
-      return prefix + version
+      return version
 
    try:
       with open(settings.BASE_DIR / README, 'r') as f:
@@ -47,13 +44,13 @@ def get_version(prefix = ''):
             if line.startswith('Version:'):
                version = line[len('Version:'):].strip()
                cache.set(CACHE_NAME, version, CACHE_TIMEOUT)
-               return prefix + version
+               return version
    except FileNotFoundError:
       cache.set(CACHE_NAME, '', CACHE_TIMEOUT)
       print(f'README file not found.')
 
    cache.set(CACHE_NAME, '', CACHE_TIMEOUT)
-   return prefix
+   return ''
 
 
 def format_seconds(seconds, always_include_hours = False, decimal_marker = '.', include_mill = True, segment_time = False):

@@ -21,9 +21,9 @@ def index(request):
    current_statuses = []
    for transcription in Transcription.objects.all().order_by('submitted'):
       current_status = transcription.current_status()
-      current_status.show_cancel = True
 
       if current_status and current_status.status in [TranscriptionStatus.PENDING]:
+         current_status.show_cancel = True
          current_statuses.append(current_status)
       elif current_status and current_status.status in [TranscriptionStatus.PROCESSING]:
          # If a processing transcription has been cancelled OR cannot be cancelled do
@@ -31,6 +31,9 @@ def index(request):
          if transcription.statuses.filter(status=TranscriptionStatus.FAILED, start_time__isnull=True).exists() or \
             not transcription.statuses.filter(status=TranscriptionStatus.PENDING).exists():
             current_status.show_cancel = False
+         else:
+            current_status.show_cancel = True
+
          current_statuses.append(current_status)
 
    # Form submission

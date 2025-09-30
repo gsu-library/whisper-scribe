@@ -34,7 +34,8 @@ class Transcription(models.Model):
       """
       Returns the most relevant status for the transcription.
 
-      The hierarchy of status importance is FAILED, PROCESSING, PENDING, and finally COMPLETED.
+      The hierarchy of status importance is FAILED (not cancelled), PROCESSING, PENDING,
+      COMPLETED, and FAILED (cancelled).
       """
       # If failed, exclude processes that never started
       status = self.statuses.filter(status=TranscriptionStatus.FAILED, start_time__isnull=False).order_by('start_time').first()
@@ -47,6 +48,9 @@ class Transcription(models.Model):
       if status: return status
       # If completed, get last completed
       status = self.statuses.filter(status=TranscriptionStatus.COMPLETED).order_by('-start_time').first()
+      if status: return status
+      # If a process was cancelled
+      status = self.statuses.filter(status=TranscriptionStatus.FAILED, start_time__isnull=True).order_by('start_time').first()
       if status: return status
 
    def get_status_of(self, process):

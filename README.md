@@ -180,4 +180,3 @@ To minify the CSS and JS files run `npm run minify`.
 - [Bootstrap Icons v1.13.1](https://icons.getbootstrap.com/)
 - [DataTables v2.3.1](https://datatables.net/)
 - [jQuery v3.7.0](https://jquery.com/)
-- [Moment.js v2.29.4](https://momentjs.com/)

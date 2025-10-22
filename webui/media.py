@@ -25,29 +25,32 @@ def process_submission(transcription_id, upload_url, diarize):
    """
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
-   except Transcription.DoesNotExist:
+   except:
       return
 
    # Download media
    if upload_url:
       try:
          download_media(transcription_id, upload_url)
-      except:
+      except Exception as e:
+         print(e)
          transcription.fail_incomplete_statuses('Downloading media failed.')
          return
 
    # Transcribe file
    try:
       transcribe_file(transcription_id)
-   except:
+   except Exception as e:
+      print(e)
       transcription.fail_incomplete_statuses('Transcribing media failed.')
       return
 
    # Diarize transcription
-   if diarize and settings.HUGGING_FACE_TOKEN:
+   if diarize and settings.HUGGING_FACE_TOKEN and settings.DIARIZE_CHECKPOINT_PATH:
       try:
          diarize_file(transcription_id)
-      except:
+      except Exception as e:
+         print(e)
          transcription.fail_incomplete_statuses('Diarizing media failed.')
          return
 
@@ -373,7 +376,7 @@ def diarize_file(transcription_id):
 
    result = []
    meta = transcription.meta
-   pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)
+   pipeline = Pipeline.from_pretrained(settings.DIARIZE_CHECKPOINT_PATH, use_auth_token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)
 
    if torch.cuda.is_available():
       pipeline.to(torch.device('cuda'))

@@ -3,7 +3,7 @@ Code Repository: https://github.com/gsu-library/whisper-scribe
 Author: Matt Brooks <mbrooks34@gsu.edu>  
 Date Created: 2024-05-21  
 License: [GPLv3](LICENSE)  
-Version: 1.8.0
+Version: 1.9.0
 
 ## Description
 WhisperScribe is a Django-powered web application that simplifies audio analysis by using AI for speech recognition (Faster Whisper) and speaker diarization (Pyannote.Audio). Users can upload or link media, generate accurate transcripts with speaker identification, and easily edit the results. This project also leverages CUDA support for quicker processing.
@@ -160,7 +160,6 @@ At some point you will want to reverse proxy a web server to WhisperScribe in or
 The Django project folder is 'core' and the application folder is 'webui'.
 
 ### Minification
-
 To load unminified CSS/JS `DEBUG` must be set to true and `INTERNAL_IPS` must be set in the settings file.
 
 To minify the CSS and JS files run `npm run minify`.

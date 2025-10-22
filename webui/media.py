@@ -376,7 +376,7 @@ def diarize_file(transcription_id):
 
    result = []
    meta = transcription.meta
-   pipeline = Pipeline.from_pretrained(settings.DIARIZE_CHECKPOINT_PATH, use_auth_token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)
+   pipeline = Pipeline.from_pretrained(settings.DIARIZE_CHECKPOINT_PATH, token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)
 
    if torch.cuda.is_available():
       pipeline.to(torch.device('cuda'))
@@ -384,9 +384,9 @@ def diarize_file(transcription_id):
    # Convert media to .wav
    temp_audio = extract_audio_to_wav(transcription.upload_file.path)
 
-   diarization = pipeline(temp_audio)
+   pipeline_output = pipeline(temp_audio)
 
-   for turn, _, speaker in diarization.itertracks(yield_label=True):
+   for turn, _, speaker in pipeline_output.speaker_diarization.itertracks(yield_label=True):
       # print(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker}")
       result.append({'start': turn.start, 'end': turn.end, 'speaker': speaker})
 

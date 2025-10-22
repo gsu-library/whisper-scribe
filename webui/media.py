@@ -1,10 +1,10 @@
 from django.core.files import File
 from django.conf import settings
+from django.utils.timezone import now
 
 from .models import *
 from .utils import *
 
-from datetime import datetime
 from pathlib import Path
 from yt_dlp import YoutubeDL
 from faster_whisper import WhisperModel
@@ -74,7 +74,7 @@ def download_media(transcription_id, upload_url):
    download_status = transcription.statuses.get(process=TranscriptionStatus.DOWNLOADING)
    if download_status.status == TranscriptionStatus.FAILED: return
    download_status.status = TranscriptionStatus.PROCESSING
-   download_status.start_time = datetime.now()
+   download_status.start_time = now()
    download_status.save()
 
    # Can the opts for yt-dlp use a function to generate hex codes on the fly?
@@ -111,7 +111,7 @@ def download_media(transcription_id, upload_url):
    Path(file_path).unlink(True)
 
    download_status.status = TranscriptionStatus.COMPLETED
-   download_status.end_time = datetime.now()
+   download_status.end_time = now()
    download_status.save()
 
 
@@ -189,7 +189,7 @@ def transcribe_file(transcription_id):
    transcription_status = transcription.statuses.get(process=TranscriptionStatus.TRANSCRIBING)
    if transcription_status.status == TranscriptionStatus.FAILED: return
    transcription_status.status = TranscriptionStatus.PROCESSING
-   transcription_status.start_time = datetime.now()
+   transcription_status.start_time = now()
    transcription_status.save()
 
    DESCRIPTION_MAX_LENGTH = 100
@@ -250,7 +250,7 @@ def transcribe_file(transcription_id):
    transcription.save(update_fields=['description'])
 
    transcription_status.status = TranscriptionStatus.COMPLETED
-   transcription_status.end_time = datetime.now()
+   transcription_status.end_time = now()
    transcription_status.save()
 
 
@@ -371,7 +371,7 @@ def diarize_file(transcription_id):
    diarize_status = transcription.statuses.get(process=TranscriptionStatus.DIARIZING)
    if diarize_status.status == TranscriptionStatus.FAILED: return
    diarize_status.status = TranscriptionStatus.PROCESSING
-   diarize_status.start_time = datetime.now()
+   diarize_status.start_time = now()
    diarize_status.save()
 
    result = []
@@ -406,5 +406,5 @@ def diarize_file(transcription_id):
       segment.save()
 
    diarize_status.status = TranscriptionStatus.COMPLETED
-   diarize_status.end_time = datetime.now()
+   diarize_status.end_time = now()
    diarize_status.save()

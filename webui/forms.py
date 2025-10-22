@@ -64,6 +64,9 @@ class TranscriptionForm(forms.Form):
       """
       super(TranscriptionForm, self).__init__(*args, **kwargs)
 
+      if not settings.HUGGING_FACE_TOKEN and settings.DIARIZE_CHECKPOINT_PATH:
+         self.fields['diarize'].widget.attrs['disabled'] = True
+
       for visible in self.visible_fields():
          if visible.field.widget.input_type == 'select':
             visible.field.widget.attrs['class'] = 'form-select'

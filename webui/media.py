@@ -25,7 +25,7 @@ def process_submission(transcription_id, upload_url, diarize):
    """
    try:
       transcription = Transcription.objects.get(pk=transcription_id)
-   except:
+   except Transcription.DoesNotExist:
       return
 
    # Download media

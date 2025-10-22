@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Django, pyannote.audio, and yt-dlp.
 - Update diarization code for pyannote.audio v4.0.0.
 - Disable diarize radio if settings are not configured.
+- Use Django timezone utility for date/time now.
 
 ## [1.8.0] - 2025-09-30
 - Disable media controls on edit page if no media exists.

@@ -1,6 +1,6 @@
 from django.db import models
+from django.utils.timezone import now
 
-from datetime import datetime
 
 
 class Transcription(models.Model):
@@ -82,7 +82,7 @@ class Transcription(models.Model):
       else:
          incomplete_statuses = self.statuses.exclude(status=TranscriptionStatus.COMPLETED).filter(process__in=processes_to_fail)
 
-      incomplete_statuses.update(status=TranscriptionStatus.FAILED, error_message=error_message, end_time=datetime.now())
+      incomplete_statuses.update(status=TranscriptionStatus.FAILED, error_message=error_message, end_time=now())
 
    def fail_pending_statuses(self, error_message='Transcription processing failed.'):
       """
@@ -94,7 +94,7 @@ class Transcription(models.Model):
       self.statuses.filter(status=TranscriptionStatus.PENDING).update(
          status=TranscriptionStatus.FAILED,
          error_message=error_message,
-         end_time=datetime.now())
+         end_time=now())
 
 
 class Segment(models.Model):

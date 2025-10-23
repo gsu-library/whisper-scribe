@@ -1,10 +1,10 @@
 from django.core.files import File
 from django.conf import settings
+from django.utils.timezone import now
 
 from .models import *
 from .utils import *
 
-from datetime import datetime
 from pathlib import Path
 from yt_dlp import YoutubeDL
 from faster_whisper import WhisperModel
@@ -32,22 +32,25 @@ def process_submission(transcription_id, upload_url, diarize):
    if upload_url:
       try:
          download_media(transcription_id, upload_url)
-      except:
+      except Exception as e:
+         print(e)
          transcription.fail_incomplete_statuses('Downloading media failed.')
          return
 
    # Transcribe file
    try:
       transcribe_file(transcription_id)
-   except:
+   except Exception as e:
+      print(e)
       transcription.fail_incomplete_statuses('Transcribing media failed.')
       return
 
    # Diarize transcription
-   if diarize and settings.HUGGING_FACE_TOKEN:
+   if diarize and settings.HUGGING_FACE_TOKEN and settings.DIARIZE_CHECKPOINT_PATH:
       try:
          diarize_file(transcription_id)
-      except:
+      except Exception as e:
+         print(e)
          transcription.fail_incomplete_statuses('Diarizing media failed.')
          return
 
@@ -71,7 +74,7 @@ def download_media(transcription_id, upload_url):
    download_status = transcription.statuses.get(process=TranscriptionStatus.DOWNLOADING)
    if download_status.status == TranscriptionStatus.FAILED: return
    download_status.status = TranscriptionStatus.PROCESSING
-   download_status.start_time = datetime.now()
+   download_status.start_time = now()
    download_status.save()
 
    # Can the opts for yt-dlp use a function to generate hex codes on the fly?
@@ -108,7 +111,7 @@ def download_media(transcription_id, upload_url):
    Path(file_path).unlink(True)
 
    download_status.status = TranscriptionStatus.COMPLETED
-   download_status.end_time = datetime.now()
+   download_status.end_time = now()
    download_status.save()
 
 
@@ -186,7 +189,7 @@ def transcribe_file(transcription_id):
    transcription_status = transcription.statuses.get(process=TranscriptionStatus.TRANSCRIBING)
    if transcription_status.status == TranscriptionStatus.FAILED: return
    transcription_status.status = TranscriptionStatus.PROCESSING
-   transcription_status.start_time = datetime.now()
+   transcription_status.start_time = now()
    transcription_status.save()
 
    DESCRIPTION_MAX_LENGTH = 100
@@ -247,7 +250,7 @@ def transcribe_file(transcription_id):
    transcription.save(update_fields=['description'])
 
    transcription_status.status = TranscriptionStatus.COMPLETED
-   transcription_status.end_time = datetime.now()
+   transcription_status.end_time = now()
    transcription_status.save()
 
 
@@ -368,12 +371,12 @@ def diarize_file(transcription_id):
    diarize_status = transcription.statuses.get(process=TranscriptionStatus.DIARIZING)
    if diarize_status.status == TranscriptionStatus.FAILED: return
    diarize_status.status = TranscriptionStatus.PROCESSING
-   diarize_status.start_time = datetime.now()
+   diarize_status.start_time = now()
    diarize_status.save()
 
    result = []
    meta = transcription.meta
-   pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)
+   pipeline = Pipeline.from_pretrained(settings.DIARIZE_CHECKPOINT_PATH, token=settings.HUGGING_FACE_TOKEN, cache_dir=settings.MODEL_CACHE_PATH)
 
    if torch.cuda.is_available():
       pipeline.to(torch.device('cuda'))
@@ -381,9 +384,9 @@ def diarize_file(transcription_id):
    # Convert media to .wav
    temp_audio = extract_audio_to_wav(transcription.upload_file.path)
 
-   diarization = pipeline(temp_audio)
+   pipeline_output = pipeline(temp_audio)
 
-   for turn, _, speaker in diarization.itertracks(yield_label=True):
+   for turn, _, speaker in pipeline_output.speaker_diarization.itertracks(yield_label=True):
       # print(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker}")
       result.append({'start': turn.start, 'end': turn.end, 'speaker': speaker})
 
@@ -403,5 +406,5 @@ def diarize_file(transcription_id):
       segment.save()
 
    diarize_status.status = TranscriptionStatus.COMPLETED
-   diarize_status.end_time = datetime.now()
+   diarize_status.end_time = now()
    diarize_status.save()

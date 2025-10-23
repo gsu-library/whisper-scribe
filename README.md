@@ -3,7 +3,7 @@ Code Repository: https://github.com/gsu-library/whisper-scribe
 Author: Matt Brooks <mbrooks34@gsu.edu>  
 Date Created: 2024-05-21  
 License: [GPLv3](LICENSE)  
-Version: 1.8.0
+Version: 1.9.0
 
 ## Description
 WhisperScribe is a Django-powered web application that simplifies audio analysis by using AI for speech recognition (Faster Whisper) and speaker diarization (Pyannote.Audio). Users can upload or link media, generate accurate transcripts with speaker identification, and easily edit the results. This project also leverages CUDA support for quicker processing.
@@ -51,8 +51,11 @@ If using a reverse proxy to Gunicorn this will have to be set to Gunicorn's bind
 HUGGING_FACE_TOKEN  
 This is required to use diarization. In order to create a token you must:
 1. Accept [pyannote/segmentation-3.0](https://hf.co/pyannote/segmentation-3.0) user conditions,
-1. accept [pyannote/speaker-diarization-3.1](https://hf.co/pyannote/speaker-diarization-3.1) user conditions,
+1. accept the wanted model's user conditions (see DIARIZE_CHECKPOINT_PATH below),
 1. and create an access token at [hf.co/settings/tokens](https://hf.co/settings/tokens).
+
+DIARIZE_CHECKPOINT_PATH  
+This is the model used for diarization and is also required if diarization is wanted. Currently there are two models that are freely available after agreeing to the terms: [pyannote/speaker-diarization-community-1](https://huggingface.co/pyannote/speaker-diarization-community-1) (recommended) and [pyannote/speaker-diarization-3.1](https://huggingface.co/pyannote/speaker-diarization-3.1).
 
 UPPERCASE_SPEAKER_NAMES  
 If speaker names should be in uppercase or not in file downloads.
@@ -160,7 +163,6 @@ At some point you will want to reverse proxy a web server to WhisperScribe in or
 The Django project folder is 'core' and the application folder is 'webui'.
 
 ### Minification
-
 To load unminified CSS/JS `DEBUG` must be set to true and `INTERNAL_IPS` must be set in the settings file.
 
 To minify the CSS and JS files run `npm run minify`.
@@ -168,11 +170,11 @@ To minify the CSS and JS files run `npm run minify`.
 ## Dependencies
 - [Python v3.10.12](https://www.python.org/)
 - [Faster-Whisper v1.2.0](https://github.com/SYSTRAN/faster-whisper)
-- [Pyannote.Audio v3.3.2](https://github.com/pyannote/pyannote-audio)
-- [YT-DLP v2025.9.26](https://github.com/yt-dlp/yt-dlp)
+- [Pyannote.Audio v4.0.1](https://github.com/pyannote/pyannote-audio)
+- [YT-DLP v2025.10.14](https://github.com/yt-dlp/yt-dlp)
 - [Gunicorn v23.0.0](https://gunicorn.org/)
 - [FFmpeg](https://www.ffmpeg.org/)
-- [Django v5.2.6](https://www.djangoproject.com/)
+- [Django v5.2.7](https://www.djangoproject.com/)
 - [Django Cleanup v9.0.0](https://github.com/un1t/django-cleanup/)
 - [Django Q2 v1.8.0](https://django-q2.readthedocs.io/en/master/)
 - [NVIDIA cuBLAS v12.1.3.1](https://developer.nvidia.com/cublas)
@@ -181,4 +183,3 @@ To minify the CSS and JS files run `npm run minify`.
 - [Bootstrap Icons v1.13.1](https://icons.getbootstrap.com/)
 - [DataTables v2.3.1](https://datatables.net/)
 - [jQuery v3.7.0](https://jquery.com/)
-- [Moment.js v2.29.4](https://momentjs.com/)

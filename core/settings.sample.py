@@ -34,6 +34,10 @@ CSRF_TRUSTED_ORIGINS = []
 # Set Hugging Face token if using diarization.
 HUGGING_FACE_TOKEN = ''
 
+# Path to pipeline checkpoint, or a remote URL, or a pipeline identifier from the
+# huggingface.co model hub.
+DIARIZE_CHECKPOINT_PATH = 'pyannote/speaker-diarization-community-1'
+
 # Path to save model caching to.
 MODEL_CACHE_PATH = BASE_DIR.joinpath('webui/files/models')
 
@@ -46,10 +50,13 @@ MAX_SEGMENT_LENGTH = 42
 # Default max length of segments in seconds.
 MAX_SEGMENT_TIME = 7
 
-# The default for the language spoken in the audio. Set to None or '' for auto detection as a default.
+# The default for the language spoken in the audio. Set to None or '' for auto detection
+# as a default.
 WHISPER_LANGUAGE = 'en'
 
-# The list of models available to Whisper (tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3).
+# The list of models available to Whisper (tiny.en, tiny, base.en, base, small.en,
+# small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2,
+# distil-medium.en, distil-small.en, distil-large-v3).
 WHISPER_MODELS = [
     'tiny',
     'base',

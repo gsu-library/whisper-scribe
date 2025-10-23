@@ -51,8 +51,13 @@ If using a reverse proxy to Gunicorn this will have to be set to Gunicorn's bind
 HUGGING_FACE_TOKEN  
 This is required to use diarization. In order to create a token you must:
 1. Accept [pyannote/segmentation-3.0](https://hf.co/pyannote/segmentation-3.0) user conditions,
-1. accept [pyannote/speaker-diarization-3.1](https://hf.co/pyannote/speaker-diarization-3.1) user conditions,
+1. accept the wanted model's user conditions (see DIARIZE_CHECKPOINT_PATH below),
 1. and create an access token at [hf.co/settings/tokens](https://hf.co/settings/tokens).
+
+DIARIZE_CHECKPOINT_PATH  
+This is the model used for diarization and is also required if diarization is wanted. Currently there are two models that are freely available after agreeing to the terms:
+- [pyannote/speaker-diarization-community-1](https://huggingface.co/pyannote/speaker-diarization-community-1) (recommended)
+- [pyannote/speaker-diarization-3.1](https://huggingface.co/pyannote/speaker-diarization-3.1)
 
 UPPERCASE_SPEAKER_NAMES  
 If speaker names should be in uppercase or not in file downloads.

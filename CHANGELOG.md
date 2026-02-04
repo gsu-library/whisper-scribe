@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.10.0] - 2026-02-04
 - Update yt-dlp.
+- Comment out pip requirements install in updater script.
 
 ## [1.9.0] - 2025-10-23
 - Add an updater script that updates pip requirements, performs migrations, and collects static files.

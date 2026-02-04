@@ -3,7 +3,7 @@ Code Repository: https://github.com/gsu-library/whisper-scribe
 Author: Matt Brooks <mbrooks34@gsu.edu>  
 Date Created: 2024-05-21  
 License: [GPLv3](LICENSE)  
-Version: 1.9.0
+Version: 1.10.0
 
 ## Description
 WhisperScribe is a Django-powered web application that simplifies audio analysis by using AI for speech recognition (Faster Whisper) and speaker diarization (Pyannote.Audio). Users can upload or link media, generate accurate transcripts with speaker identification, and easily edit the results. This project also leverages CUDA support for quicker processing.
@@ -171,7 +171,7 @@ To minify the CSS and JS files run `npm run minify`.
 - [Python v3.10.12](https://www.python.org/)
 - [Faster-Whisper v1.2.0](https://github.com/SYSTRAN/faster-whisper)
 - [Pyannote.Audio v4.0.1](https://github.com/pyannote/pyannote-audio)
-- [YT-DLP v2025.10.14](https://github.com/yt-dlp/yt-dlp)
+- [YT-DLP v2026.2.4](https://github.com/yt-dlp/yt-dlp)
 - [Gunicorn v23.0.0](https://gunicorn.org/)
 - [FFmpeg](https://www.ffmpeg.org/)
 - [Django v5.2.7](https://www.djangoproject.com/)

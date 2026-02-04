@@ -22,10 +22,10 @@ fi
 echo "Starting WhisperScribe update process."
 echo "Using Python executable: $PYTHON_EXEC"
 
-echo "Installing/updating Python dependencies from requirements-freeze.txt..."
+# echo "Installing/updating Python dependencies from requirements-freeze.txt..."
 # We use '$PYTHON_EXEC -m pip' to ensure the correct pip is used.
-$PYTHON_EXEC -m pip install -r requirements-freeze.txt
-echo "Dependencies installed successfully."
+# $PYTHON_EXEC -m pip install -r requirements-freeze.txt
+# echo "Dependencies installed successfully."
 
 echo "Applying database migrations..."
 $PYTHON_EXEC manage.py migrate

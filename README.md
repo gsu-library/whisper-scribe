@@ -171,7 +171,7 @@ To minify the CSS and JS files run `npm run minify`.
 - [Python v3.10.12](https://www.python.org/)
 - [Faster-Whisper v1.2.0](https://github.com/SYSTRAN/faster-whisper)
 - [Pyannote.Audio v4.0.1](https://github.com/pyannote/pyannote-audio)
-- [YT-DLP v2025.10.14](https://github.com/yt-dlp/yt-dlp)
+- [YT-DLP v2026.2.4](https://github.com/yt-dlp/yt-dlp)
 - [Gunicorn v23.0.0](https://gunicorn.org/)
 - [FFmpeg](https://www.ffmpeg.org/)
 - [Django v5.2.7](https://www.djangoproject.com/)

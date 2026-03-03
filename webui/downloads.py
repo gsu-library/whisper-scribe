@@ -182,3 +182,64 @@ def download_json(request, transcription_id):
       'Content-Type': 'application/json',
       'Content-Disposition': f'attachment; filename="{format_filename(transcription.title)}.json"',
    })
+
+
+def download_grouped_text(request, transcription_id):
+   """
+   Downloads a text file of the requested transcription where consecutive segments
+   by the same speaker are grouped together.
+
+   Args:
+      transcription_id (int): ID of the transcription to download.
+
+   Returns:
+      HttpResponse: A formatted text file of the grouped transcription.
+   """
+   transcription = get_object_or_404(Transcription, pk=transcription_id)
+   segments = transcription.segments.all()
+   grouped_output = []
+   current_group = None
+
+   for segment in segments:
+      if current_group is None:
+         current_group = {
+            'speaker': segment.speaker,
+            'start': segment.start,
+            'end': segment.end,
+            'text': segment.text
+         }
+      elif segment.speaker == current_group['speaker']:
+         current_group['text'] += ' ' + segment.text
+         current_group['end'] = segment.end
+      else:
+         grouped_output.append(current_group)
+         current_group = {
+            'speaker': segment.speaker,
+            'start': segment.start,
+            'end': segment.end,
+            'text': segment.text
+         }
+
+   if current_group:
+      grouped_output.append(current_group)
+
+   output = ''
+   for group in grouped_output:
+      output += f'{format_seconds(group["start"], True)} --> {format_seconds(group["end"], True)}\n'
+
+      if group['speaker']:
+         if settings.UPPERCASE_SPEAKER_NAMES:
+            output += group['speaker'].upper()
+         else:
+            output += group['speaker']
+
+         output += ': '
+
+      output += f"{group['text']}\n\n"
+
+   output = output.rstrip('\n') + '\n'
+
+   return HttpResponse(output, headers={
+      'Content-Type': 'text/plain',
+      'Content-Disposition': f'attachment; filename="{format_filename(transcription.title)}.txt"',
+   })

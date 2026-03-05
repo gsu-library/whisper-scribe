@@ -184,7 +184,7 @@ def download_json(request, transcription_id):
    })
 
 
-def download_grouped_text(request, transcription_id):
+def download_grouped_speaker(request, transcription_id):
    """
    Downloads a text file of the requested transcription where consecutive segments
    by the same speaker are grouped together.

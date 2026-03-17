@@ -23,6 +23,7 @@ urlpatterns = [
    path('download/srt/<int:transcription_id>', downloads.download_srt, name='download_srt'),
    path('download/vtt/<int:transcription_id>', downloads.download_vtt, name='download_vtt'),
    path('download/json/<int:transcription_id>', downloads.download_json, name='download_json'),
+   path('download/grouped_speaker/<int:transcription_id>', downloads.download_grouped_speaker, name='download_grouped_speaker'),
    # API routes
    path('api/transcriptions/<int:transcription_id>', api.api_transcriptions_id, name='api_transcriptions_id'),
    path('api/segments/<int:segment_id>', api.api_segments_id, name='api_segments_id'),

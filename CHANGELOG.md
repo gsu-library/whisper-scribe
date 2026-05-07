@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-
+- Update Python to version 3.12.7 (for Ubuntu 24.04 LTS & Django 6).
+- Update requirements-freeze.txt.
+- Needs database migration.
+- Must delete venv files and recreate. Django 6 does not support Python 3.10.
+
 ## [1.11.0] - 2026-03-17
 - Add download text grouped by speaker option.
 

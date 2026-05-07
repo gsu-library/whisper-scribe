@@ -3,27 +3,27 @@ Code Repository: https://github.com/gsu-library/whisper-scribe
 Author: Matt Brooks <mbrooks34@gsu.edu>  
 Date Created: 2024-05-21  
 License: [GPLv3](LICENSE)  
-Version: 1.11.0
+Version: 2.0.0
 
 ## Description
 WhisperScribe is a Django-powered web application that simplifies audio analysis by using AI for speech recognition (Faster Whisper) and speaker diarization (Pyannote.Audio). Users can upload or link media, generate accurate transcripts with speaker identification, and easily edit the results. This project also leverages CUDA support for quicker processing.
 
 ## Requirements
-- Python v3.10.12
+- Python v3.12.7
 - FFmpeg
 - Web Server
 - NVIDIA drivers (if using CUDA)
 
 ## Installation
-The following installation instructions are based on a Linux server install using Python v3.10.12.
+The following installation instructions are based on a Linux server install using Python v3.12.7.
 
-1. [Install Python](https://wiki.python.org/moin/BeginnersGuide/Download). We recommend using version 3.10.12, as that is what this repository is built on. If you need to manage multiple Python versions, we suggest using [Pyenv](https://github.com/pyenv/pyenv).
+1. [Install Python](https://wiki.python.org/moin/BeginnersGuide/Download). We recommend using version 3.12.7, as that is what this repository is built on. If you need to manage multiple Python versions, we suggest using [Pyenv](https://github.com/pyenv/pyenv).
 1. [Install FFmpeg](https://www.ffmpeg.org/).
 1. Install and [configure](#configuring-the-web-server) a web server for static and media file hosting. This can also be used as a reverse proxy server to proxy Gunicorn. Either [Apache](https://httpd.apache.org/) or [Nginx](https://nginx.org/) are recommended.
 1. Either clone the WhisperScribe git repository or download the source code from the latest release. Move/extract the files in a location that is not being served by a web server.
 1. Create a Python virtual environment inside the WhisperScribe folder - [venv](https://docs.python.org/3/library/venv.html) is recommended. Once created, activate and stay in the virtual environment for the remainder of the steps.
 1. [Install the required Python packages](#installing-python-packages).
-1. Copy the core/settings.sample.py file to core/settings.py and [configure the settings file](#configuring-the-settings-file). If wanting to use a database other than SQLite configure it now (see [Django's databases documentation](https://docs.djangoproject.com/en/5.1/ref/databases/)).
+1. Copy the core/settings.sample.py file to core/settings.py and [configure the settings file](#configuring-the-settings-file). If wanting to use a database other than SQLite configure it now (see [Django's databases documentation](https://docs.djangoproject.com/en/6.0/ref/databases/)).
 1. Run Django database migrations: `python manage.py migrate`.
 1. Create the cache table: `python manage.py createcachetable`.
 1. Move static files: `python manage.py collectstatic`.
@@ -34,10 +34,10 @@ The following installation instructions are based on a Linux server install usin
 To install the required Python packages it is recommended to use pip to install the freeze file that is used with this project: `pip install -r requirements-freeze.txt`. In some scenarios (not using Linux, different Python version, etc.) pip will fail to install the freeze file. If this is the case, installing the requirements.txt file should work: `pip install -r requirements.txt`.
 
 ### Configuring the Web Server
-A web server will have to be configured to host static and media files used by WhisperScribe. Django has documentation on [how to deploy static files](https://docs.djangoproject.com/en/5.1/howto/static-files/deployment/).
+A web server will have to be configured to host static and media files used by WhisperScribe. Django has documentation on [how to deploy static files](https://docs.djangoproject.com/en/6.0/howto/static-files/deployment/).
 
 ### Configuring the Settings File
-The SECRET_KEY and ALLOWED_HOST fields must be configured before running WhisperScribe. It is recommended to also take a look at the rest of the configurations in the settings file. See [Django settings reference](https://docs.djangoproject.com/en/5.1/ref/settings/) for additional information. If troubleshooting is needed for setup/configuration DEBUG can be enabled. **DO NOT LEAVE THIS ENABLED IN A PRODUCTION ENVIRONMENT!**
+The SECRET_KEY and ALLOWED_HOST fields must be configured before running WhisperScribe. It is recommended to also take a look at the rest of the configurations in the settings file. See [Django settings reference](https://docs.djangoproject.com/en/6.0/ref/settings/) for additional information. If troubleshooting is needed for setup/configuration DEBUG can be enabled. **DO NOT LEAVE THIS ENABLED IN A PRODUCTION ENVIRONMENT!**
 
 **SECRET_KEY** - REQUIRED  
 Run the following command while within the WhisperScribe Python virtual environment to generate a secret key: `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
@@ -46,7 +46,7 @@ Run the following command while within the WhisperScribe Python virtual environm
 A list of strings representing the host/domain names that this Django site can serve.
 
 CSRF_TRUSTED_ORIGINS  
-If using a reverse proxy to Gunicorn this will have to be set to Gunicorn's bind address. See [CSRF trusted origins](https://docs.djangoproject.com/en/5.1/ref/settings/#csrf-trusted-origins) for more information.
+If using a reverse proxy to Gunicorn this will have to be set to Gunicorn's bind address. See [CSRF trusted origins](https://docs.djangoproject.com/en/6.0/ref/settings/#csrf-trusted-origins) for more information.
 
 HUGGING_FACE_TOKEN  
 This is required to use diarization. In order to create a token you must:
@@ -79,7 +79,7 @@ USE_DJANGO_Q
 Whether to use Django Q or not. This may cause issues in a Windows environemnt. If disabled the WhisperScribe interface will hang while processing audio.
 
 DATABASES  
-Configure what kind of database you want to use. The default is SQLite. See <https://docs.djangoproject.com/en/5.1/ref/settings/#databases> and <https://docs.djangoproject.com/en/5.1/ref/databases/>.
+Configure what kind of database you want to use. The default is SQLite. See <https://docs.djangoproject.com/en/6.0/ref/settings/#databases> and <https://docs.djangoproject.com/en/6.0/ref/databases/>.
 
 TIME_ZONE  
 Set to your local time zone.
@@ -168,17 +168,17 @@ To load unminified CSS/JS `DEBUG` must be set to true and `INTERNAL_IPS` must be
 To minify the CSS and JS files run `npm run minify`.
 
 ## Dependencies
-- [Python v3.10.12](https://www.python.org/)
-- [Faster-Whisper v1.2.0](https://github.com/SYSTRAN/faster-whisper)
-- [Pyannote.Audio v4.0.1](https://github.com/pyannote/pyannote-audio)
-- [YT-DLP v2026.2.4](https://github.com/yt-dlp/yt-dlp)
-- [Gunicorn v23.0.0](https://gunicorn.org/)
+- [Python v3.12.7](https://www.python.org/)
+- [Faster-Whisper v1.2.1](https://github.com/SYSTRAN/faster-whisper)
+- [Pyannote.Audio v4.0.4](https://github.com/pyannote/pyannote-audio)
+- [YT-DLP v2026.3.17](https://github.com/yt-dlp/yt-dlp)
+- [Gunicorn v25.0.3](https://gunicorn.org/)
 - [FFmpeg](https://www.ffmpeg.org/)
-- [Django v5.2.7](https://www.djangoproject.com/)
+- [Django v6.0.5](https://www.djangoproject.com/)
 - [Django Cleanup v9.0.0](https://github.com/un1t/django-cleanup/)
-- [Django Q2 v1.8.0](https://django-q2.readthedocs.io/en/master/)
-- [NVIDIA cuBLAS v12.1.3.1](https://developer.nvidia.com/cublas)
-- [NVIDIA cuDNN v8.9.2.26](https://developer.nvidia.com/cudnn)
+- [Django Q2 v1.10.0](https://django-q2.readthedocs.io/en/master/)
+- [NVIDIA cuBLAS v13.1.0.3](https://developer.nvidia.com/cublas)
+- [NVIDIA cuDNN v9.19.0.56](https://developer.nvidia.com/cudnn)
 - [Bootstrap v5.3.6](https://getbootstrap.com/)
 - [Bootstrap Icons v1.13.1](https://icons.getbootstrap.com/)
 - [DataTables v2.3.1](https://datatables.net/)

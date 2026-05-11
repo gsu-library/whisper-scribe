@@ -1,17 +1,29 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-05-11
+
+### Changed
+
+- Update Python to version 3.12.7 (for Ubuntu 24.04 LTS & Django 6).
+- Update pip packages.
+- Update requirements.txt and requirements-freeze.txt.
+
 ## [1.11.0] - 2026-03-17
+
 - Add download text grouped by speaker option.
 
 ## [1.10.0] - 2026-02-04
+
 - Update yt-dlp.
 - Comment out pip requirements install in updater script.
 
 ## [1.9.0] - 2025-10-23
+
 - Add an updater script that updates pip requirements, performs migrations, and collects static files.
 - Clear cache on app start.
 - Add new setting for diarization checkpoint path.
@@ -23,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use Django timezone utility for date/time now.
 
 ## [1.8.0] - 2025-09-30
+
 - Disable media controls on edit page if no media exists.
 - Add button to cancel submissions. Hide button if transcription cannot be cancelled.
 - Fix for some diarization errors.
@@ -33,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update pip packages.
 
 ## [1.7.0] - 2025-06-16
+
 - Fix bug that caused confirmation for transcription deletion to not show.
 - Add templated custom 400, 403, 404, and 500 error pages.
 - Add a template filter that converts underscores to spaces and use on list page.
@@ -43,9 +57,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix start and end time parsing bug on edit page.
 
 ## [1.6.1] - 2025-05-20
+
 - Fix for transcriptions not showing on the list page if they were created before the TranscriptionStatus model existed.
 
 ## [1.6.0] - 2025-05-19
+
 - Update transcription list page with DataTables, transcriptions can now be searched and sorted.
 - Only completed transcriptions are now shown on list page.
 - Show process statuses on transcription list page.
@@ -58,6 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update versions of Bootstrap and Bootstrap Icons.
 
 ## [1.5.0] - 2025-04-29
+
 - Add tooltips to buttons on edit page.
 - Update downloader to only process one video (for now).
 - Change start and end time format on edit page.
@@ -71,6 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update how transcriptions statuses work, start time now only applies when the status is not pending.
 
 ## [1.4.0] - 2025-04-14
+
 - Add and implement transcription status model.
 - Register transcription status model on admin page.
 - Display submission status (while still pending or processing) on home page.
@@ -83,23 +101,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Squash migrations between this and previous release.
 
 ## [1.3.0] - 2025-03-17
+
 - Use update_fields on model saves when able to.
 - Async form submission methods together.
 - Remove dark theme.
 
 ## [1.2.1] - 2025-02-26
+
 - Remove unused imports.
 - Update pip packages, requirements.txt, and requirements-freeze.txt.
 
 ## [1.2.0] - 2024-12-10
+
 - The new large-v3-turbo model is now available.
 - Update pip packages to latest versions.
 - Update Python requirements.
 
 ## [1.1.0] - 2024-11-19
+
 - Convert media files to temporary .wav files for diarizer.
 - Reorganize some functions into utils.py and media.py.
 - Use django.conf settings instead of importing constants directly from core settings.
 
 ## [1.0.0] - 2024-11-5
+
 - Initial release.

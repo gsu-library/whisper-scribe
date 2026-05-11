@@ -36,7 +36,7 @@ class TranscriptionForm(forms.Form):
       Ensures that at least one of 'upload_file' or 'upload_url' is provided.
    """
    upload_file = forms.FileField(required=False)
-   upload_url = forms.URLField(required=False)
+   upload_url = forms.URLField(required=False, assume_scheme="https")
    model = forms.ChoiceField(
       choices=create_model_choices(),
       initial=settings.WHISPER_MODEL_DEFAULT,

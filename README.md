@@ -1,20 +1,24 @@
 # WhisperScribe
-Code Repository: https://github.com/gsu-library/whisper-scribe  
+
+Code Repository: <https://github.com/gsu-library/whisper-scribe>  
 Author: Matt Brooks <mbrooks34@gsu.edu>  
 Date Created: 2024-05-21  
 License: [GPLv3](LICENSE)  
 Version: 2.0.0
 
 ## Description
+
 WhisperScribe is a Django-powered web application that simplifies audio analysis by using AI for speech recognition (Faster Whisper) and speaker diarization (Pyannote.Audio). Users can upload or link media, generate accurate transcripts with speaker identification, and easily edit the results. This project also leverages CUDA support for quicker processing.
 
 ## Requirements
+
 - Python v3.12.7
 - FFmpeg
 - Web Server
 - NVIDIA drivers (if using CUDA)
 
 ## Installation
+
 The following installation instructions are based on a Linux server install using Python v3.12.7.
 
 1. [Install Python](https://wiki.python.org/moin/BeginnersGuide/Download). We recommend using version 3.12.7, as that is what this repository is built on. If you need to manage multiple Python versions, we suggest using [Pyenv](https://github.com/pyenv/pyenv).
@@ -31,16 +35,19 @@ The following installation instructions are based on a Linux server install usin
 1. Create Django admin user (optional): `python manage.py createsuperuser`.
 
 ### Installing Python Packages
+
 To install the required Python packages it is recommended to use pip to install the freeze file that is used with this project: `pip install -r requirements-freeze.txt`. In some scenarios (not using Linux, different Python version, etc.) pip will fail to install the freeze file. If this is the case, installing the requirements.txt file should work: `pip install -r requirements.txt`.
 
 ### Configuring the Web Server
+
 A web server will have to be configured to host static and media files used by WhisperScribe. Django has documentation on [how to deploy static files](https://docs.djangoproject.com/en/6.0/howto/static-files/deployment/).
 
 ### Configuring the Settings File
+
 The SECRET_KEY and ALLOWED_HOST fields must be configured before running WhisperScribe. It is recommended to also take a look at the rest of the configurations in the settings file. See [Django settings reference](https://docs.djangoproject.com/en/6.0/ref/settings/) for additional information. If troubleshooting is needed for setup/configuration DEBUG can be enabled. **DO NOT LEAVE THIS ENABLED IN A PRODUCTION ENVIRONMENT!**
 
 **SECRET_KEY** - REQUIRED  
-Run the following command while within the WhisperScribe Python virtual environment to generate a secret key: `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
+Run the following command while within the WhisperScribe Python virtual environment to generate a secret key: `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`.
 
 **ALLOWED_HOSTS** - REQUIRED  
 A list of strings representing the host/domain names that this Django site can serve.
@@ -50,6 +57,7 @@ If using a reverse proxy to Gunicorn this will have to be set to Gunicorn's bind
 
 HUGGING_FACE_TOKEN  
 This is required to use diarization. In order to create a token you must:
+
 1. Accept [pyannote/segmentation-3.0](https://hf.co/pyannote/segmentation-3.0) user conditions,
 1. accept the wanted model's user conditions (see DIARIZE_CHECKPOINT_PATH below),
 1. and create an access token at [hf.co/settings/tokens](https://hf.co/settings/tokens).
@@ -97,13 +105,17 @@ STATIC_ROOT
 The absolute filesystem path to the directory where the collectstatic command will move static files for deployment.
 
 ### NVIDIA Drivers
+
 The NVIDIA drivers available will depend on the OS and the video card installed. Ubuntu provides a [helpful article](https://documentation.ubuntu.com/server/how-to/graphics/install-nvidia-drivers/) that goes over searching for and installing NVIDIDA drivers. We have had success on our setup using the nvidida-driver-535-server package.
 
 ### MySQL Drivers
+
 To connect WhisperScribe to a MySQL database a MySQL pip package, headers, and libraries will have to be installed. The mysqlclient pip package is recommended. The installation instructions can be found on the [mysqlclient pypi.org page](https://pypi.org/project/mysqlclient/).
 
 ## Usage
+
 ### Manual Startup
+
 Use the following commands to start the Django application and to run Django Q (within the Python virtual environment). If Django Q is disabled in the settings file the qcluster command does not need to be included.
 
 ```bash
@@ -114,6 +126,7 @@ python manage.py qcluster
 If wanting to run Gunicorn on a port other than 8000 the `-b` flag can be passed to set the bind address and port.
 
 ### Using Systemd Service
+
 The systemd service can be used to run WhisperScribe on Linux operating systems. To set this up first copy both the whisperscribe.sample.service and whisperscribe-q.sample.service files to whisperscribe.service and whisperscribe-q.service respectively. Then edit both copied files to update the paths for WorkingDirectory, Environment, and ExecStart. For all three make sure the absolute path to WhisperScribe is used and for the Environment and ExecStart directives make sure the name of the virtual environment folder is correct. Also make sure the path for Environment includes the correct version of Python. Once configured the files can be added to systemd with the following commands. You will need to edit the command to use the path to your instance of WhisperScribe.
 
 ```bash
@@ -130,11 +143,13 @@ sudo systemctl restart whisperscribe
 ```
 
 ## Updates
+
 Check the release notes to see if there are any major changes with the core/settings.sample.py file, if the requirements-freeze.txt pip packages file has been updated, if a migration is required, or if static files need to be migrated.
 
 It never hurts to run the commands below after an update (while in the Python virtual environment).
 
 ### Update Python pip Packages
+
 When the requirements-freeze.txt file is updated, Python packages need to be updated.
 
 ```bash
@@ -142,6 +157,7 @@ pip install -r requirements-freeze.txt
 ```
 
 ### Run Database Migration
+
 When a model in Django is updated a database migration needs to be run. Backing up your databases before running the migration is recommended in case of an issue.
 
 ```bash
@@ -149,6 +165,7 @@ python manage.py migrate
 ```
 
 ### Run Static File Collection
+
 When static files (CSS, JavaScript, etc.) are updated in the project they will need to be moved (collected) to your static file location. Running the command below will overwrite any local customizations on static files.
 
 ```bash
@@ -156,18 +173,23 @@ python manage.py collectstatic
 ```
 
 ## Additional Information
+
 ### Reverse Proxy Server
+
 At some point you will want to reverse proxy a web server to WhisperScribe in order to use SSL certificates. [Apache](https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html) and [NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) provide well documented guides on setting up reverse proxies. Gunicorn also provides a [guide](https://docs.gunicorn.org/en/latest/deploy.html) on setting up a reverse proxy using Nginx. Do note that if using a reverse proxy server some additional settings will need to be adjusted such as max post size.
 
 ## Developer Notes
+
 The Django project folder is 'core' and the application folder is 'webui'.
 
 ### Minification
+
 To load unminified CSS/JS `DEBUG` must be set to true and `INTERNAL_IPS` must be set in the settings file.
 
 To minify the CSS and JS files run `npm run minify`.
 
 ## Dependencies
+
 - [Python v3.12.7](https://www.python.org/)
 - [Faster-Whisper v1.2.1](https://github.com/SYSTRAN/faster-whisper)
 - [Pyannote.Audio v4.0.4](https://github.com/pyannote/pyannote-audio)

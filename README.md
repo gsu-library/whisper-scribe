@@ -25,7 +25,7 @@ The following installation instructions are based on a Linux server install usin
 1. [Install FFmpeg](https://www.ffmpeg.org/).
 1. Install and [configure](#configuring-the-web-server) a web server for static and media file hosting. This can also be used as a reverse proxy server to proxy Gunicorn. Either [Apache](https://httpd.apache.org/) or [Nginx](https://nginx.org/) are recommended.
 1. Either clone the WhisperScribe git repository or download the source code from the latest release. Move/extract the files in a location that is not being served by a web server.
-1. Create a Python virtual environment inside the WhisperScribe folder - [venv](https://docs.python.org/3/library/venv.html) is recommended. Once created, activate and stay in the virtual environment for the remainder of the steps.
+1. Create a Python virtual environment inside the WhisperScribe folder — [venv](https://docs.python.org/3/library/venv.html) is recommended. Once created, activate and stay in the virtual environment for the remainder of the steps.
 1. [Install the required Python packages](#installing-python-packages).
 1. Copy the core/settings.sample.py file to core/settings.py and [configure the settings file](#configuring-the-settings-file). If wanting to use a database other than SQLite configure it now (see [Django's databases documentation](https://docs.djangoproject.com/en/6.0/ref/databases/)).
 1. Run Django database migrations: `python manage.py migrate`.
@@ -106,11 +106,22 @@ The absolute filesystem path to the directory where the collectstatic command wi
 
 ### NVIDIA Drivers
 
-The NVIDIA drivers available will depend on the OS and the video card installed. Ubuntu provides a [helpful article](https://documentation.ubuntu.com/server/how-to/graphics/install-nvidia-drivers/) that goes over searching for and installing NVIDIDA drivers. We have had success on our setup using the nvidida-driver-535-server package.
+The NVIDIA drivers available will depend on the OS and the video card installed. Ubuntu provides a [helpful article](https://documentation.ubuntu.com/server/how-to/graphics/install-nvidia-drivers/) that goes over searching for and installing NVIDIDA drivers. We have had success on our setup using the nvidida-driver-535-server and nvidia-driver-580-server packages.
+
+The nvidia-cublas-cu12 and nvidia-cudnn-cu12 pip packages will also have to be installed if using CUDA.
+
+```bash
+pip install nvidia-cublas-cu12
+pip install nvidia-cudnn-cu12
+```
 
 ### MySQL Drivers
 
-To connect WhisperScribe to a MySQL database a MySQL pip package, headers, and libraries will have to be installed. The mysqlclient pip package is recommended. The installation instructions can be found on the [mysqlclient pypi.org page](https://pypi.org/project/mysqlclient/).
+To connect WhisperScribe to a MySQL database a MySQL pip package, headers, and libraries will have to be installed. The mysqlclient pip package is recommended. More information can be found on the [mysqlclient pypi.org page](https://pypi.org/project/mysqlclient/).
+
+```bash
+pip install mysqlclient
+```
 
 ## Usage
 
@@ -127,7 +138,7 @@ If wanting to run Gunicorn on a port other than 8000 the `-b` flag can be passed
 
 ### Using Systemd Service
 
-The systemd service can be used to run WhisperScribe on Linux operating systems. To set this up first copy both the whisperscribe.sample.service and whisperscribe-q.sample.service files to whisperscribe.service and whisperscribe-q.service respectively. Then edit both copied files to update the paths for WorkingDirectory, Environment, and ExecStart. For all three make sure the absolute path to WhisperScribe is used and for the Environment and ExecStart directives make sure the name of the virtual environment folder is correct. Also make sure the path for Environment includes the correct version of Python. Once configured the files can be added to systemd with the following commands. You will need to edit the command to use the path to your instance of WhisperScribe.
+The systemd service can be used to run WhisperScribe on Linux operating systems. To set this up first copy both the whisperscribe.sample.service and whisperscribe-q.sample.service files to whisperscribe.service and whisperscribe-q.service respectively. Then edit both copied files to update the paths for WorkingDirectory, EnvironmentFile, and ExecStart. For all three make sure the absolute path to WhisperScribe is used and for the EnvironmentFile and ExecStart directives make sure the name of the virtual environment folder is correct. Also make sure the .env.sample file has been copied to .env and that the LD_LIBRARY_PATH variable has the correct path to the cuBLAS and cuDNN libraries. Once configured the files can be added to systemd with the following commands. You will need to edit the command to use the path to your instance of WhisperScribe.
 
 ```bash
 sudo systemctl enable /path/to/whisperscribe/whisperscribe.service

@@ -4,7 +4,7 @@ Code Repository: <https://github.com/gsu-library/whisper-scribe>
 Author: Matt Brooks <mbrooks34@gsu.edu>  
 Date Created: 2024-05-21  
 License: [GPLv3](LICENSE)  
-Version: 2.0.0
+Version: 2.1.0
 
 ## Description
 

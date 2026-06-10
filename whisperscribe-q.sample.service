@@ -8,9 +8,12 @@ Type=simple
 Restart=no
 User=whisper
 Group=whisper
-WorkingDirectory=/path/to/whisperscribe/
-Environment="LD_LIBRARY_PATH=/path/to/whisperscribe/.venv/lib/python3.10/site-packages/nvidia/cublas/lib:/path/to/whisperscribe/.venv/lib/python3.10/site-packages/nvidia/cudnn/lib"
-ExecStart=/path/to/whisperscribe/.venv/bin/python manage.py qcluster
+# Update <PROJECT_ROOT> with the absolute path to your project directory
+WorkingDirectory=<PROJECT_ROOT>
+# Update <PROJECT_ROOT> with the absolute path to your project directory
+EnvironmentFile=<PROJECT_ROOT>/.env
+# Update <PROJECT_ROOT> with the absolute path to your project directory
+ExecStart=<PROJECT_ROOT>/.venv/bin/python manage.py qcluster
 
 [Install]
 WantedBy=whisperscribe.service

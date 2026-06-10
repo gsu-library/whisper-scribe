@@ -19,7 +19,7 @@ cuda-bindings==13.2.0
 cuda-pathfinder==1.5.4
 cuda-toolkit==13.0.2
 cycler==0.12.1
-Django==6.0.5
+Django==6.0.6
 django-cleanup==9.0.0
 django-picklefield==3.4.0
 django-q2==1.10.0
@@ -33,7 +33,7 @@ fsspec==2026.4.0
 googleapis-common-protos==1.75.0
 greenlet==3.5.0
 grpcio==1.80.0
-gunicorn==25.0.3
+gunicorn==26.0.0
 h11==0.16.0
 hf-xet==1.5.0
 httpcore==1.0.9
@@ -128,6 +128,6 @@ typing_extensions==4.15.0
 urllib3==2.7.0
 websockets==16.0
 yarl==1.23.0
-yt-dlp==2026.3.17
+yt-dlp==2026.6.9
 yt-dlp-ejs==0.8.0
 zipp==3.23.1
